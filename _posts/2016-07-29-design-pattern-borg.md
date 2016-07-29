@@ -9,12 +9,8 @@ keywords: shared state, Borg
 Borg模式 —— 多个实例间共享状态
 代码参考引用自：https://github.com/faif/python-patterns/blob/master/borg.py
 
-### 上代码
-<<<<<<< HEAD
+## 上代码
 ```python
-=======
-...python
->>>>>>> 2e5074cbd7c9472b12232d6dca181d598e1dab55
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
@@ -60,17 +56,10 @@ if __name__ == '__main__':
     print('rm1: {0}'.format(rm1))
     print('rm2: {0}'.format(rm2))
     print('rm3: {0}'.format(rm3))
-<<<<<<< HEAD
 ```
 
-### 输出结果
-```python
-=======
-...
-
-### 输出结果
-...python
->>>>>>> 2e5074cbd7c9472b12232d6dca181d598e1dab55
+## 输出结果
+```sh
 {'state': 'Init'}
 {'state': 'Init'}
 rm1: Running
@@ -83,13 +72,9 @@ rm2 id: 140049238365968
 rm1: Init
 rm2: Init
 rm3: Init
-<<<<<<< HEAD
 ```
-=======
-...
->>>>>>> 2e5074cbd7c9472b12232d6dca181d598e1dab55
 
-### 总结
+## 总结
 1. 借助使用类的属性(成员变量)可以实现类实例之间的变量内容共享。
 2. 本文参考的代码中只是借助self.__dict__=self.__shared_state这种方式描述实例间共享变量的方法。
    但并不建议在实际中使用。因为所有的实例属性(比如增加self.name='xx')均会变为实例间共享的状态。
@@ -97,6 +82,6 @@ rm3: Init
    所以会将类的属性self.__shared_state的引用赋值给实例的self.__dict__。
 
 
-### 待续
+## 待续
 Borg还可以写成使用装饰器的方式实现的，留待后续补充……
 
