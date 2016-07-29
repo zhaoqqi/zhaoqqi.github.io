@@ -44,12 +44,10 @@ $ git status -s
 git status -s 虽然可以看出工作区和版本库中代码不一致，to_be_deleted.txt被删除了。
 但是D是红色的，这次的删除操作并没有被提交到缓冲区，即没有stage。需要手动git add：
 ```sh
-
 git add to_be_deleted.txt
 git status -s
  D to_be_deleted.txt
 ```
-
 手动git add 以后，git status -s 查看D为绿色。
 
 如果直接使用系统命令rm的文件比较多，又分布在不同的文件中，逐个git add会特别费时费力。此时只需使用以下操作：
