@@ -6,12 +6,20 @@ description: How to rm files in repository with github.
 keywords: git rm, git add -A
 ---
 
+<<<<<<< HEAD
 #### 标题
+=======
+###标题
+>>>>>>> 2be974c0a840746264283c162c17e3d3b113d93f
 
 使用Git删除版本库中的指定文件，也要显示的使用git命令删除，下面举个例子说明。
 首先新建一个文件：
 
+<<<<<<< HEAD
 ```sh
+=======
+```
+>>>>>>> 2be974c0a840746264283c162c17e3d3b113d93f
 touch to_be_deleted.txt
 git add to_be_deleted.txt
 git commit -m "commit to_be_deleted.txt"
