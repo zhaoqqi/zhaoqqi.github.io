@@ -10,7 +10,6 @@ keywords: git rm, git add -A
 首先新建一个文件：
 
 ```sh
->>>>>>> 2be974c0a840746264283c162c17e3d3b113d93f
 touch to_be_deleted.txt
 git add to_be_deleted.txt
 git commit -m "commit to_be_deleted.txt"
