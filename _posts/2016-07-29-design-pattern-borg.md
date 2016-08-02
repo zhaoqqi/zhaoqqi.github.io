@@ -76,10 +76,10 @@ rm3: Init
 
 #### 总结
 1. 借助使用类的属性(成员变量)可以实现类实例之间的变量内容共享。
-2. 本文参考的代码中只是借助self.__dict__=self.__shared_state这种方式描述实例间共享变量的方法。
+2. 本文参考的代码中只是借助self.\_\_dict\_\_=self._shared_state这种方式描述实例间共享变量的方法。
    但并不建议在实际中使用。因为所有的实例属性(比如增加self.name='xx')均会变为实例间共享的状态。
-3. __init__方法中的self.__dict__ = self.__shared_state，在类实例化过程中，因为实例中不存在__shared_state，
-   所以会将类的属性self.__shared_state的引用赋值给实例的self.__dict__。
+3. \_\_init\_\_ 方法中的self.\_\_dict\_\_ = self.\_\_shared_state，在类实例化过程中，因为实例中不存在\_\_shared_state，
+   所以会将类的属性self.\_\_shared_state的引用赋值给实例的self._dict_。
 
 
 #### 待续
