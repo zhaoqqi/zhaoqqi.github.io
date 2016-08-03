@@ -1,8 +1,8 @@
 ---
 layout: post
-title: tcpdump 常用方法汇总
+title: tcpdump常用方法手记
 categories: [Network]
-description: 
+description: 工作中逐渐积累的 tcpdump 常用使用方法
 keywords: tcpdump
 ---
 
