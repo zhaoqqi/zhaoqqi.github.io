@@ -4,10 +4,10 @@
 baseurl:
 url: http://zhaoqqi.github.io.
 date_format: "ordinal"
-title: Coding happy life
-subtitle: "编写快乐人生"
+title: 奇趣
+subtitle: "赵琦的个人博客"
 description: "赵琦的个人博客"
-keywords: Qi Zhao, zhaoqi, zhaoqqi
+keywords: Qi Zhao, zhaoqi, zhaoqqi, 赵琦
 favicon: /favicon.ico
 timezone: Asia/Shanghai
 encoding: "utf-8"
@@ -106,4 +106,4 @@ google:
 # ---------------- #
 #      Datas       #
 # ---------------- #
-skill_software_keywords: [C, Python, OpenStack]
+skill_software_keywords: [C, Python, OpenStack, DesignPattern]

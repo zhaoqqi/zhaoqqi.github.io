@@ -259,8 +259,8 @@ def configure(self, old_conf=None, has_changed=None):
         if old_conf is not None and has_changed('backlog'):
             self.sock.listen(CONF.backlog)
 
-"""根据 /etc/glance/glance-api.conf 中的[glance_store]
-   加载后端存储 driver
+"""根据 /etc/glance/glance-api.conf 中的 [glance_store] 加载后端存储 driver。
+   
 """
 def initialize_glance_store():
     """Initialize glance store."""

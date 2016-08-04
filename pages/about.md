@@ -1,7 +1,7 @@
 ---
 layout: page
 title: About
-description: Coding happy life
+description: 赵琦的个人博客
 keywords: Qi Zhao, 赵琦
 comments: true
 menu: 关于
