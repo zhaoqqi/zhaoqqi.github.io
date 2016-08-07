@@ -46,7 +46,7 @@ StopIteration
 >>>
 ```
 
-提到 generators，不得体免俗的提到斐波那契数列的例子 : ) 
+提到 generators，不得体免俗的提到斐波那契数列的例子 : )
 
 ```python
 def fibonacci(n):
@@ -90,4 +90,3 @@ for num in Fib(5):
 ```
 
 对比 generator function，用类实现生成器迭代功能要繁琐不少。
-
