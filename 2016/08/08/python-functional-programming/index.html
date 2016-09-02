@@ -1,0 +1,691 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Python, functional programming, 函数式编程" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="Functional programming in Python">
+<meta property="og:type" content="article">
+<meta property="og:title" content="函数式编程">
+<meta property="og:url" content="https://zhaoqqi.github.io/2016/08/08/python-functional-programming/index.html">
+<meta property="og:site_name" content="奇趣">
+<meta property="og:description" content="Functional programming in Python">
+<meta property="og:updated_time" content="2016-08-09T04:08:12.995Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="函数式编程">
+<meta name="twitter:description" content="Functional programming in Python">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="https://zhaoqqi.github.io/2016/08/08/python-functional-programming/"/>
+
+  <title> 函数式编程 | 奇趣 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?e5c4b3a25e9131a450c0498d670cabd3";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">奇趣</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">赵琦个人博客</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                函数式编程
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-08-08T00:00:00+08:00" content="2016-08-08">
+              2016-08-08
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/08/08/python-functional-programming/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/08/python-functional-programming/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近看了几篇关于 Python 函数式编程的 Blog，犹如一捧甘甜的清泉入口，甘冽清爽，怡人肺腑。<br>有点喜欢上函数式编程的这种清爽简洁。尤其是陈皓的酷壳中的函数式编程这篇博文，本文引用很多该文的内容，特此说明。</p>
+<p>那么什么是函数式编程呢？先罗列一下函数编程的几条基本原则：</p>
+<ol>
+<li>函数在处理过程中不使用局部变量，不修改或者保存外部变量的值或状态。</li>
+<li>函数的处理过程和返回结果具有确定性，也就是说在输入一定的情况下，输出也是确定的。</li>
+<li>函数可以作为另一个函数的参数，也可以赋值给变量，作为普通变量使用。</li>
+<li>函数式编程注重的是描述问题而不是具体如何实现。</li>
+</ol>
+<h5 id="函数式与非函数式的简单对比"><a href="#函数式与非函数式的简单对比" class="headerlink" title="函数式与非函数式的简单对比"></a>函数式与非函数式的简单对比</h5><p>还是从简单的例子入手，对比一下函数式与非函数式最直观的差别：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 非函数式</span></div><div class="line">step = <span class="number">5</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">decrease</span><span class="params">()</span>:</span></div><div class="line">    step -= <span class="number">1</span></div><div class="line"></div><div class="line"><span class="comment"># 函数式</span></div><div class="line">step = <span class="number">5</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">decrease</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">return</span> step<span class="number">-1</span></div></pre></td></tr></table></figure>
+<p>函数式不依赖于外部数据，不修改外部数据的状态，只是经过计算返回一个新的值。</p>
+<h5 id="函数当作变量使用"><a href="#函数当作变量使用" class="headerlink" title="函数当作变量使用"></a>函数当作变量使用</h5><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">multiplier</span><span class="params">(x)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">multiplicand</span><span class="params">(y)</span>:</span></div><div class="line">        <span class="keyword">return</span> x*y</div><div class="line">    <span class="keyword">return</span> multiplicand</div><div class="line"></div><div class="line">mul5 = multiplier(<span class="number">5</span>)</div><div class="line">mul6 = multiplier(<span class="number">6</span>)</div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> mul5(<span class="number">6</span>)</div><div class="line"><span class="number">30</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> mul6(<span class="number">5</span>)</div><div class="line"><span class="number">30</span></div></pre></td></tr></table></figure>
+<h5 id="Python-提供的函数式编程的便利工具"><a href="#Python-提供的函数式编程的便利工具" class="headerlink" title="Python 提供的函数式编程的便利工具"></a>Python 提供的函数式编程的便利工具</h5><p>在函数式编程中，我们不应该用普通的循环迭代的方式，而应该使用更高效易用的方式。<br>Python 为我们提供了典型的函数式编程的工具函数，以及 lambda 表达式。</p>
+<h6 id="map-reduce"><a href="#map-reduce" class="headerlink" title="map/reduce"></a>map/reduce</h6><p>map()函数接受两个参数，一个是函数，一个是iterable的对象。map将传入的函数依次作用到序列的每个元素，<br>并将结果作为新的Iterator返回。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">clubs = [<span class="string">'Arsenal'</span>, <span class="string">'Swansea'</span>, <span class="string">'Liverpool'</span>]</div><div class="line">clubs_n = map(len, clubs)</div><div class="line"><span class="keyword">print</span> clubs_n</div></pre></td></tr></table></figure>
+<p>使用自定义函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">upper</span><span class="params">(item)</span>:</span></div><div class="line">    <span class="keyword">return</span> item.upper()</div><div class="line"></div><div class="line">clubs = [<span class="string">'Arsenal'</span>, <span class="string">'Swansea'</span>, <span class="string">'Liverpool'</span>]</div><div class="line">club_n = map(upper, clubs)</div><div class="line"><span class="keyword">print</span> clubs_n</div></pre></td></tr></table></figure>
+<p>使用lambda</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">upper</span><span class="params">(item)</span>:</span></div><div class="line">    <span class="keyword">return</span> item.upper()</div><div class="line"></div><div class="line">clubs = [<span class="string">'Arsenal'</span>, <span class="string">'Swansea'</span>, <span class="string">'Liverpool'</span>]</div><div class="line">club_n = map(<span class="keyword">lambda</span> x: upper(x), clubs)</div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> club_n</div><div class="line">[<span class="string">'ARSENAL'</span>, <span class="string">'SWANSEA'</span>, <span class="string">'LIVERPOOL'</span>]</div></pre></td></tr></table></figure>
+<h6 id="reduce"><a href="#reduce" class="headerlink" title="reduce"></a>reduce</h6><p>reduce()把一个函数作用在一个序列[x1, x2, x3…]上，这个函数必须接收两个参数，reduce把结果继续和序列的下一个元素做累积计算，其效果就是：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>reduce(f, [x1, x2, x3,x4]) = f(f(f(x1, x2), x3), x4)</div></pre></td></tr></table></figure>
+<p>求一个序列和的例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(x, y)</span>:</span></div><div class="line">    <span class="keyword">return</span> x + y</div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>sum = reduce(add, [<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">5</span>,<span class="number">8</span>,<span class="number">13</span>,<span class="number">21</span>,<span class="number">34</span>])</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> sum</div><div class="line"><span class="number">88</span></div></pre></td></tr></table></figure>
+<p>使用lambda</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(x, y)</span>:</span></div><div class="line">    <span class="keyword">return</span> x + y</div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>sum = reduce(<span class="keyword">lambda</span> x,y: add(x,y), [<span class="number">1</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">5</span>,<span class="number">8</span>,<span class="number">13</span>,<span class="number">21</span>,<span class="number">34</span>])</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> sum</div><div class="line"><span class="number">88</span></div></pre></td></tr></table></figure>
+<h6 id="filter"><a href="#filter" class="headerlink" title="filter"></a>filter</h6><p>和map()类似，filter()也接收一个函数和一个序列。和map()不同的时，filter()把传入的函数依次作用于每个元素，然后根据返回值是True还是False决定保留还是丢弃该元素。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">even</span><span class="params">(x)</span>:</span></div><div class="line">    <span class="keyword">if</span> x%<span class="number">2</span> == <span class="number">0</span>:</div><div class="line">        <span class="keyword">return</span> <span class="keyword">True</span></div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>even_list = filter(even, [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>])</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> even_list</div><div class="line">[<span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">8</span>]</div></pre></td></tr></table></figure>
+<p>使用lambda</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">even</span><span class="params">(x)</span>:</span></div><div class="line">    <span class="keyword">if</span> x%<span class="number">2</span> == <span class="number">0</span>:</div><div class="line">        <span class="keyword">return</span> <span class="keyword">True</span></div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>even_list = filter(<span class="keyword">lambda</span> x: even(x), [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>])</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> even_list</div><div class="line">[<span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">8</span>]</div></pre></td></tr></table></figure>
+<h6 id="sorted"><a href="#sorted" class="headerlink" title="sorted"></a>sorted</h6><p>sorted()用来对一个Iterator的序列进行排序。通常规定，对于两个元素x和y，如果认为x &lt; y，则返回-1，如果认为x == y，则返回0，如果认为x &gt; y，则返回1，这样，排序算法就不用关心具体的比较过程，而是根据比较结果直接排序。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>sorted([<span class="number">23</span>,<span class="number">5</span>,<span class="number">16</span>,<span class="number">9</span>,<span class="number">5</span>])</div><div class="line">[<span class="number">5</span>, <span class="number">5</span>, <span class="number">9</span>, <span class="number">16</span>, <span class="number">23</span>]</div></pre></td></tr></table></figure>
+<p>此外，sorted()是高阶函数，接受一个比较函数实现自定义的排序。比如，想倒序排列上一个实例的list：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">inverted_order</span><span class="params">(x, y)</span>:</span></div><div class="line">    <span class="keyword">if</span> x &gt; y:</div><div class="line">        <span class="keyword">return</span> <span class="number">-1</span></div><div class="line">    <span class="keyword">if</span> x &lt; y:</div><div class="line">        <span class="keyword">return</span> <span class="number">1</span></div><div class="line">    <span class="keyword">if</span> x == y:</div><div class="line">        <span class="keyword">return</span> <span class="number">0</span></div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>sorted([<span class="number">23</span>,<span class="number">5</span>,<span class="number">16</span>,<span class="number">9</span>,<span class="number">5</span>], inverted_order)</div><div class="line">[<span class="number">23</span>, <span class="number">16</span>, <span class="number">9</span>, <span class="number">5</span>, <span class="number">5</span>]</div></pre></td></tr></table></figure>
+<p>使用lambda</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># On Python 3.x:  a = sorted(a, key=lambda x: x.modified, reverse=True)</span></div><div class="line"><span class="comment"># On Python 2.x:  sorted(iterable, cmp=None, key=None, reverse=False)</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>sorted([<span class="number">23</span>,<span class="number">5</span>,<span class="number">16</span>,<span class="number">9</span>,<span class="number">5</span>], cmp=inverted_order, key=<span class="keyword">None</span>, reverse=<span class="keyword">True</span>)</div><div class="line">[<span class="number">5</span>, <span class="number">5</span>, <span class="number">9</span>, <span class="number">16</span>, <span class="number">23</span>]</div></pre></td></tr></table></figure>
+<p>除了 map/reduce, filter, sorted外，Python 还有 find, all, any 等高阶辅助函数。</p>
+<h5 id="Pipeline"><a href="#Pipeline" class="headerlink" title="Pipeline"></a>Pipeline</h5><p>以下内容（原封不动）来自：<a href="http://coolshell.cn/articles/10822.html" target="_blank" rel="external">http://coolshell.cn/articles/10822.html</a></p>
+<p>pipeline 管道借鉴于Unix Shell的管道操作——把若干个命令串起来，前面命令的输出成为后面命令的输入，如此完成一个流式计算。（注：管道绝对是一个伟大的发明，他的设哲学就是KISS – 让每个功能就做一件事，并把这件事做到极致，软件或程序的拼装会变得更为简单和直观。这个设计理念影响非常深远，包括今天的Web Service，云计算，以及大数据的流式计算等等）</p>
+<p>比如，我们如下的shell命令：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ps auwwx | awk <span class="string">'&#123;print $2&#125;'</span> | sort -n | xargs <span class="built_in">echo</span></div></pre></td></tr></table></figure>
+<p>也可以类似下面这个样子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pids = for_each(result, [ps_auwwx, awk_p2, sort_n, xargs_echo])</div></pre></td></tr></table></figure>
+<p>好了，让我们来看看函数式编程的Pipeline怎么玩？<br>我们先来看一个如下的程序，这个程序的process()有三个步骤：</p>
+<ol>
+<li>找出偶数。</li>
+<li>乘以3</li>
+<li>转成字符串返回</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">process</span><span class="params">(num)</span>:</span></div><div class="line">    <span class="comment"># filter out non-evens</span></div><div class="line">    <span class="keyword">if</span> num % <span class="number">2</span> != <span class="number">0</span>:</div><div class="line">        <span class="keyword">return</span></div><div class="line">    num = num * <span class="number">3</span></div><div class="line">    num = <span class="string">'The Number: %s'</span> % num</div><div class="line">    <span class="keyword">return</span> num</div><div class="line"> </div><div class="line">nums = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>]</div><div class="line"> </div><div class="line"><span class="keyword">for</span> num <span class="keyword">in</span> nums:</div><div class="line">    <span class="keyword">print</span> process(num)</div><div class="line"> </div><div class="line"><span class="comment"># 输出：</span></div><div class="line"><span class="comment"># None</span></div><div class="line"><span class="comment"># The Number: 6</span></div><div class="line"><span class="comment"># None</span></div><div class="line"><span class="comment"># The Number: 12</span></div><div class="line"><span class="comment"># None</span></div><div class="line"><span class="comment"># The Number: 18</span></div><div class="line"><span class="comment"># None</span></div><div class="line"><span class="comment"># The Number: 24</span></div><div class="line"><span class="comment"># None</span></div><div class="line"><span class="comment"># The Number: 30</span></div></pre></td></tr></table></figure>
+<p>我们可以看到，输出的并不够完美，另外，代码阅读上如果没有注释，你也会比较晕。下面，我们来看看函数式的pipeline（第一种方式）应该怎么写？</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">even_filter</span><span class="params">(nums)</span>:</span></div><div class="line">    <span class="keyword">for</span> num <span class="keyword">in</span> nums:</div><div class="line">        <span class="keyword">if</span> num % <span class="number">2</span> == <span class="number">0</span>:</div><div class="line">            <span class="keyword">yield</span> num</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">multiply_by_three</span><span class="params">(nums)</span>:</span></div><div class="line">    <span class="keyword">for</span> num <span class="keyword">in</span> nums:</div><div class="line">        <span class="keyword">yield</span> num * <span class="number">3</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">convert_to_string</span><span class="params">(nums)</span>:</span></div><div class="line">    <span class="keyword">for</span> num <span class="keyword">in</span> nums:</div><div class="line">        <span class="keyword">yield</span> <span class="string">'The Number: %s'</span> % num</div><div class="line"> </div><div class="line">nums = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>]</div><div class="line">pipeline = convert_to_string(multiply_by_three(even_filter(nums)))</div><div class="line"><span class="keyword">for</span> num <span class="keyword">in</span> pipeline:</div><div class="line">    <span class="keyword">print</span> num</div><div class="line"><span class="comment"># 输出：</span></div><div class="line"><span class="comment"># The Number: 6</span></div><div class="line"><span class="comment"># The Number: 12</span></div><div class="line"><span class="comment"># The Number: 18</span></div><div class="line"><span class="comment"># The Number: 24</span></div><div class="line"><span class="comment"># The Number: 30</span></div></pre></td></tr></table></figure>
+<p>我们动用了Python的关键字 yield，这个关键字主要是返回一个Generator，yield 是一个类似 return 的关键字，只是这个函数返回的是个Generator-生成器。所谓生成器的意思是，yield返回的是一个可迭代的对象，并没有真正的执行函数。也就是说，只有其返回的迭代对象被真正迭代时，yield函数才会正真的运行，运行到yield语句时就会停住，然后等下一次的迭代。（这个是个比较诡异的关键字）这就是lazy evluation。</p>
+<p>好了，根据前面的原则——“使用Map &amp; Reduce，不要使用循环”，那我们用比较纯朴的Map &amp; Reduce吧。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">even_filter</span><span class="params">(nums)</span>:</span></div><div class="line">    <span class="keyword">return</span> filter(<span class="keyword">lambda</span> x: x%<span class="number">2</span>==<span class="number">0</span>, nums)</div><div class="line"> </div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">multiply_by_three</span><span class="params">(nums)</span>:</span></div><div class="line">    <span class="keyword">return</span> map(<span class="keyword">lambda</span> x: x*<span class="number">3</span>, nums)</div><div class="line"> </div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">convert_to_string</span><span class="params">(nums)</span>:</span></div><div class="line">    <span class="keyword">return</span> map(<span class="keyword">lambda</span> x: <span class="string">'The Number: %s'</span> % x,  nums)</div><div class="line"> </div><div class="line">nums = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>]</div><div class="line">pipeline = convert_to_string(</div><div class="line">               multiply_by_three(</div><div class="line">                   even_filter(nums)</div><div class="line">               )</div><div class="line">            )</div><div class="line"><span class="keyword">for</span> num <span class="keyword">in</span> pipeline:</div><div class="line">    <span class="keyword">print</span> num</div></pre></td></tr></table></figure>
+<p>但是他们的代码需要嵌套使用函数，这个有点不爽，如果我们能像下面这个样子就好了（第二种方式）。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">pipeline_func(nums, [even_filter,</div><div class="line">                     multiply_by_three,</div><div class="line">                     convert_to_string])</div></pre></td></tr></table></figure>
+<p>那么，pipeline_func 实现如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">pipeline_func</span><span class="params">(data, fns)</span>:</span></div><div class="line">    <span class="keyword">return</span> reduce(<span class="keyword">lambda</span> a, x: x(a),</div><div class="line">                  fns,</div><div class="line">                  data)</div></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/07/python-args-kwargs/" rel="next" title="Python的 *args 和 **kwargs">
+                <i class="fa fa-chevron-left"></i> Python的 *args 和 **kwargs
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/09/python-lambda/" rel="prev" title="Python 匿名函数">
+                Python 匿名函数 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/08/08/python-functional-programming/"
+           data-title="函数式编程" data-url="https://zhaoqqi.github.io/2016/08/08/python-functional-programming/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="赵琦" />
+          <p class="site-author-name" itemprop="name">赵琦</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">15</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#函数式与非函数式的简单对比"><span class="nav-number">1.</span> <span class="nav-text">函数式与非函数式的简单对比</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#函数当作变量使用"><span class="nav-number">2.</span> <span class="nav-text">函数当作变量使用</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Python-提供的函数式编程的便利工具"><span class="nav-number">3.</span> <span class="nav-text">Python 提供的函数式编程的便利工具</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#map-reduce"><span class="nav-number">3.1.</span> <span class="nav-text">map/reduce</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#reduce"><span class="nav-number">3.2.</span> <span class="nav-text">reduce</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#filter"><span class="nav-number">3.3.</span> <span class="nav-text">filter</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#sorted"><span class="nav-number">3.4.</span> <span class="nav-text">sorted</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Pipeline"><span class="nav-number">4.</span> <span class="nav-text">Pipeline</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">赵琦</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"zhaoqqi"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

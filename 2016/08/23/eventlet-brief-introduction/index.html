@@ -1,0 +1,744 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="OpenStack, Python, coroutines" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="先认识一下Eventlet.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Eventlet(1) - 简介">
+<meta property="og:url" content="https://zhaoqqi.github.io/2016/08/23/eventlet-brief-introduction/index.html">
+<meta property="og:site_name" content="奇趣">
+<meta property="og:description" content="先认识一下Eventlet.">
+<meta property="og:updated_time" content="2016-08-23T10:29:28.589Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Eventlet(1) - 简介">
+<meta name="twitter:description" content="先认识一下Eventlet.">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="https://zhaoqqi.github.io/2016/08/23/eventlet-brief-introduction/"/>
+
+  <title> Eventlet(1) - 简介 | 奇趣 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?e5c4b3a25e9131a450c0498d670cabd3";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">奇趣</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">赵琦个人博客</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Eventlet(1) - 简介
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-08-23T00:00:00+08:00" content="2016-08-23">
+              2016-08-23
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/OpenStack/" itemprop="url" rel="index">
+                    <span itemprop="name">OpenStack</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/OpenStack/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/08/23/eventlet-brief-introduction/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/23/eventlet-brief-introduction/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h5 id="Eventlet是什么"><a href="#Eventlet是什么" class="headerlink" title="Eventlet是什么"></a>Eventlet是什么</h5><p>简单来说，Eventlet 是使用协程-coroutines(绿色线程-Green thread), 处理网络IO的非阻塞式的框架。</p>
+<h5 id="重要概念"><a href="#重要概念" class="headerlink" title="重要概念"></a>重要概念</h5><ol>
+<li>协程-coroutines<ul>
+<li>一个线程可以启动多个协程，多到成千上万。</li>
+<li>同一个时间点，只能有一个协程是执行状态，其他协程等待。</li>
+<li>同一个线程范围内的协程可以切换执行。</li>
+<li>它们共享线程的所有资源，因为互相之间没有冲突，而不用加锁。   </li>
+</ul>
+</li>
+<li>非阻塞式IO<ul>
+<li>简单来说就是, 在处理多个IO请求的过程中，不会因为某个IO请求的读写没有就绪而一直处于等待状态，使其他IO请求无法处理。</li>
+<li>更详细的内容会参考APUE单开一篇文章进行描述。(TBD)</li>
+</ul>
+</li>
+</ol>
+<h5 id="绿化补丁"><a href="#绿化补丁" class="headerlink" title="绿化补丁"></a>绿化补丁</h5><p>所谓绿化，即令系统网络模块中指定的模块协程友好(greenthread-friendly)。Python原生标准库不支持eventlet的协程，为此eventlet提供了patch。如果想在自己的应用程序中使用eventlet，就必须显示的绿化应用中要引入的模块。<br>同时设置socket为非阻塞式的。</p>
+<p>使用Eventlet库的应用程序，必须使用以下两种方式之一，显示的执行绿化操作：</p>
+<ol>
+<li><p>通过从 <code>eventlet.green</code> 引入网络处理相关的库绿化应用程序</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> eventlet.green <span class="keyword">import</span> socket</div><div class="line"><span class="keyword">from</span> eventlet.green <span class="keyword">import</span> threading</div><div class="line"><span class="keyword">from</span> eventlet.green <span class="keyword">import</span> asyncore</div></pre></td></tr></table></figure>
+</li>
+<li><p>使用 <code>monkeypatch</code> 在全局中绿化指定的系统模块</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="string">'''该函数使用绿化后的对应函数，替换系统模块中对应的网络处理模块。</span></div><div class="line">'''</div><div class="line"></div><div class="line">eventlet.patcher.monkey_patch(os=<span class="keyword">None</span>, select=<span class="keyword">None</span>, socket=<span class="keyword">None</span>, thread=<span class="keyword">None</span>, time=<span class="keyword">None</span>, psycopg=<span class="keyword">None</span>)</div><div class="line"></div><div class="line"><span class="comment"># 如果不指定参数，默认绿化所有系统模块。</span></div><div class="line"><span class="keyword">import</span> eventlet</div><div class="line">eventlet.monkey_patch()</div><div class="line"></div><div class="line"><span class="comment"># 替换部分模块</span></div><div class="line"><span class="keyword">import</span> eventlet</div><div class="line">eventlet.monkey_patch(socket=<span class="keyword">True</span>, select=<span class="keyword">True</span>)</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h5 id="主要的模块"><a href="#主要的模块" class="headerlink" title="主要的模块"></a>主要的模块</h5><h6 id="backdoor-–-Python-interactive-interpreter-within-a-running-process"><a href="#backdoor-–-Python-interactive-interpreter-within-a-running-process" class="headerlink" title="backdoor – Python interactive interpreter within a running process"></a>backdoor – Python interactive interpreter within a running process</h6><p><code>backdoor</code> 模块用来可以方便的查看一个长时间运行的进程的状态。它提供了普通 Python 解释器的交互式执行的使用方式，而又不会阻塞应用程序的执行。这对于debug、性能调试等是很有用处的。</p>
+<p>在应用程序中，以这样的方式在一个处于监听状态的socket上启动一个 <code>backdoor_server</code> ：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">eventlet.spawn(backdoor.backdoor_server, eventlet.listen((<span class="string">'localhost'</span>, <span class="number">3000</span>)))</div></pre></td></tr></table></figure>
+<p>运行起来后，可以通过 telnet 指定端口访问 <code>backdoor</code> ：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">$ telnet localhost <span class="number">3000</span></div><div class="line">Python <span class="number">2.6</span><span class="number">.2</span> (r262:<span class="number">71600</span>, Apr <span class="number">16</span> <span class="number">2009</span>, <span class="number">09</span>:<span class="number">17</span>:<span class="number">39</span>)</div><div class="line">[GCC <span class="number">4.0</span><span class="number">.1</span> (Apple Computer, Inc. build <span class="number">5250</span>)] on darwin</div><div class="line">Type <span class="string">"help"</span>, <span class="string">"copyright"</span>, <span class="string">"credits"</span> <span class="keyword">or</span> <span class="string">"license"</span> <span class="keyword">for</span> more information.</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> myapp</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>dir(myapp)</div><div class="line">[<span class="string">'__all__'</span>, <span class="string">'__doc__'</span>, <span class="string">'__name__'</span>, <span class="string">'myfunc'</span>]</div><div class="line">&gt;&gt;&gt;</div></pre></td></tr></table></figure>
+<p><code>backdoor</code> 可以与应用程序中的 yield 配合，转向指定的运行中的协程，所以就算在协程切换频繁的应用程序上使用 <code>backdoor</code>, 也可以通过 Python 解释器的命令查看程序内部的状态。</p>
+<p><code>backdoor</code> 主要方法和类</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="string">'''Sets up an interactive console on a socket with a single connected client. </span></div><div class="line">   This does not block the caller, as it spawns a new greenlet to handle the console. </div><div class="line">   This is meant to be called from within an accept loop (such as backdoor_server).</div><div class="line">'''</div><div class="line">eventlet.backdoor.backdoor(conn_info, locals=<span class="keyword">None</span>)</div><div class="line"></div><div class="line"><span class="string">'''Blocking function that runs a backdoor server on the socket sock, </span></div><div class="line">   accepting connections and running backdoor consoles for each client that connects.</div><div class="line">   The locals argument is a dictionary that will be included in the locals() of the interpreters. </div><div class="line">   It can be convenient to stick important application variables in here.</div><div class="line">'''</div><div class="line">eventlet.backdoor.backdoor_server(sock, locals=<span class="keyword">None</span>)</div></pre></td></tr></table></figure>
+<h6 id="corolocal-–-Coroutine-local-storage"><a href="#corolocal-–-Coroutine-local-storage" class="headerlink" title="corolocal – Coroutine local storage"></a>corolocal – Coroutine local storage</h6><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">eventlet.corolocal.get_ident()</div><div class="line">Returns id() of current greenlet. Useful <span class="keyword">for</span> debugging.</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">eventlet</span>.<span class="title">corolocal</span>.<span class="title">local</span></span></div></pre></td></tr></table></figure>
+<h6 id="debug-–-Debugging-tools-for-Eventlet"><a href="#debug-–-Debugging-tools-for-Eventlet" class="headerlink" title="debug – Debugging tools for Eventlet"></a>debug – Debugging tools for Eventlet</h6><h6 id="db-pool-–-DBAPI-2-database-connection-pooling"><a href="#db-pool-–-DBAPI-2-database-connection-pooling" class="headerlink" title="db_pool – DBAPI 2 database connection pooling"></a>db_pool – DBAPI 2 database connection pooling</h6><h6 id="event-–-Cross-greenthread-primitive"><a href="#event-–-Cross-greenthread-primitive" class="headerlink" title="event – Cross-greenthread primitive"></a>event – Cross-greenthread primitive</h6><p><code>class eventlet.event.Event</code> 是若干协程之间用来通信的事件。Event 类似 Queue，只保存一项数值作为传递的结果。但二者之间存在如下两点差异：</p>
+<ol>
+<li>调用 <code>send()</code> 方法时，当前协程不会马上被终止执行，只有当前线程执行完毕后，hub才会切换到其他线程。</li>
+<li><code>send()</code> 方法只能被调用一次；如果想再次send得再创建一个Event。</li>
+</ol>
+<p>Event事件是协程之间交互的手段，也是 <code>GreenThread.wait()</code> 实现的基础：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> eventlet <span class="keyword">import</span> event</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> eventlet</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>evt = event.Event()</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">baz</span><span class="params">(b)</span>:</span></div><div class="line"><span class="meta">... </span>    evt.send(b + <span class="number">1</span>)</div><div class="line">...</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>_ = eventlet.spawn_n(baz, <span class="number">3</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>evt.wait()</div><div class="line"><span class="number">4</span></div></pre></td></tr></table></figure>
+<p>Event类的主要方法</p>
+<ul>
+<li>ready()</li>
+</ul>
+<p>如果调用 wait() 方法马上返回时返回True。用来避免等待耗时过长的任务而超时。比如，使用一个列表保持多个事件，调用 ready() 方法反复地访问这些事件直到其中一个返回True，这时我们就可以 wait() 到这个事件上了。</p>
+<ul>
+<li>send(result=None, exc=None)</li>
+</ul>
+<p>根据 result 编排等待队列中的执行计划(顺序)，然后立即返回到父协程(hub)。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> eventlet <span class="keyword">import</span> event</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> eventlet</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>evt = event.Event()</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">waiter</span><span class="params">()</span>:</span></div><div class="line"><span class="meta">... </span>    print(<span class="string">'about to wait'</span>)</div><div class="line"><span class="meta">... </span>    result = evt.wait()</div><div class="line"><span class="meta">... </span>    print(<span class="string">'waited for &#123;0&#125;'</span>.format(result))</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>_ = eventlet.spawn(waiter)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>eventlet.sleep(<span class="number">0</span>)</div><div class="line">about to wait</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>evt.send(<span class="string">'a'</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>eventlet.sleep(<span class="number">0</span>)</div><div class="line">waited <span class="keyword">for</span> a</div></pre></td></tr></table></figure>
+<p>多次 send() 同一个Event事件会报错</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>evt.send(<span class="string">'whoops'</span>)</div><div class="line">Traceback (most recent call last):</div><div class="line">...</div><div class="line">AssertionError: Trying to re-send() an already-triggered event.</div></pre></td></tr></table></figure>
+<ul>
+<li>send_exception(*args)<br>与 send() 方法相同，只不过是向 waiters 发送异常</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> eventlet <span class="keyword">import</span> event</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>evt = event.Event()</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>evt.send_exception(RuntimeError())</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>evt.wait()</div><div class="line">Traceback (most recent call last):</div><div class="line">  File <span class="string">"&lt;stdin&gt;"</span>, line <span class="number">1</span>, <span class="keyword">in</span> &lt;module&gt;</div><div class="line">  File <span class="string">"eventlet/event.py"</span>, line <span class="number">120</span>, <span class="keyword">in</span> wait</div><div class="line">    current.throw(*self._exc)</div><div class="line">RuntimeError</div></pre></td></tr></table></figure>
+<ul>
+<li>wait()<br>等待，直到其他协程调用 send() 方法，返回其他协程调用 send() 方法传入的参数。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">from</span> eventlet <span class="keyword">import</span> event</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">import</span> eventlet</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>evt = event.Event()</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">wait_on</span><span class="params">()</span>:</span></div><div class="line"><span class="meta">... </span>   retval = evt.wait()</div><div class="line"><span class="meta">... </span>   print(<span class="string">"waited for &#123;0&#125;"</span>.format(retval))</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>_ = eventlet.spawn(wait_on)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>evt.send(<span class="string">'result'</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>eventlet.sleep(<span class="number">0</span>)</div><div class="line">waited <span class="keyword">for</span> result</div></pre></td></tr></table></figure>
+<p>当等待的事件已经发生时，马上返回</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>evt.wait()</div><div class="line"><span class="string">'result'</span></div></pre></td></tr></table></figure>
+<h6 id="greenpool-–-Green-Thread-Pools"><a href="#greenpool-–-Green-Thread-Pools" class="headerlink" title="greenpool – Green Thread Pools"></a>greenpool – Green Thread Pools</h6><p><code>class eventlet.greenpool.GreenPool(size=1000)</code></p>
+<ul>
+<li><p>free()<br>返回池中可用的协程的数目。如果数目为0或更少，下一个 spawn() 或者 spawn_n() 方法调用会将调用协程阻塞直到有一个协程变为可用。</p>
+</li>
+<li><p>imap(function, *iterables)<br>针对可迭代对象iterables中的每一项，调用function函数进行处理。</p>
+</li>
+</ul>
+<p>比如，该方法处理文件中的每一行特别方便</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">worker</span><span class="params">(line)</span>:</span></div><div class="line">    <span class="keyword">return</span> do_something(line)</div><div class="line">pool = GreenPool()</div><div class="line"><span class="keyword">for</span> result <span class="keyword">in</span> pool.imap(worker, open(<span class="string">"filename"</span>, <span class="string">'r'</span>)):</div><div class="line">    print(result)</div></pre></td></tr></table></figure>
+<ul>
+<li><p>resize(new_size)<br>在任何时间点更新协程池的最大可用数目。</p>
+</li>
+<li><p>running()<br>返回GreenPool中，当前正在执行functions的协程数目。</p>
+</li>
+</ul>
+<p>spawn(function, <em>args, *</em>kwargs)<br>启动一个新的协程，以参数args和kwargs运行function。返回值是运行function的GreenThread对象，从该对象可以获取function执行的返回值。如果GreenPool中协程数目达到最大值，spawn 会被阻塞执行，直到运行中的协程有一个完成运行并释放一个协程池slot。function是可再进入的，function中可以在相同的pool中再调用spawn方法，不必担心死锁。</p>
+<ul>
+<li><p>spawn_n(function, <em>args, *</em>kwargs)<br>和spawn一样，启动一个协程运行function。不同的是spawn_n没有返回值，也拿不到function执行的结果。</p>
+</li>
+<li><p>starmap(function, iterable)<br>This is the same as itertools.starmap() and imap(function, *iterables).</p>
+</li>
+<li><p>waitall()<br>Waits until all greenthreads in the pool are finished working.</p>
+</li>
+<li><p>waiting()<br>Return the number of greenthreads waiting to spawn.</p>
+</li>
+</ul>
+<h6 id="greenpool-–-Green-Thread-Pools-1"><a href="#greenpool-–-Green-Thread-Pools-1" class="headerlink" title="greenpool – Green Thread Pools"></a>greenpool – Green Thread Pools</h6><p><code>class eventlet.greenpool.GreenPile(size_or_pool=1000)</code></p>
+<p>GreenPile 是对若干IO相关任务的抽象描述。一个 GreenPile 是由一个已存在的 GreenPool 对象构成。一个 GreenPool 对象可以有多个相关联的 GreenPile。</p>
+<p>GreenPile 也可以单独创建，不与任何 GreenPool 对象有关，创建的时候传入整数值的size作为参数。</p>
+<ul>
+<li><p>next()<br>等待下一个结果，挂起当前协程直到available。当不再有结果返回时抛出异常 StopIteration。</p>
+</li>
+<li><p>spawn(func, <em>args, *</em>kw)<br>Runs func in its own green thread, with the result available by iterating over the GreenPile object.</p>
+</li>
+</ul>
+<h6 id="greenthread-–-Green-Thread-Implementation"><a href="#greenthread-–-Green-Thread-Implementation" class="headerlink" title="greenthread – Green Thread Implementation"></a><a href="http://eventlet.net/doc/modules/greenthread.html" target="_blank" rel="external">greenthread – Green Thread Implementation</a></h6><h6 id="class-eventlet-greenthread-GreenThread-parent"><a href="#class-eventlet-greenthread-GreenThread-parent" class="headerlink" title="class eventlet.greenthread.GreenThread(parent)"></a><a href="http://eventlet.net/doc/modules/greenthread.html" target="_blank" rel="external">class eventlet.greenthread.GreenThread(parent)</a></h6><h6 id="pools-Generic-pools-of-resources"><a href="#pools-Generic-pools-of-resources" class="headerlink" title="pools - Generic pools of resources"></a><a href="http://eventlet.net/doc/modules/pools.html" target="_blank" rel="external">pools - Generic pools of resources</a></h6><h6 id="queue-–-Queue-class"><a href="#queue-–-Queue-class" class="headerlink" title="queue – Queue class"></a><a href="http://eventlet.net/doc/modules/queue.html" target="_blank" rel="external">queue – Queue class</a></h6><h6 id="semaphore-–-Semaphore-classes"><a href="#semaphore-–-Semaphore-classes" class="headerlink" title="semaphore – Semaphore classes"></a><a href="http://eventlet.net/doc/modules/semaphore.html" target="_blank" rel="external">semaphore – Semaphore classes</a></h6><h6 id="timeout-–-Universal-Timeouts"><a href="#timeout-–-Universal-Timeouts" class="headerlink" title="timeout – Universal Timeouts"></a><a href="http://eventlet.net/doc/modules/timeout.html" target="_blank" rel="external">timeout – Universal Timeouts</a></h6><h6 id="websocket-–-Websocket-Server"><a href="#websocket-–-Websocket-Server" class="headerlink" title="websocket – Websocket Server"></a><a href="http://eventlet.net/doc/modules/websocket.html" target="_blank" rel="external">websocket – Websocket Server</a></h6><h6 id="wsgi-–-WSGI-server"><a href="#wsgi-–-WSGI-server" class="headerlink" title="wsgi – WSGI server"></a><a href="http://eventlet.net/doc/modules/wsgi.html" target="_blank" rel="external">wsgi – WSGI server</a></h6><h6 id="eventlet-green-zmq-–-OMQ-support"><a href="#eventlet-green-zmq-–-OMQ-support" class="headerlink" title="eventlet.green.zmq – ØMQ support"></a><a href="http://eventlet.net/doc/modules/zmq.html" target="_blank" rel="external">eventlet.green.zmq – ØMQ support</a></h6><h6 id="eventlet-green-zmq-–-OMQ-support-1"><a href="#eventlet-green-zmq-–-OMQ-support-1" class="headerlink" title="eventlet.green.zmq – ØMQ support"></a><a href="http://eventlet.net/doc/modules/zmq.html#zmq-the-pyzmq-omq-python-bindings" target="_blank" rel="external">eventlet.green.zmq – ØMQ support</a></h6><p>排版好乱，喵了个喵……</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/09/python-lambda/" rel="next" title="Python 匿名函数">
+                <i class="fa fa-chevron-left"></i> Python 匿名函数
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/24/eventlet-hub/" rel="prev" title="Eventlet(2) - Hub">
+                Eventlet(2) - Hub <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/08/23/eventlet-brief-introduction/"
+           data-title="Eventlet(1) - 简介" data-url="https://zhaoqqi.github.io/2016/08/23/eventlet-brief-introduction/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="赵琦" />
+          <p class="site-author-name" itemprop="name">赵琦</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">15</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#Eventlet是什么"><span class="nav-number">1.</span> <span class="nav-text">Eventlet是什么</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#重要概念"><span class="nav-number">2.</span> <span class="nav-text">重要概念</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#绿化补丁"><span class="nav-number">3.</span> <span class="nav-text">绿化补丁</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#主要的模块"><span class="nav-number">4.</span> <span class="nav-text">主要的模块</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#backdoor-–-Python-interactive-interpreter-within-a-running-process"><span class="nav-number">4.1.</span> <span class="nav-text">backdoor – Python interactive interpreter within a running process</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#corolocal-–-Coroutine-local-storage"><span class="nav-number">4.2.</span> <span class="nav-text">corolocal – Coroutine local storage</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#debug-–-Debugging-tools-for-Eventlet"><span class="nav-number">4.3.</span> <span class="nav-text">debug – Debugging tools for Eventlet</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#db-pool-–-DBAPI-2-database-connection-pooling"><span class="nav-number">4.4.</span> <span class="nav-text">db_pool – DBAPI 2 database connection pooling</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#event-–-Cross-greenthread-primitive"><span class="nav-number">4.5.</span> <span class="nav-text">event – Cross-greenthread primitive</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#greenpool-–-Green-Thread-Pools"><span class="nav-number">4.6.</span> <span class="nav-text">greenpool – Green Thread Pools</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#greenpool-–-Green-Thread-Pools-1"><span class="nav-number">4.7.</span> <span class="nav-text">greenpool – Green Thread Pools</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#greenthread-–-Green-Thread-Implementation"><span class="nav-number">4.8.</span> <span class="nav-text">greenthread – Green Thread Implementation</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#class-eventlet-greenthread-GreenThread-parent"><span class="nav-number">4.9.</span> <span class="nav-text">class eventlet.greenthread.GreenThread(parent)</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#pools-Generic-pools-of-resources"><span class="nav-number">4.10.</span> <span class="nav-text">pools - Generic pools of resources</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#queue-–-Queue-class"><span class="nav-number">4.11.</span> <span class="nav-text">queue – Queue class</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#semaphore-–-Semaphore-classes"><span class="nav-number">4.12.</span> <span class="nav-text">semaphore – Semaphore classes</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#timeout-–-Universal-Timeouts"><span class="nav-number">4.13.</span> <span class="nav-text">timeout – Universal Timeouts</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#websocket-–-Websocket-Server"><span class="nav-number">4.14.</span> <span class="nav-text">websocket – Websocket Server</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#wsgi-–-WSGI-server"><span class="nav-number">4.15.</span> <span class="nav-text">wsgi – WSGI server</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#eventlet-green-zmq-–-OMQ-support"><span class="nav-number">4.16.</span> <span class="nav-text">eventlet.green.zmq – ØMQ support</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#eventlet-green-zmq-–-OMQ-support-1"><span class="nav-number">4.17.</span> <span class="nav-text">eventlet.green.zmq – ØMQ support</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">赵琦</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"zhaoqqi"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

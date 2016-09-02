@@ -1,0 +1,658 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="OpenStack, Python, nova-api, Eventlet" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="How nova-api use eventlet.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Eventlet(4) - nova-api如何使用Eventlet">
+<meta property="og:url" content="https://zhaoqqi.github.io/2016/08/31/eventlet-nova-api/index.html">
+<meta property="og:site_name" content="奇趣">
+<meta property="og:description" content="How nova-api use eventlet.">
+<meta property="og:updated_time" content="2016-09-01T04:25:13.558Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Eventlet(4) - nova-api如何使用Eventlet">
+<meta name="twitter:description" content="How nova-api use eventlet.">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="https://zhaoqqi.github.io/2016/08/31/eventlet-nova-api/"/>
+
+  <title> Eventlet(4) - nova-api如何使用Eventlet | 奇趣 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?e5c4b3a25e9131a450c0498d670cabd3";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">奇趣</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">赵琦个人博客</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Eventlet(4) - nova-api如何使用Eventlet
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-08-31T00:00:00+08:00" content="2016-08-31">
+              2016-08-31
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/OpenStack/" itemprop="url" rel="index">
+                    <span itemprop="name">OpenStack</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/OpenStack/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/08/31/eventlet-nova-api/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/31/eventlet-nova-api/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="服务启动流程分析"><a href="#服务启动流程分析" class="headerlink" title="服务启动流程分析"></a>服务启动流程分析</h4><p>本文通过 nova-api 服务启动的代码执行流程，具体了解一下 nova-api 服务是如何使用 Eventlet 框架的。</p>
+<p>首先是 nova-api 的启动脚本</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    flags.parse_args(sys.argv)</div><div class="line">    logging.setup(<span class="string">"nova"</span>)</div><div class="line">    utils.monkey_patch()</div><div class="line"></div><div class="line">    <span class="comment"># 初始化一个 ProcessLauncher 实例</span></div><div class="line">    launcher = service.ProcessLauncher()</div><div class="line">    <span class="keyword">for</span> api <span class="keyword">in</span> flags.FLAGS.enabled_apis:</div><div class="line">        <span class="comment"># 初始化 wsgi service，server名称为 'osapi_compute'</span></div><div class="line">        server = service.WSGIService(api)</div><div class="line">        <span class="comment"># 启动 wsgi service中的 server</span></div><div class="line">        launcher.launch_server(server, workers=server.workers <span class="keyword">or</span> <span class="number">1</span>)</div><div class="line">    launcher.wait()</div></pre></td></tr></table></figure>
+<p>ProcessLauncher类和 WSGIService类的初始化方法如下。前者用来启动并管理 wsgi服务，后者用来从 api-paste.ini 的配置中启动 nova-api 服务。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ProcessLauncher</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">        self.children = &#123;&#125;</div><div class="line">        self.sigcaught = <span class="keyword">None</span></div><div class="line">        self.running = <span class="keyword">True</span></div><div class="line">        rfd, self.writepipe = os.pipe()</div><div class="line">        self.readpipe = eventlet.greenio.GreenPipe(rfd, <span class="string">'r'</span>)</div><div class="line"></div><div class="line">        signal.signal(signal.SIGTERM, self._handle_signal)</div><div class="line">        signal.signal(signal.SIGINT, self._handle_signal)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">launch_server</span><span class="params">(self, server, workers=<span class="number">1</span>)</span>:</span></div><div class="line">        wrap = ServerWrapper(server, workers)</div><div class="line"></div><div class="line">        LOG.info(_(<span class="string">'Starting %d workers'</span>), wrap.workers)</div><div class="line">        <span class="keyword">while</span> self.running <span class="keyword">and</span> len(wrap.children) &lt; wrap.workers:</div><div class="line">            self._start_child(wrap)</div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">WSGIService</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="string">"""Provides ability to launch API from a 'paste' configuration."""</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, name, loader=None)</span>:</span></div><div class="line">        <span class="string">"""Initialize, but do not start the WSGI server.</span></div><div class="line"></div><div class="line">        :param name: The name of the WSGI server given to the loader.</div><div class="line">        :param loader: Loads the WSGI application using the given name.</div><div class="line">        :returns: None</div><div class="line"></div><div class="line">        """</div><div class="line">        self.name = name</div><div class="line">        self.manager = self._get_manager()</div><div class="line">        self.loader = loader <span class="keyword">or</span> wsgi.Loader()</div><div class="line">        self.app = self.loader.load_app(name)</div><div class="line">        self.host = getattr(FLAGS, <span class="string">'%s_listen'</span> % name, <span class="string">"0.0.0.0"</span>)</div><div class="line">        self.port = getattr(FLAGS, <span class="string">'%s_listen_port'</span> % name, <span class="number">0</span>)</div><div class="line">        self.workers = getattr(FLAGS, <span class="string">'%s_workers'</span> % name, <span class="keyword">None</span>)</div><div class="line">        self.server = wsgi.Server(name,</div><div class="line">                                  self.app,</div><div class="line">                                  host=self.host,</div><div class="line">                                  port=self.port)</div><div class="line">        <span class="comment"># Pull back actual port used</span></div><div class="line">        self.port = self.server.port</div></pre></td></tr></table></figure>
+<p><code>launcher.launch_server(server, workers=server.workers or 1)</code> 真正开始启动 nova-api 服务线程。<code>self._start_child()</code> 方法启动一个子进程，子进程调用 <code>self._child_process()</code> 方法，实例化一个 Launcher 对象来启动真正的 nova-api server服务。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ProcessLauncher</span><span class="params">(object)</span>:</span></div><div class="line">    </div><div class="line">    ......</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">launch_server</span><span class="params">(self, server, workers=<span class="number">1</span>)</span>:</span></div><div class="line">        wrap = ServerWrapper(server, workers)</div><div class="line"></div><div class="line">        LOG.info(_(<span class="string">'Starting %d workers'</span>), wrap.workers)</div><div class="line">        <span class="keyword">while</span> self.running <span class="keyword">and</span> len(wrap.children) &lt; wrap.workers:</div><div class="line">            self._start_child(wrap)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_start_child</span><span class="params">(self, wrap)</span>:</span></div><div class="line">        <span class="keyword">if</span> len(wrap.forktimes) &gt; wrap.workers:</div><div class="line">            <span class="comment"># Limit ourselves to one process a second (over the period of</span></div><div class="line">            <span class="comment"># number of workers * 1 second). This will allow workers to</span></div><div class="line">            <span class="comment"># start up quickly but ensure we don't fork off children that</span></div><div class="line">            <span class="comment"># die instantly too quickly.</span></div><div class="line">            <span class="keyword">if</span> time.time() - wrap.forktimes[<span class="number">0</span>] &lt; wrap.workers:</div><div class="line">                LOG.info(_(<span class="string">'Forking too fast, sleeping'</span>))</div><div class="line">                time.sleep(<span class="number">1</span>)</div><div class="line"></div><div class="line">            wrap.forktimes.pop(<span class="number">0</span>)</div><div class="line"></div><div class="line">        wrap.forktimes.append(time.time())</div><div class="line"></div><div class="line">        pid = os.fork()</div><div class="line">        <span class="keyword">if</span> pid == <span class="number">0</span>:</div><div class="line">            <span class="comment"># NOTE(johannes): All exceptions are caught to ensure this</span></div><div class="line">            <span class="comment"># doesn't fallback into the loop spawning children. It would</span></div><div class="line">            <span class="comment"># be bad for a child to spawn more children.</span></div><div class="line">            status = <span class="number">0</span></div><div class="line">            <span class="keyword">try</span>:</div><div class="line">                self._child_process(wrap.server)</div><div class="line">            <span class="keyword">except</span> SignalExit <span class="keyword">as</span> exc:</div><div class="line">                signame = &#123;signal.SIGTERM: <span class="string">'SIGTERM'</span>,</div><div class="line">                           signal.SIGINT: <span class="string">'SIGINT'</span>&#125;[exc.signo]</div><div class="line">                LOG.info(_(<span class="string">'Caught %s, exiting'</span>), signame)</div><div class="line">                status = exc.code</div><div class="line">            <span class="keyword">except</span> SystemExit <span class="keyword">as</span> exc:</div><div class="line">                status = exc.code</div><div class="line">            <span class="keyword">except</span> BaseException:</div><div class="line">                LOG.exception(_(<span class="string">'Unhandled exception'</span>))</div><div class="line">                status = <span class="number">2</span></div><div class="line">            <span class="keyword">finally</span>:</div><div class="line">                wrap.server.stop()</div><div class="line"></div><div class="line">            os._exit(status)</div><div class="line"></div><div class="line">        LOG.info(_(<span class="string">'Started child %d'</span>), pid)</div><div class="line"></div><div class="line">        wrap.children.add(pid)</div><div class="line">        self.children[pid] = wrap</div><div class="line"></div><div class="line">        <span class="keyword">return</span> pid</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">_child_process</span><span class="params">(self, server)</span>:</span></div><div class="line">        <span class="comment"># Setup child signal handlers differently</span></div><div class="line">        <span class="function"><span class="keyword">def</span> <span class="title">_sigterm</span><span class="params">(*args)</span>:</span></div><div class="line">            signal.signal(signal.SIGTERM, signal.SIG_DFL)</div><div class="line">            <span class="keyword">raise</span> SignalExit(signal.SIGTERM)</div><div class="line"></div><div class="line">        signal.signal(signal.SIGTERM, _sigterm)</div><div class="line">        <span class="comment"># Block SIGINT and let the parent send us a SIGTERM</span></div><div class="line">        signal.signal(signal.SIGINT, signal.SIG_IGN)</div><div class="line"></div><div class="line">        <span class="comment"># Reopen the eventlet hub to make sure we don't share an epoll</span></div><div class="line">        <span class="comment"># fd with parent and/or siblings, which would be bad</span></div><div class="line">        eventlet.hubs.use_hub()</div><div class="line"></div><div class="line">        <span class="comment"># Close write to ensure only parent has it open</span></div><div class="line">        os.close(self.writepipe)</div><div class="line">        <span class="comment"># Create greenthread to watch for parent to close pipe</span></div><div class="line">        eventlet.spawn(self._pipe_watcher)</div><div class="line"></div><div class="line">        <span class="comment"># Reseed random number generator</span></div><div class="line">        random.seed()</div><div class="line"></div><div class="line">        launcher = Launcher()</div><div class="line">        launcher.run_server(server)</div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Launcher</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="string">"""Launch one or more services and wait for them to complete."""</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""Initialize the service launcher.</span></div><div class="line"></div><div class="line">        :returns: None</div><div class="line"></div><div class="line">        """</div><div class="line">        self._services = []</div><div class="line">        eventlet_backdoor.initialize_if_enabled()</div><div class="line"></div><div class="line"><span class="meta">    @staticmethod</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run_server</span><span class="params">(server)</span>:</span></div><div class="line">        <span class="string">"""Start and wait for a server to finish.</span></div><div class="line"></div><div class="line">        :param service: Server to run and wait for.</div><div class="line">        :returns: None</div><div class="line"></div><div class="line">        """</div><div class="line">        server.start()</div><div class="line">        server.wait()</div></pre></td></tr></table></figure>
+<p>Launcher 的 <code>run_server()</code> 方法中的 <code>server.start()</code> 中的 server 为 nova.wsgi.Server。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Server</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="string">"""Server class to manage a WSGI server, serving a WSGI application."""</span></div><div class="line"></div><div class="line">    default_pool_size = <span class="number">1000</span></div><div class="line"></div><div class="line">    <span class="string">"""init方法初始化wgsi application名称，socket监听的host和port，协议，并初始化</span></div><div class="line">    一个socket服务 _socket。</div><div class="line">    """</div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, name, app, host=<span class="string">'0.0.0.0'</span>, port=<span class="number">0</span>, pool_size=None,</span></span></div><div class="line">                       protocol=eventlet.wsgi.HttpProtocol, backlog=<span class="number">128</span>):</div><div class="line">        <span class="string">"""Initialize, but do not start, a WSGI server.</span></div><div class="line"></div><div class="line">        :param name: Pretty name for logging.</div><div class="line">        :param app: The WSGI application to serve.</div><div class="line">        :param host: IP address to serve the application.</div><div class="line">        :param port: Port number to server the application.</div><div class="line">        :param pool_size: Maximum number of eventlets to spawn concurrently.</div><div class="line">        :param backlog: Maximum number of queued connections.</div><div class="line">        :returns: None</div><div class="line">        :raises: nova.exception.InvalidInput</div><div class="line">        """</div><div class="line">        self.name = name</div><div class="line">        self.app = app</div><div class="line">        self._server = <span class="keyword">None</span></div><div class="line">        self._protocol = protocol</div><div class="line">        self._pool = eventlet.GreenPool(pool_size <span class="keyword">or</span> self.default_pool_size)</div><div class="line">        self._logger = logging.getLogger(<span class="string">"nova.%s.wsgi.server"</span> % self.name)</div><div class="line">        self._wsgi_logger = logging.WritableLogger(self._logger)</div><div class="line"></div><div class="line">        <span class="keyword">if</span> backlog &lt; <span class="number">1</span>:</div><div class="line">            <span class="keyword">raise</span> exception.InvalidInput(</div><div class="line">                    reason=<span class="string">'The backlog must be more than 1'</span>)</div><div class="line"></div><div class="line">        self._socket = eventlet.listen((host, port), backlog=backlog)</div><div class="line">        (self.host, self.port) = self._socket.getsockname()</div><div class="line">        LOG.info(_(<span class="string">"%(name)s listening on %(host)s:%(port)s"</span>) % self.__dict__)</div><div class="line"></div><div class="line">    <span class="string">"""调用eventlet的spawn方法，启动一个绿色线程来处理连接到_socket的http请求。</span></div><div class="line">    """</div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">start</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""Start serving a WSGI application.</span></div><div class="line"></div><div class="line">        :returns: None</div><div class="line">        """</div><div class="line">        self._server = eventlet.spawn(eventlet.wsgi.server,</div><div class="line">                                      self._socket,</div><div class="line">                                      self.app,</div><div class="line">                                      protocol=self._protocol,</div><div class="line">                                      custom_pool=self._pool,</div><div class="line">                                      log=self._wsgi_logger)</div></pre></td></tr></table></figure>
+<p>接下来我们看下 <code>eventlet.spawn()</code> 方法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># eventlet/greenthread.py</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">spawn</span><span class="params">(func, *args, **kwargs)</span>:</span></div><div class="line">    <span class="string">"""Create a greenthread to run ``func(*args, **kwargs)``.  Returns a</span></div><div class="line">    :class:`GreenThread` object which you can use to get the results of the</div><div class="line">    call.</div><div class="line"></div><div class="line">    Execution control returns immediately to the caller; the created greenthread</div><div class="line">    is merely scheduled to be run at the next available opportunity.</div><div class="line">    Use :func:`spawn_after` to  arrange for greenthreads to be spawned</div><div class="line">    after a finite delay.</div><div class="line">    """</div><div class="line">    hub = hubs.get_hub()</div><div class="line">    g = GreenThread(hub.greenlet)</div><div class="line">    hub.schedule_call_global(<span class="number">0</span>, g.switch, func, args, kwargs)</div><div class="line">    <span class="keyword">return</span> g</div></pre></td></tr></table></figure>
+<p>首先获取全局单例对象 hub，以 hub.greenlet 为父亲线程创建一个绿色线程 g。将绿色线程 g 放入 hub 的待调度执行队列中。方法最后返回绿色线程对象 g。</p>
+<p>再看下绿色线程 g(eventlet.wsgi.server()方法) 的内容：使用传入参数初始化一个 Server 对象，以及一个 GreenPool 对象。传入的sock阻塞accept循环等待客户端连接，每次有客户端连接，绿色线程池都分配一个绿色线程处理这个连接的请求。该绿色线程传入的执行方法为 <code>pool.spawn_n(serv.process_request, client_socket)</code> 。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div><div class="line">185</div><div class="line">186</div><div class="line">187</div><div class="line">188</div><div class="line">189</div><div class="line">190</div><div class="line">191</div><div class="line">192</div><div class="line">193</div><div class="line">194</div><div class="line">195</div><div class="line">196</div><div class="line">197</div><div class="line">198</div><div class="line">199</div><div class="line">200</div><div class="line">201</div><div class="line">202</div><div class="line">203</div><div class="line">204</div><div class="line">205</div><div class="line">206</div><div class="line">207</div><div class="line">208</div><div class="line">209</div><div class="line">210</div><div class="line">211</div><div class="line">212</div><div class="line">213</div><div class="line">214</div><div class="line">215</div><div class="line">216</div><div class="line">217</div><div class="line">218</div><div class="line">219</div><div class="line">220</div><div class="line">221</div><div class="line">222</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># eventlet/wsgi.py</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">server</span><span class="params">(sock, site,</span></span></div><div class="line">           log=None,</div><div class="line">           environ=None,</div><div class="line">           max_size=None,</div><div class="line">           max_http_version=DEFAULT_MAX_HTTP_VERSION,</div><div class="line">           protocol=HttpProtocol,</div><div class="line">           server_event=None,</div><div class="line">           minimum_chunk_size=None,</div><div class="line">           log_x_forwarded_for=True,</div><div class="line">           custom_pool=None,</div><div class="line">           keepalive=True,</div><div class="line">           log_output=True,</div><div class="line">           log_format=DEFAULT_LOG_FORMAT,</div><div class="line">           url_length_limit=MAX_REQUEST_LINE,</div><div class="line">           debug=True,</div><div class="line">           socket_timeout=None,</div><div class="line">           capitalize_response_headers=True):</div><div class="line">    <span class="string">"""Start up a WSGI server handling requests from the supplied server</span></div><div class="line">    socket.  This function loops forever.  The *sock* object will be</div><div class="line">    closed after server exits, but the underlying file descriptor will</div><div class="line">    remain open, so if you have a dup() of *sock*, it will remain usable.</div><div class="line"></div><div class="line">    .. warning::</div><div class="line"></div><div class="line">        At the moment :func:`server` will always wait for active connections to finish before</div><div class="line">        exiting, even if there's an exception raised inside it</div><div class="line">        (*all* exceptions are handled the same way, including :class:`greenlet.GreenletExit`</div><div class="line">        and those inheriting from `BaseException`).</div><div class="line"></div><div class="line">        While this may not be an issue normally, when it comes to long running HTTP connections</div><div class="line">        (like :mod:`eventlet.websocket`) it will become problematic and calling</div><div class="line">        :meth:`~eventlet.greenthread.GreenThread.wait` on a thread that runs the server may hang,</div><div class="line">        even after using :meth:`~eventlet.greenthread.GreenThread.kill`, as long</div><div class="line">        as there are active connections.</div><div class="line"></div><div class="line">    :param sock: Server socket, must be already bound to a port and listening.</div><div class="line">    :param site: WSGI application function.</div><div class="line">    :param log: logging.Logger instance or file-like object that logs should be written to.</div><div class="line">                If a Logger instance is supplied, messages are sent to the INFO log level.</div><div class="line">                If not specified, sys.stderr is used.</div><div class="line">    :param environ: Additional parameters that go into the environ dictionary of every request.</div><div class="line">    :param max_size: Maximum number of client connections opened at any time by this server.</div><div class="line">                Default is 1024.</div><div class="line">    :param max_http_version: Set to "HTTP/1.0" to make the server pretend it only supports HTTP 1.0.</div><div class="line">                This can help with applications or clients that don't behave properly using HTTP 1.1.</div><div class="line">    :param protocol: Protocol class.  Deprecated.</div><div class="line">    :param server_event: Used to collect the Server object.  Deprecated.</div><div class="line">    :param minimum_chunk_size: Minimum size in bytes for http chunks.  This can be used to improve</div><div class="line">                performance of applications which yield many small strings, though</div><div class="line">                using it technically violates the WSGI spec. This can be overridden</div><div class="line">                on a per request basis by setting environ['eventlet.minimum_write_chunk_size'].</div><div class="line">    :param log_x_forwarded_for: If True (the default), logs the contents of the x-forwarded-for</div><div class="line">                header in addition to the actual client ip address in the 'client_ip' field of the</div><div class="line">                log line.</div><div class="line">    :param custom_pool: A custom GreenPool instance which is used to spawn client green threads.</div><div class="line">                If this is supplied, max_size is ignored.</div><div class="line">    :param keepalive: If set to False, disables keepalives on the server; all connections will be</div><div class="line">                closed after serving one request.</div><div class="line">    :param log_output: A Boolean indicating if the server will log data or not.</div><div class="line">    :param log_format: A python format string that is used as the template to generate log lines.</div><div class="line">                The following values can be formatted into it: client_ip, date_time, request_line,</div><div class="line">                status_code, body_length, wall_seconds.  The default is a good example of how to</div><div class="line">                use it.</div><div class="line">    :param url_length_limit: A maximum allowed length of the request url. If exceeded, 414 error</div><div class="line">                is returned.</div><div class="line">    :param debug: True if the server should send exception tracebacks to the clients on 500 errors.</div><div class="line">                If False, the server will respond with empty bodies.</div><div class="line">    :param socket_timeout: Timeout for client connections' socket operations. Default None means</div><div class="line">                wait forever.</div><div class="line">    :param capitalize_response_headers: Normalize response headers' names to Foo-Bar.</div><div class="line">                Default is True.</div><div class="line">    """</div><div class="line">    serv = Server(sock, sock.getsockname(),</div><div class="line">                  site, log,</div><div class="line">                  environ=environ,</div><div class="line">                  max_http_version=max_http_version,</div><div class="line">                  protocol=protocol,</div><div class="line">                  minimum_chunk_size=minimum_chunk_size,</div><div class="line">                  log_x_forwarded_for=log_x_forwarded_for,</div><div class="line">                  keepalive=keepalive,</div><div class="line">                  log_output=log_output,</div><div class="line">                  log_format=log_format,</div><div class="line">                  url_length_limit=url_length_limit,</div><div class="line">                  debug=debug,</div><div class="line">                  socket_timeout=socket_timeout,</div><div class="line">                  capitalize_response_headers=capitalize_response_headers,</div><div class="line">                  )</div><div class="line">    <span class="keyword">if</span> server_event <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</div><div class="line">        server_event.send(serv)</div><div class="line">    <span class="keyword">if</span> max_size <span class="keyword">is</span> <span class="keyword">None</span>:</div><div class="line">        max_size = DEFAULT_MAX_SIMULTANEOUS_REQUESTS</div><div class="line">    <span class="keyword">if</span> custom_pool <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</div><div class="line">        pool = custom_pool</div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        pool = greenpool.GreenPool(max_size)</div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        serv.log.info(<span class="string">"(%s) wsgi starting up on %s"</span> % (</div><div class="line">            serv.pid, socket_repr(sock)))</div><div class="line">        <span class="keyword">while</span> is_accepting:</div><div class="line">            <span class="keyword">try</span>:</div><div class="line">                client_socket = sock.accept()</div><div class="line">                client_socket[<span class="number">0</span>].settimeout(serv.socket_timeout)</div><div class="line">                serv.log.debug(<span class="string">"(%s) accepted %r"</span> % (</div><div class="line">                    serv.pid, client_socket[<span class="number">1</span>]))</div><div class="line">                <span class="keyword">try</span>:</div><div class="line">                    pool.spawn_n(serv.process_request, client_socket)</div><div class="line">                <span class="keyword">except</span> AttributeError:</div><div class="line">                    warnings.warn(<span class="string">"wsgi's pool should be an instance of "</span></div><div class="line">                                  <span class="string">"eventlet.greenpool.GreenPool, is %s. Please convert your"</span></div><div class="line">                                  <span class="string">" call site to use GreenPool instead"</span> % type(pool),</div><div class="line">                                  DeprecationWarning, stacklevel=<span class="number">2</span>)</div><div class="line">                    pool.execute_async(serv.process_request, client_socket)</div><div class="line">            <span class="keyword">except</span> ACCEPT_EXCEPTIONS <span class="keyword">as</span> e:</div><div class="line">                <span class="keyword">if</span> support.get_errno(e) <span class="keyword">not</span> <span class="keyword">in</span> ACCEPT_ERRNO:</div><div class="line">                    <span class="keyword">raise</span></div><div class="line">            <span class="keyword">except</span> (KeyboardInterrupt, SystemExit):</div><div class="line">                serv.log.info(<span class="string">"wsgi exiting"</span>)</div><div class="line">                <span class="keyword">break</span></div><div class="line">    <span class="keyword">finally</span>:</div><div class="line">        pool.waitall()</div><div class="line">        serv.log.info(<span class="string">"(%s) wsgi exited, is_accepting=%s"</span> % (</div><div class="line">            serv.pid, is_accepting))</div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            <span class="comment"># <span class="doctag">NOTE:</span> It's not clear whether we want this to leave the</span></div><div class="line">            <span class="comment"># socket open or close it.  Use cases like Spawning want</span></div><div class="line">            <span class="comment"># the underlying fd to remain open, but if we're going</span></div><div class="line">            <span class="comment"># that far we might as well not bother closing sock at</span></div><div class="line">            <span class="comment"># all.</span></div><div class="line">            sock.close()</div><div class="line">        <span class="keyword">except</span> socket.error <span class="keyword">as</span> e:</div><div class="line">            <span class="keyword">if</span> support.get_errno(e) <span class="keyword">not</span> <span class="keyword">in</span> BROKEN_SOCK:</div><div class="line">                traceback.print_exc()</div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Server</span><span class="params">(BaseHTTPServer.HTTPServer)</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self,</span></span></div><div class="line">                 socket,</div><div class="line">                 address,</div><div class="line">                 app,</div><div class="line">                 log=None,</div><div class="line">                 environ=None,</div><div class="line">                 max_http_version=None,</div><div class="line">                 protocol=HttpProtocol,</div><div class="line">                 minimum_chunk_size=None,</div><div class="line">                 log_x_forwarded_for=True,</div><div class="line">                 keepalive=True,</div><div class="line">                 log_output=True,</div><div class="line">                 log_format=DEFAULT_LOG_FORMAT,</div><div class="line">                 url_length_limit=MAX_REQUEST_LINE,</div><div class="line">                 debug=True,</div><div class="line">                 socket_timeout=None,</div><div class="line">                 capitalize_response_headers=True):</div><div class="line"></div><div class="line">        self.outstanding_requests = <span class="number">0</span></div><div class="line">        self.socket = socket</div><div class="line">        self.address = address</div><div class="line">        <span class="keyword">if</span> log:</div><div class="line">            self.log = get_logger(log, debug)</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            self.log = get_logger(sys.stderr, debug)</div><div class="line">        self.app = app</div><div class="line">        self.keepalive = keepalive</div><div class="line">        self.environ = environ</div><div class="line">        self.max_http_version = max_http_version</div><div class="line">        self.protocol = protocol</div><div class="line">        self.pid = os.getpid()</div><div class="line">        self.minimum_chunk_size = minimum_chunk_size</div><div class="line">        self.log_x_forwarded_for = log_x_forwarded_for</div><div class="line">        self.log_output = log_output</div><div class="line">        self.log_format = log_format</div><div class="line">        self.url_length_limit = url_length_limit</div><div class="line">        self.debug = debug</div><div class="line">        self.socket_timeout = socket_timeout</div><div class="line">        self.capitalize_response_headers = capitalize_response_headers</div><div class="line"></div><div class="line">        <span class="keyword">if</span> <span class="keyword">not</span> self.capitalize_response_headers:</div><div class="line">            warnings.warn(<span class="string">"""capitalize_response_headers is disabled.</span></div><div class="line"> Please, make sure you know what you are doing.</div><div class="line"> HTTP headers names are case-insensitive per RFC standard.</div><div class="line"> Most likely, you need to fix HTTP parsing in your client software.""",</div><div class="line">                          DeprecationWarning, stacklevel=<span class="number">3</span>)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_environ</span><span class="params">(self)</span>:</span></div><div class="line">        d = &#123;</div><div class="line">            <span class="string">'wsgi.errors'</span>: sys.stderr,</div><div class="line">            <span class="string">'wsgi.version'</span>: (<span class="number">1</span>, <span class="number">0</span>),</div><div class="line">            <span class="string">'wsgi.multithread'</span>: <span class="keyword">True</span>,</div><div class="line">            <span class="string">'wsgi.multiprocess'</span>: <span class="keyword">False</span>,</div><div class="line">            <span class="string">'wsgi.run_once'</span>: <span class="keyword">False</span>,</div><div class="line">            <span class="string">'wsgi.url_scheme'</span>: <span class="string">'http'</span>,</div><div class="line">        &#125;</div><div class="line">        <span class="comment"># detect secure socket</span></div><div class="line">        <span class="keyword">if</span> hasattr(self.socket, <span class="string">'do_handshake'</span>):</div><div class="line">            d[<span class="string">'wsgi.url_scheme'</span>] = <span class="string">'https'</span></div><div class="line">            d[<span class="string">'HTTPS'</span>] = <span class="string">'on'</span></div><div class="line">        <span class="keyword">if</span> self.environ <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</div><div class="line">            d.update(self.environ)</div><div class="line">        <span class="keyword">return</span> d</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">process_request</span><span class="params">(self, sock_params)</span>:</span></div><div class="line">        <span class="comment"># The actual request handling takes place in __init__, so we need to</span></div><div class="line">        <span class="comment"># set minimum_chunk_size before __init__ executes and we don't want to modify</span></div><div class="line">        <span class="comment"># class variable</span></div><div class="line">        sock, address = sock_params</div><div class="line">        proto = new(self.protocol)</div><div class="line">        <span class="keyword">if</span> self.minimum_chunk_size <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</div><div class="line">            proto.minimum_chunk_size = self.minimum_chunk_size</div><div class="line">        proto.capitalize_response_headers = self.capitalize_response_headers</div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            proto.__init__(sock, address, self)</div><div class="line">        <span class="keyword">except</span> socket.timeout:</div><div class="line">            <span class="comment"># Expected exceptions are not exceptional</span></div><div class="line">            sock.close()</div><div class="line">            <span class="comment"># similar to logging "accepted" in server()</span></div><div class="line">            self.log.debug(<span class="string">'(%s) timed out %r'</span> % (self.pid, address))</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">log_message</span><span class="params">(self, message)</span>:</span></div><div class="line">        warnings.warn(<span class="string">'server.log_message is deprecated.  Please use server.log.info instead'</span>)</div><div class="line">        self.log.info(message)</div></pre></td></tr></table></figure>
+<p>每当一个绿色线程的任务执行完成，或者因为IO操作被挂起，绿色线程的执行权就被 switch 到绿色线程池 pool 中所有绿色线程的父亲线程 <code>g.greenlet</code> 来执行。<code>g.greenlet</code> 即是 hub 对象初始化时指定的 <code>greenlet.greenlet(self.run)</code>，即是Hub对象中的 <code>self.run()</code> 方法。该方法作为调度中心，指定下一个该由哪个绿色线程开始执行。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># eventlet/hubs/hub.py</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">BaseHub</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="string">""" Base hub class for easing the implementation of subclasses that are</span></div><div class="line">    specific to a particular underlying event architecture. """</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self, *a, **kw)</span>:</span></div><div class="line">            <span class="string">"""Run the runloop until abort is called.</span></div><div class="line">            """</div><div class="line">            <span class="comment"># accept and discard variable arguments because they will be</span></div><div class="line">            <span class="comment"># supplied if other greenlets have run and exited before the</span></div><div class="line">            <span class="comment"># hub's greenlet gets a chance to run</span></div><div class="line">            <span class="keyword">if</span> self.running:</div><div class="line">                <span class="keyword">raise</span> RuntimeError(<span class="string">"Already running!"</span>)</div><div class="line">            <span class="keyword">try</span>:</div><div class="line">                self.running = <span class="keyword">True</span></div><div class="line">                self.stopping = <span class="keyword">False</span></div><div class="line">                <span class="keyword">while</span> <span class="keyword">not</span> self.stopping:</div><div class="line">                    <span class="keyword">while</span> self.closed:</div><div class="line">                        <span class="comment"># We ditch all of these first.</span></div><div class="line">                        self.close_one()</div><div class="line">                    self.prepare_timers()</div><div class="line">                    <span class="keyword">if</span> self.debug_blocking:</div><div class="line">                        self.block_detect_pre()</div><div class="line">                    self.fire_timers(self.clock())</div><div class="line">                    <span class="keyword">if</span> self.debug_blocking:</div><div class="line">                        self.block_detect_post()</div><div class="line">                    self.prepare_timers()</div><div class="line">                    wakeup_when = self.sleep_until()</div><div class="line">                    <span class="keyword">if</span> wakeup_when <span class="keyword">is</span> <span class="keyword">None</span>:</div><div class="line">                        sleep_time = self.default_sleep()</div><div class="line">                    <span class="keyword">else</span>:</div><div class="line">                        sleep_time = wakeup_when - self.clock()</div><div class="line">                    <span class="keyword">if</span> sleep_time &gt; <span class="number">0</span>:</div><div class="line">                        self.wait(sleep_time)</div><div class="line">                    <span class="keyword">else</span>:</div><div class="line">                        self.wait(<span class="number">0</span>)</div><div class="line">                <span class="keyword">else</span>:</div><div class="line">                    self.timers_canceled = <span class="number">0</span></div><div class="line">                    <span class="keyword">del</span> self.timers[:]</div><div class="line">                    <span class="keyword">del</span> self.next_timers[:]</div><div class="line">            <span class="keyword">finally</span>:</div><div class="line">                self.running = <span class="keyword">False</span></div><div class="line">                self.stopping = <span class="keyword">False</span></div></pre></td></tr></table></figure>
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p>nova-api 启动服务时，会根据 nova.conf 中配置的 workers 数量启动指定数量的子进程。每个子进程初始化一个以 hub 对象的self.greenlet为父亲线程的绿色线程池，以及一个监听 nova-api服务器和指定端口号的 socket 服务。每当有客户端请求该socket服务，绿色线程池都会生成一个绿色线程处理该请求。当有多个请求到达时，同一时间只有一个绿色线程处于工作状态，其他绿色线程等待。当工作的绿色线程完成工作或者被IO任务阻塞时，线程的执行被切换到绿色线程池中所有绿色线程的父亲线程，即 hub 对象的self.greenlet执行 (即hub对象的self.run()方法)。父亲线程会根据其他绿色线程的就绪状态，选择出接下来可以执行的绿色线程，并切换到该绿色线程执行。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/25/eventlet-greenlet/" rel="next" title="Eventlet(3) - greenlet">
+                <i class="fa fa-chevron-left"></i> Eventlet(3) - greenlet
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/08/31/eventlet-nova-api/"
+           data-title="Eventlet(4) - nova-api如何使用Eventlet" data-url="https://zhaoqqi.github.io/2016/08/31/eventlet-nova-api/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="赵琦" />
+          <p class="site-author-name" itemprop="name">赵琦</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">15</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#服务启动流程分析"><span class="nav-number">1.</span> <span class="nav-text">服务启动流程分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小结"><span class="nav-number">2.</span> <span class="nav-text">小结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">赵琦</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"zhaoqqi"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

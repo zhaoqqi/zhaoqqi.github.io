@@ -1,0 +1,672 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="OpenStack, Python, hub" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="Eventlet hub.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Eventlet(2) - Hub">
+<meta property="og:url" content="https://zhaoqqi.github.io/2016/08/24/eventlet-hub/index.html">
+<meta property="og:site_name" content="奇趣">
+<meta property="og:description" content="Eventlet hub.">
+<meta property="og:updated_time" content="2016-08-25T02:53:17.751Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Eventlet(2) - Hub">
+<meta name="twitter:description" content="Eventlet hub.">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="https://zhaoqqi.github.io/2016/08/24/eventlet-hub/"/>
+
+  <title> Eventlet(2) - Hub | 奇趣 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?e5c4b3a25e9131a450c0498d670cabd3";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">奇趣</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">赵琦个人博客</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Eventlet(2) - Hub
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-08-24T00:00:00+08:00" content="2016-08-24">
+              2016-08-24
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/OpenStack/" itemprop="url" rel="index">
+                    <span itemprop="name">OpenStack</span>
+                  </a>
+                </span>
+
+                
+                
+                  ， 
+                
+
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/OpenStack/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/08/24/eventlet-hub/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/24/eventlet-hub/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="Eventlet-Hub"><a href="#Eventlet-Hub" class="headerlink" title="Eventlet Hub"></a>Eventlet Hub</h4><p>Eventlet 实现了多种类型的 Hub，在实际使用时，Eventlet 会根据系统运行环境选择最适合的一种实现方式。Eventlet 目前支持以下4种 Hub。</p>
+<ul>
+<li>epolls - 需要在 Linux 环境下，Python 2.6 或者 <code>python-poll</code> 包。它是处理速度最快的纯 Python Hub。</li>
+<li>poll - 需要在支持 poll 的平台上选择使用</li>
+<li>selects - 效率最低，适合任何平台。</li>
+<li>pyevent - 基于 libevent，效率最高。因为它不支持线程，所以默认不生效。</li>
+</ul>
+<p>Hub 是 greenthread 执行IO任务的调度中心。greenthread 被创建出来后，被添加到 Hub 的 Timer 待调度列表中。在 Hub 的 MAINLOOP 检测到某 greenthread 有IO任务就绪时，切换到该 greenthread 执行其 function 方法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> eventlet</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">test</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">print</span> <span class="string">'Hello Eventlet.'</span></div><div class="line"></div><div class="line">eventlet.spawn(test)</div><div class="line">eventlet.sleep(<span class="number">0</span>)</div></pre></td></tr></table></figure>
+<p>运行结果：执行<code>sleep()</code>后，立即打印 <code>Hello Eventlet.</code></p>
+<p><code>eventlet.spawn(test)</code> 创建了一个 greenthread，执行任务 test。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># eventlet/greenthread.py</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">spawn</span><span class="params">(func, *args, **kwargs)</span>:</span></div><div class="line">    hub = hubs.get_hub()</div><div class="line">    g = GreenThread(hub.greenlet)</div><div class="line">    hub.schedule_call_global(<span class="number">0</span>, g.switch, func, args, kwargs)</div><div class="line">    <span class="keyword">return</span> g</div></pre></td></tr></table></figure>
+<p><code>hubs.get_hub()</code>获得线程内全局单例 hub 对象，使用<code>hub.greenlet</code>作为父协程创建 greenthread g， hub.greenlet=greenlet.greenlet(self.run)。<code>hub.schedule_call_global()</code>方法在 Hub 中注册<code>func</code>方法，<code>g.switch</code>切换到 greenthread g 的 <code>main()</code>方法执行。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># eventlet/hubs/hub.py</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">BaseHub</span><span class="params">(object)</span>:</span></div><div class="line">    ......</div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, clock=time.time)</span>:</span></div><div class="line">        ......</div><div class="line">        self.greenlet = greenlet.greenlet(self.run)</div><div class="line">        ......</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">schedule_call_global</span><span class="params">(self, seconds, cb, *args, **kw)</span>:</span></div><div class="line">        t = timer.Timer(seconds, cb, *args, **kw)</div><div class="line">        self.add_timer(t)</div><div class="line">        <span class="keyword">return</span> t</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add_timer</span><span class="params">(self, timer)</span>:</span></div><div class="line">        scheduled_time = self.clock() + timer.seconds</div><div class="line">        self.next_timers.append((scheduled_time, timer))</div><div class="line">        <span class="keyword">return</span> scheduled_time</div></pre></td></tr></table></figure>
+<p>真正触发切换到 greenthread g 执行的操作是 <code>eventlet.sleep(0)</code> 。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># eventlet/greenthread.py</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">sleep</span><span class="params">(seconds=<span class="number">0</span>)</span>:</span></div><div class="line">    <span class="string">"""Yield control to another eligible coroutine until at least *seconds* have</span></div><div class="line">    elapsed.</div><div class="line"></div><div class="line">    *seconds* may be specified as an integer, or a float if fractional seconds</div><div class="line">    are desired. Calling :func:`~greenthread.sleep` with *seconds* of 0 is the</div><div class="line">    canonical way of expressing a cooperative yield. For example, if one is</div><div class="line">    looping over a large list performing an expensive calculation without</div><div class="line">    calling any socket methods, it's a good idea to call ``sleep(0)``</div><div class="line">    occasionally; otherwise nothing else will run.</div><div class="line">    """</div><div class="line">    hub = hubs.get_hub()</div><div class="line">    current = getcurrent()</div><div class="line">    <span class="keyword">assert</span> hub.greenlet <span class="keyword">is</span> <span class="keyword">not</span> current, <span class="string">'do not call blocking functions from the mainloop'</span></div><div class="line">    timer = hub.schedule_call_global(seconds, current.switch)</div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        hub.switch()</div><div class="line">    <span class="keyword">finally</span>:</div><div class="line">        timer.cancel()</div></pre></td></tr></table></figure>
+<p><code>hub.switch()</code> 执行 hub 的 <code>switch()</code> 方法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># eventlet/hubs/hub.py</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">switch</span><span class="params">(self)</span>:</span></div><div class="line">    cur = greenlet.getcurrent()</div><div class="line">    <span class="keyword">assert</span> cur <span class="keyword">is</span> <span class="keyword">not</span> self.greenlet, <span class="string">'Cannot switch to MAINLOOP from MAINLOOP'</span></div><div class="line">    switch_out = getattr(cur, <span class="string">'switch_out'</span>, <span class="keyword">None</span>)</div><div class="line">    <span class="keyword">if</span> switch_out <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            switch_out()</div><div class="line">        <span class="keyword">except</span>:</div><div class="line">            self.squelch_generic_exception(sys.exc_info())</div><div class="line">    self.ensure_greenlet()</div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        <span class="keyword">if</span> self.greenlet.parent <span class="keyword">is</span> <span class="keyword">not</span> cur:</div><div class="line">            cur.parent = self.greenlet</div><div class="line">    <span class="keyword">except</span> ValueError:</div><div class="line">        <span class="keyword">pass</span>  <span class="comment"># gets raised if there is a greenlet parent cycle</span></div><div class="line">    clear_sys_exc_info()</div><div class="line">    <span class="keyword">return</span> self.greenlet.switch()</div></pre></td></tr></table></figure>
+<p><code>self.greenlet.switch()</code> 切换到 self.greenlet， 即MAINLOOP 执行，MAINLOOP 即是 <code>hub.run()</code> 方法。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># eventlet/hubs/hub.py</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self, *a, **kw)</span>:</span></div><div class="line">    <span class="string">"""Run the runloop until abort is called.</span></div><div class="line">    """</div><div class="line">    <span class="comment"># accept and discard variable arguments because they will be</span></div><div class="line">    <span class="comment"># supplied if other greenlets have run and exited before the</span></div><div class="line">    <span class="comment"># hub's greenlet gets a chance to run</span></div><div class="line">    <span class="keyword">if</span> self.running:</div><div class="line">        <span class="keyword">raise</span> RuntimeError(<span class="string">"Already running!"</span>)</div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        self.running = <span class="keyword">True</span></div><div class="line">        self.stopping = <span class="keyword">False</span></div><div class="line">        <span class="keyword">while</span> <span class="keyword">not</span> self.stopping:</div><div class="line">            <span class="keyword">while</span> self.closed:</div><div class="line">                <span class="comment"># We ditch all of these first.</span></div><div class="line">                self.close_one()</div><div class="line">            self.prepare_timers()</div><div class="line">            <span class="keyword">if</span> self.debug_blocking:</div><div class="line">                self.block_detect_pre()</div><div class="line">            self.fire_timers(self.clock())</div><div class="line">            <span class="keyword">if</span> self.debug_blocking:</div><div class="line">                self.block_detect_post()</div><div class="line">            self.prepare_timers()</div><div class="line">            wakeup_when = self.sleep_until()</div><div class="line">            <span class="keyword">if</span> wakeup_when <span class="keyword">is</span> <span class="keyword">None</span>:</div><div class="line">                sleep_time = self.default_sleep()</div><div class="line">            <span class="keyword">else</span>:</div><div class="line">                sleep_time = wakeup_when - self.clock()</div><div class="line">            <span class="keyword">if</span> sleep_time &gt; <span class="number">0</span>:</div><div class="line">                self.wait(sleep_time)</div><div class="line">            <span class="keyword">else</span>:</div><div class="line">                self.wait(<span class="number">0</span>)</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            self.timers_canceled = <span class="number">0</span></div><div class="line">            <span class="keyword">del</span> self.timers[:]</div><div class="line">            <span class="keyword">del</span> self.next_timers[:]</div><div class="line">    <span class="keyword">finally</span>:</div><div class="line">        self.running = <span class="keyword">False</span></div><div class="line">        self.stopping = <span class="keyword">False</span></div></pre></td></tr></table></figure>
+<p>先捡重点的看，<code>prepare_timers()</code>和 <code>fire_timers()</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># # eventlet/hubs/hub.py</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">prepare_timers</span><span class="params">(self)</span>:</span></div><div class="line">    heappush = heapq.heappush</div><div class="line">    t = self.timers</div><div class="line">    <span class="keyword">for</span> item <span class="keyword">in</span> self.next_timers:</div><div class="line">        <span class="keyword">if</span> item[<span class="number">1</span>].called:</div><div class="line">            self.timers_canceled -= <span class="number">1</span></div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            heappush(t, item)</div><div class="line">    <span class="keyword">del</span> self.next_timers[:]</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">fire_timers</span><span class="params">(self, when)</span>:</span></div><div class="line">    t = self.timers</div><div class="line">    heappop = heapq.heappop</div><div class="line"></div><div class="line">    <span class="keyword">while</span> t:</div><div class="line">        next = t[<span class="number">0</span>]</div><div class="line"></div><div class="line">        exp = next[<span class="number">0</span>]</div><div class="line">        timer = next[<span class="number">1</span>]</div><div class="line"></div><div class="line">        <span class="keyword">if</span> when &lt; exp:</div><div class="line">            <span class="keyword">break</span></div><div class="line"></div><div class="line">        heappop(t)</div><div class="line"></div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            <span class="keyword">if</span> timer.called:</div><div class="line">                self.timers_canceled -= <span class="number">1</span></div><div class="line">            <span class="keyword">else</span>:</div><div class="line">                timer()</div><div class="line">        <span class="keyword">except</span> self.SYSTEM_EXCEPTIONS:</div><div class="line">            <span class="keyword">raise</span></div><div class="line">        <span class="keyword">except</span>:</div><div class="line">            self.squelch_timer_exception(timer, sys.exc_info())</div><div class="line">            clear_sys_exc_info()</div></pre></td></tr></table></figure>
+<p><code>prepare_timers()</code> 将 <code>self.next_timers</code> 中没有 called 的 greenthread 放入 <code>self.timers</code>。<code>fire_timers()</code> 判断 <code>self.times</code> 中的 greenthread 到时间执行后，通过 <code>timer()</code> 的方式执行。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># eventlet/hubs/timer.py</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Timer</span><span class="params">(object)</span>:</span></div><div class="line">    ......</div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self, *args)</span>:</span></div><div class="line">        <span class="keyword">if</span> <span class="keyword">not</span> self.called:</div><div class="line">            self.called = <span class="keyword">True</span></div><div class="line">            cb, args, kw = self.tpl</div><div class="line">            <span class="keyword">try</span>:</div><div class="line">                cb(*args, **kw)</div><div class="line">            <span class="keyword">finally</span>:</div><div class="line">                <span class="keyword">try</span>:</div><div class="line">                    <span class="keyword">del</span> self.tpl</div><div class="line">                <span class="keyword">except</span> AttributeError:</div><div class="line">                    <span class="keyword">pass</span></div></pre></td></tr></table></figure>
+<p><code>cb</code> 就是 eventlet.spawn 中的 <code>g.switch</code>。那么执行 <code>cb(*args, **kw)</code> 就是切换到 g 中去执行。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">GreenThread</span><span class="params">(greenlet.greenlet)</span>:</span></div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, parent)</span>:</span></div><div class="line">        greenlet.greenlet.__init__(self, self.main, parent)</div><div class="line">        self._exit_event = event.Event()</div><div class="line">        self._resolving_links = <span class="keyword">False</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">(self, function, args, kwargs)</span>:</span></div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            result = function(*args, **kwargs)</div><div class="line">        <span class="keyword">except</span>:</div><div class="line">            self._exit_event.send_exception(*sys.exc_info())</div><div class="line">            self._resolve_links()</div><div class="line">            <span class="keyword">raise</span></div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            self._exit_event.send(result)</div><div class="line">            self._resolve_links()</div></pre></td></tr></table></figure>
+<p>切换到 g 后，执行 <code>main()</code> 函数，此时终于执行到了真正的 function 方法。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/23/eventlet-brief-introduction/" rel="next" title="Eventlet(1) - 简介">
+                <i class="fa fa-chevron-left"></i> Eventlet(1) - 简介
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/25/eventlet-greenlet/" rel="prev" title="Eventlet(3) - greenlet">
+                Eventlet(3) - greenlet <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/08/24/eventlet-hub/"
+           data-title="Eventlet(2) - Hub" data-url="https://zhaoqqi.github.io/2016/08/24/eventlet-hub/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="赵琦" />
+          <p class="site-author-name" itemprop="name">赵琦</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">15</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Eventlet-Hub"><span class="nav-number">1.</span> <span class="nav-text">Eventlet Hub</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">赵琦</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"zhaoqqi"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
