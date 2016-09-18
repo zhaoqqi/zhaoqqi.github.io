@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Python, lambda, 匿名函数" />
+  <meta name="keywords" content="Python, with" />
 
 
 
@@ -84,16 +84,16 @@
 
 
 
-<meta name="description" content="lambda in Python">
+<meta name="description" content="Understanding Python&apos;s &quot;with&quot; statement.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Python 匿名函数">
-<meta property="og:url" content="https://zhaoqqi.github.io/2016/08/09/python-lambda/index.html">
+<meta property="og:title" content="Python - with">
+<meta property="og:url" content="https://zhaoqqi.github.io/2016/09/18/python-with/index.html">
 <meta property="og:site_name" content="奇趣">
-<meta property="og:description" content="lambda in Python">
-<meta property="og:updated_time" content="2016-08-09T14:27:03.881Z">
+<meta property="og:description" content="Understanding Python&apos;s &quot;with&quot; statement.">
+<meta property="og:updated_time" content="2016-09-18T13:14:47.883Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Python 匿名函数">
-<meta name="twitter:description" content="lambda in Python">
+<meta name="twitter:title" content="Python - with">
+<meta name="twitter:description" content="Understanding Python&apos;s &quot;with&quot; statement.">
 
 
 
@@ -114,9 +114,9 @@
 
 
 
-  <link rel="canonical" href="https://zhaoqqi.github.io/2016/08/09/python-lambda/"/>
+  <link rel="canonical" href="https://zhaoqqi.github.io/2016/09/18/python-with/"/>
 
-  <title> Python 匿名函数 | 奇趣 </title>
+  <title> Python - with | 奇趣 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -266,7 +266,7 @@
             
             
               
-                Python 匿名函数
+                Python - with
               
             
           </h1>
@@ -278,8 +278,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-08-09T00:00:00+08:00" content="2016-08-09">
-              2016-08-09
+            <time itemprop="dateCreated" datetime="2016-09-18T00:00:00+08:00" content="2016-09-18">
+              2016-09-18
             </time>
           </span>
 
@@ -308,8 +308,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/08/09/python-lambda/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/09/python-lambda/" itemprop="commentsCount"></span>
+                <a href="/2016/09/18/python-with/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/18/python-with/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -332,15 +332,23 @@
       
 
       
-        <p>Python 使用关键字 lambda 创建匿名函数，所谓匿名，意即不再使用 def 语句这样标准的形式定义一个函数。这种语句的目的是由于性能的原因，在调用时绕过函数的栈分配。其语法是：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">lambda</span> [arg1[, arg2, ... argN]]: expression</div></pre></td></tr></table></figure>
-<p>以 map() 为例，直接将匿名函数作为参数传递：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">map(<span class="keyword">lambda</span> x: x*x, [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>])</div><div class="line">[<span class="number">1</span>,<span class="number">4</span>,<span class="number">9</span>,<span class="number">16</span>,<span class="number">25</span>]</div></pre></td></tr></table></figure>
-<p>lambda x: x*x 实际上相当于：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">func</span><span class="params">(x)</span>:</span></div><div class="line">    <span class="keyword">return</span> x*x</div></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">func = <span class="keyword">lambda</span> x:x*x</div><div class="line">func</div><div class="line">&lt;function &lt;<span class="keyword">lambda</span>&gt; at <span class="number">0x20a38c0</span>&gt;</div><div class="line">func(<span class="number">5</span>)</div><div class="line"><span class="number">25</span></div></pre></td></tr></table></figure>
-<p>可以将匿名函数作为返回值：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">func</span><span class="params">(x)</span>:</span></div><div class="line">    <span class="keyword">return</span> <span class="keyword">lambda</span> x:x*x</div><div class="line"></div><div class="line">func(<span class="number">5</span>)</div><div class="line">&lt;function &lt;<span class="keyword">lambda</span>&gt; at <span class="number">0x20a38c0</span>&gt;</div></pre></td></tr></table></figure>
+        <p>就像 Python 的其他语法一样，一旦你理解了要解决的问题，<code>with</code> 语句是非常简单的。看下面这个代码片段：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">set things up</div><div class="line"><span class="keyword">try</span>:</div><div class="line">    do something</div><div class="line"><span class="keyword">finally</span>:</div><div class="line">    tear things down</div></pre></td></tr></table></figure>
+<p>如果 “set things up” 是打开一个文件，或者是获得一个外部资源。那么 “tear things down” 就是关闭文件，或者释放/删除资源。<code>try-finally</code> 结构确保 “tear things down” 总会被执行，甚至 “do something” 中途报错而没有执行完毕。</p>
+<p>方便起见，你可以考虑将 “set things up” 和 “tear things down” 放到一个库函数中，从而可以重用。像这样：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">controlled_execution</span><span class="params">(callback)</span>:</span></div><div class="line">    set things up</div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        callback(thing)</div><div class="line">    <span class="keyword">finally</span>:</div><div class="line">        tear things down</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">my_function</span><span class="params">(thing)</span>:</span></div><div class="line">    do something</div><div class="line"></div><div class="line">controlled_execution(my_function)</div></pre></td></tr></table></figure>
+<p>这有点罗嗦，尤其是在需要修改本地变量时。另一种实现方法是使用一次性生成器，使用 <code>for-in</code> 语句循环调用：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">controlled_execution</span><span class="params">()</span>:</span></div><div class="line">    set things up</div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        <span class="keyword">yield</span> thing</div><div class="line">    <span class="keyword">finally</span>:</div><div class="line">        tear things down</div><div class="line"></div><div class="line"><span class="keyword">for</span> thing <span class="keyword">in</span> controlled_execution():</div><div class="line">    do something <span class="keyword">with</span> thing</div></pre></td></tr></table></figure>
+<p>但是在 Python2.4或更早的版本中，<code>yield</code> 语句是不允许写在 <code>try-finally</code> 结构中的。就算再2.5版本以后修复了该问题，在明知道只执行一次的情况下还使用循环结构还是很奇怪的。</p>
+<p>所以，再考察了多种实现方式后，GvR 和 Python 开发小组实现了下面这种方式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">controlled_execution</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__enter__</span><span class="params">(self)</span>:</span></div><div class="line">        set things up</div><div class="line">        <span class="keyword">return</span> thing</div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__exit__</span><span class="params">(self, type, value, traceback)</span>:</span></div><div class="line">        tear things down</div><div class="line"></div><div class="line"><span class="keyword">with</span> controlled_execution() <span class="keyword">as</span> thing:</div><div class="line">     some code</div></pre></td></tr></table></figure>
+<p>现在，当 <code>with</code> 语句开始执行时，Python计算表达式的值，调用 <code>__enter__</code> 方法返回表达式的值(被称为”context guard”)，使用 <code>as</code> 将 <code>__enter__</code> 方法的返回值赋值给一个变量。Python 接下来执行处理代码，无论何种情况发生，都会在最后调用 ‘<strong>exit</strong>‘方法。</p>
+<p>作为额外奖励，’<strong>exit</strong>‘ 方法可以查看抛出的异常，可以忽略或者选择处理异常。可以通过返回一个布尔值来忽略一个异常，就像这样：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">__exit__</span><span class="params">(self, type, value, traceback)</span>:</span></div><div class="line">    <span class="keyword">return</span> isinstance(value, TypeError)</div></pre></td></tr></table></figure>
+<p>在 Python2.7 中，文件对象就拥有 <code>__enter__</code> 和 <code>__exit__</code> 方法。前者返回文件对象本身，后者关闭文件对象：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; f = open(<span class="string">"/home/zhaoqi1/create_vpc_vm.sh"</span>)</div><div class="line">&gt;&gt;&gt; f</div><div class="line">&lt;open file <span class="string">'/home/zhaoqi1/create_vpc_vm.sh'</span>, mode <span class="string">'r'</span> at 0x7f1c64861d20&gt;</div><div class="line">&gt;&gt;&gt; f.__enter__()</div><div class="line">&lt;open file <span class="string">'/home/zhaoqi1/create_vpc_vm.sh'</span>, mode <span class="string">'r'</span> at 0x7f1c64861d20&gt;</div><div class="line">&gt;&gt;&gt; f.read(1)</div><div class="line"><span class="string">'#'</span></div><div class="line">&gt;&gt;&gt; f.__exit__(None,None,None)</div><div class="line">&gt;&gt;&gt; f.read(1)</div><div class="line">Traceback (most recent call last):</div><div class="line">  File <span class="string">"&lt;stdin&gt;"</span>, line 1, <span class="keyword">in</span> &lt;module&gt;</div><div class="line">ValueError: I/O operation on closed file</div></pre></td></tr></table></figure>
+<p>所以，对于要打开一个文件，处理文件内容，然后确认关闭文件的操作来说，可以简单写成这样：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">with</span> open(<span class="string">"/home/zhaoqi1/create_vpc_vm.sh"</span>) <span class="keyword">as</span> f:</div><div class="line">    data = f.read()</div><div class="line">    <span class="keyword">print</span> data</div></pre></td></tr></table></figure>
 
       
     </div>
@@ -366,16 +374,16 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/08/08/python-functional-programming/" rel="next" title="函数式编程">
-                <i class="fa fa-chevron-left"></i> 函数式编程
+              <a href="/2016/08/31/eventlet-nova-api/" rel="next" title="Eventlet(4) - nova-api如何使用Eventlet">
+                <i class="fa fa-chevron-left"></i> Eventlet(4) - nova-api如何使用Eventlet
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/08/23/eventlet-brief-introduction/" rel="prev" title="Eventlet(1) - 简介">
-                Eventlet(1) - 简介 <i class="fa fa-chevron-right"></i>
+              <a href="/2016/09/18/lose-my-balance/" rel="prev" title="周期性心慌">
+                周期性心慌 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -402,8 +410,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/08/09/python-lambda/"
-           data-title="Python 匿名函数" data-url="https://zhaoqqi.github.io/2016/08/09/python-lambda/">
+      <div class="ds-thread" data-thread-key="2016/09/18/python-with/"
+           data-title="Python - with" data-url="https://zhaoqqi.github.io/2016/09/18/python-with/">
       </div>
     
   </div>
