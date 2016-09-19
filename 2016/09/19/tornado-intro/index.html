@@ -1,0 +1,686 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Tornado" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="以下内容翻译自 Tornador官方文档
+介绍Tornado 是一个 Python Web 框架，一个异步的网络编程库，最初由 FriendFeed 开发。Tornado 通过使用异步的非阻塞式的网络IO，可以同时支持成千上万的请求连接，这对于长时间轮询，WebSocket 服务，以及其他长连接应用来说是特别理想的。
+Tornado 可以大致分为以下几个主要组成部分：
+
+一个 Web 框架(包含用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tornado Intro">
+<meta property="og:url" content="https://zhaoqqi.github.io/2016/09/19/tornado-intro/index.html">
+<meta property="og:site_name" content="奇趣">
+<meta property="og:description" content="以下内容翻译自 Tornador官方文档
+介绍Tornado 是一个 Python Web 框架，一个异步的网络编程库，最初由 FriendFeed 开发。Tornado 通过使用异步的非阻塞式的网络IO，可以同时支持成千上万的请求连接，这对于长时间轮询，WebSocket 服务，以及其他长连接应用来说是特别理想的。
+Tornado 可以大致分为以下几个主要组成部分：
+
+一个 Web 框架(包含用">
+<meta property="og:updated_time" content="2016-09-19T07:00:11.245Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Tornado Intro">
+<meta name="twitter:description" content="以下内容翻译自 Tornador官方文档
+介绍Tornado 是一个 Python Web 框架，一个异步的网络编程库，最初由 FriendFeed 开发。Tornado 通过使用异步的非阻塞式的网络IO，可以同时支持成千上万的请求连接，这对于长时间轮询，WebSocket 服务，以及其他长连接应用来说是特别理想的。
+Tornado 可以大致分为以下几个主要组成部分：
+
+一个 Web 框架(包含用">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="https://zhaoqqi.github.io/2016/09/19/tornado-intro/"/>
+
+  <title> Tornado Intro | 奇趣 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?e5c4b3a25e9131a450c0498d670cabd3";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">奇趣</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">赵琦个人博客</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Tornado Intro
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-09-19T00:00:00+08:00" content="2016-09-19">
+              2016-09-19
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Tornado/" itemprop="url" rel="index">
+                    <span itemprop="name">Tornado</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/09/19/tornado-intro/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/19/tornado-intro/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>以下内容翻译自 <a href="http://www.tornadoweb.org/en/stable" target="_blank" rel="external">Tornador官方文档</a></p>
+<h4 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h4><p>Tornado 是一个 Python Web 框架，一个异步的网络编程库，最初由 <code>FriendFeed</code> 开发。Tornado 通过使用异步的非阻塞式的网络IO，可以同时支持成千上万的请求连接，这对于长时间轮询，WebSocket 服务，以及其他长连接应用来说是特别理想的。</p>
+<p>Tornado 可以大致分为以下几个主要组成部分：</p>
+<ul>
+<li>一个 Web 框架(包含用来创建 web application 的子类 <code>RequestHandler</code> 在内的一系列类)</li>
+<li>HTTP 协议的服务器端和客户端的具体实现(<code>HTTPServer</code> 和 <code>AsyncHTTPClient</code>)</li>
+<li>一个异步网络编程库，主要包含类 <code>IOLoop</code> 和 <code>IOStream</code> ，作为 HTTP 组件的构建块，也可以作为其他协议组件的构建块。</li>
+<li>一个协程库(<code>tornado.gen</code>)，其允许使用更直接的方式实现异步代码，而不是使用链式回调的方式。</li>
+</ul>
+<p>Tornado web 框架和HTTP服务器一起，提供了一个完整的 WSGI 的替代品。虽然也可以将 Tornado web 框架单独在一个 WSGI 容器中使用，也可以将 Tornado HTTP 服务器作为一个容器在其他 WSGI 框架中使用，但是单独每个个体组件不能发挥 Tornado 的所有优势，只有两者组合使用才可以发挥 Tornado 框架的最大优势。</p>
+<h4 id="异步和非阻塞式IO"><a href="#异步和非阻塞式IO" class="headerlink" title="异步和非阻塞式IO"></a>异步和非阻塞式IO</h4><p>实时响应的 web 功能需要为每一个用户提供一个长时连接。对于传统的同步web服务来说，意味着要为每个用户提供一个线程，这个开销相对昂贵。</p>
+<p>为了减小大批量并发连接的开销，Tornado 使用一个单例线程化的事件循环(event loop)来处理。这就意味着所有的应用程序必须以异步和非阻塞式为目标开发，因为在事件循环中，在同一时刻只能处理一个应用程序的请求。</p>
+<p>异步和非阻塞这两个术语密切相关，在一些情况下甚至可以互相替换使用，但它们是不一样的。</p>
+<h5 id="阻塞"><a href="#阻塞" class="headerlink" title="阻塞"></a>阻塞</h5><p>一个方法(函数)被阻塞是指，在返回之前因为某个事件未发生而一直处于等待状态。多个原因会导致一个方法(函数)被阻塞：网络I/O，磁盘I/O，互斥锁等。实际上，当某个方法(函数)在运行和使用CPU时，多多少少也会阻塞(为了说明CPU阻塞和其他请求导致的阻塞一样需要重视，我们举一个略极端的例子。想想密码散列方法比如<code>bcrypt</code>，运行时会消耗几百微妙的CPU时间，这个时间远远大于一个典型的磁盘或者网络I/O访问)。</p>
+<p>一个方法(函数)在某些方面会被阻塞，在其他一些方面则不会。举例来说，<code>tornado.httpclient</code>使用默认配置时会阻塞在DNS解析时，但在其他网络访问时则不会()。在 Tornado 的语言环境中，我们经常讨论的阻塞是网络I/O。</p>
+<h5 id="异步"><a href="#异步" class="headerlink" title="异步"></a>异步</h5><p>一个异步的方法(函数)在执行结束之前就返回了，通常在应用程序触发一些未来的动作之前，使一些动作在后台发生(同步方法/函数与之相反，都是在返回之前将所有工作完成)。有许多类型的异步编程接口，主要有以下四种：</p>
+<ul>
+<li>回调参数 - Callback argument</li>
+<li>返回一个占位符 - Return a placeholder (<code>Future</code>, <code>Promise</code>, <code>Deferred</code>)</li>
+<li>传递给一个队列 - Deliver to a queue</li>
+<li>回调注册表 - Callback registry (e.g. POSIX signals)</li>
+</ul>
+<p>无论使用哪种类型的异步编程接口，异步方法(函数)显然与它们的调用者有不同的交互作用。没有免费的方法让一个同步方法(函数)变为异步，对于它们的调用者来说也是不透明的(gevent使用轻量级的线程提供了性能上可以与异步系统相比较的能力，但是它并没有真正做到异步处理请求)。</p>
+<p>看一个同步方法的例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> tornado.httpclient <span class="keyword">import</span> HTTPClient</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">synchronous_fetch</span><span class="params">(url)</span>:</span></div><div class="line">    http_client = HTTPClient()</div><div class="line">    response = http_client.fetch(url)</div><div class="line">    <span class="keyword">return</span> response.body</div></pre></td></tr></table></figure>
+<p>接着看一个使用回调参数实现的相同功能的异步方法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> tornado.httpclient <span class="keyword">import</span> AsyncHTTPClient</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">asynchronous_fetch</span><span class="params">(url, callback)</span>:</span></div><div class="line">    http_client = AsyncHTTPClient()</div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">handle_response</span><span class="params">(response)</span>:</span></div><div class="line">        callback(response.body)</div><div class="line">    http_client.fetch(url, callback=handle_response)</div></pre></td></tr></table></figure>
+<p>再看一个使用<code>Future</code>实现的异步方法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> tornado.concurrent <span class="keyword">import</span> Future</div><div class="line"><span class="keyword">from</span> tornado.httpclient <span class="keyword">import</span> AsyncHTTPClient</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">async_fetch_future</span><span class="params">(url)</span>:</span></div><div class="line">    http_client = AsyncHTTPClient()</div><div class="line">    my_future = Future()</div><div class="line">    fetch_future = http_client.fetch(url)</div><div class="line">    fetch_future.add_done_callback(</div><div class="line">        <span class="keyword">lambda</span> f: my_future.set_result(f.result()))</div><div class="line">    <span class="keyword">return</span> my_future</div></pre></td></tr></table></figure>
+<p>原生版本的<code>Future</code>会更复杂，尽管如此，<code>Futures</code>在 Tornado 中还是推荐的方案，因为它的两个主要优势。因为<code>Future.result</code>能够简单的抛出一个异常，使它有更加一致的错误处理能力(不像回调机制编程接口那样需要专门的错误处理)；同时，<code>Futures</code>可以很好的使用协程。关于协程会在下一节做更深入的讨论。现在我们只是看下使用协程如何实现我们的例子程序，看起来有点像使用同步方法的版本：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> tornado <span class="keyword">import</span> gen</div><div class="line"></div><div class="line"><span class="meta">@gen.coroutine</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">fetch_coroutine</span><span class="params">(url)</span>:</span></div><div class="line">    http_client = AsyncHTTPClient()</div><div class="line">    response = <span class="keyword">yield</span> http_client.fetch(url)</div><div class="line">    <span class="keyword">raise</span> gen.Return(response.body)</div></pre></td></tr></table></figure>
+<p>语句 <code>raise gen.Return(response.body)</code> 是为python2.x特别实现的，因为python2.x的生成器不允许返回值。为了达到这个目的，Tornado的协程抛出一种特别类型的异常 <code>Return</code>。协程会捕捉到这个异常，并把它当作一个返回值看待。在python3.3及以后，使用<code>return response.body</code>达到相同的结果。</p>
+<h4 id="协程-Coroutines"><a href="#协程-Coroutines" class="headerlink" title="协程 - Coroutines"></a>协程 - Coroutines</h4><p>在 Tornado 中，使用协程是被推荐的实现异步代码的方式。协程使用 Python关键字<code>yield</code>实现代码执行的挂起运行(suspend)和恢复运行(resume)，从而替换掉链式回调的方式(在像<code>gevent</code>这样的系统中，可以相互协作的轻量级的线程也被称为协程，但在 Tornado 中，所有的协程都使用显示的上下文切换执行，被称为异步方法 - 原文为’and are called as asynchronous functions’)。</p>
+<p>协程不仅没有额外的一个线程的开销，而且和同步的编码一样简单。</p>
+<h5 id="协程怎样工作"><a href="#协程怎样工作" class="headerlink" title="协程怎样工作"></a>协程怎样工作</h5><p>包含<code>yield</code>的方法(函数)就是一个生成器。所有的生成器都是异步的，每次被调用时返回一个生成器对象而不是运行直到方法结束。<code>@gen.coroutine</code>装饰器通过<code>yield</code>关键字与生成器交互，通过返回一个<code>Future</code>与协程的调用者交互。</p>
+<p>下面是一个简化版本的协程装饰器的内部循环：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Simplified inner loop of tornado.gen.Runner</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self)</span>:</span></div><div class="line">    <span class="comment"># send(x) makes the current yield return x.</span></div><div class="line">    <span class="comment"># It returns when the next yield is reached</span></div><div class="line">    future = self.gen.send(self.next)</div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">callback</span><span class="params">(f)</span>:</span></div><div class="line">        self.next = f.result()</div><div class="line">        self.run()</div><div class="line">    future.add_done_callback(callback)</div></pre></td></tr></table></figure>
+<p>装饰器从生成器接收一个<code>Future</code>对象，等待(非阻塞)<code>Future</code>对象执行完成。然后”解包”<code>future</code>对象，发送处理结果返回给生成器当作<code>yield</code>表达式的结果。绝大多数的异步代码都不直接使用类<code>Future</code>，除非将<code>Future</code>对象通过异步方法(函数)立即返回给<code>yield</code>表达式。</p>
+<h5 id="如何调用一个协程"><a href="#如何调用一个协程" class="headerlink" title="如何调用一个协程"></a>如何调用一个协程</h5><p>协程不使用正常的方式抛出异常：任何一个异常在抛出之前都陷入在(trapped in)一个 <code>Futrue</code> 对象里，直到它 <code>yield</code>。这意味着使用正确的方式调用协程很重要，否则你可能会遇到未被显著察觉的错误：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@gen.coroutine</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">divide</span><span class="params">(x, y)</span>:</span></div><div class="line">    <span class="keyword">return</span> x / y</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">bad_call</span><span class="params">()</span>:</span></div><div class="line">    <span class="comment"># This should raise a ZeroDivisionError, but it won't because</span></div><div class="line">    <span class="comment"># the coroutine is called incorrectly.</span></div><div class="line">    divide(<span class="number">1</span>, <span class="number">0</span>)</div></pre></td></tr></table></figure>
+<p>在几乎所有的使用场景中，调用协程的任何一个方法(函数)其本身必须首先是一个协程，而且在调用协程时要使用关键字 <code>yield</code>。当你重写一个父类定义的方法时，要查阅说明文档以确定是否支持协程(文档会说明此方法”may be a coroutine”或者”may return a <code>Future</code>“)：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@gen.coroutine</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">good_call</span><span class="params">()</span>:</span></div><div class="line">    <span class="comment"># yield will unwrap the Future returned by divide() and raise</span></div><div class="line">    <span class="comment"># the exception.</span></div><div class="line">    <span class="keyword">yield</span> divide(<span class="number">1</span>, <span class="number">0</span>)</div></pre></td></tr></table></figure>
+<p>有时你会想生成一个协程执行任务，并且不必等到它的执行结果。在这个场景下，推荐使用 <code>IOLoop.spawn_callback</code>，这会使 <code>IOLoop</code> 变的可靠。如果执行失败，<code>IOLoop</code> 会在日志中记录下错误信息的stack trace：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># The IOLoop will catch the exception and print a stack trace in</span></div><div class="line"><span class="comment"># the logs. Note that this doesn't look like a normal call, since</span></div><div class="line"><span class="comment"># we pass the function object to be called by the IOLoop.</span></div><div class="line">IOLoop.current().spawn_callback(divide, <span class="number">1</span>, <span class="number">0</span>)</div></pre></td></tr></table></figure>
+<p>本想把 Tornado 官方文档的 User Guide 翻译完，当作简介性的文字放在 Tornado 系列文章的第一篇。但……太TM长了……而且很多相关内容还不熟练。先把 Tornado 的架构和几个重点模块学习一下，再继续写这篇……</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/09/19/python-closure/" rel="next" title="Python - 闭包">
+                <i class="fa fa-chevron-left"></i> Python - 闭包
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/09/19/tornado-intro/"
+           data-title="Tornado Intro" data-url="https://zhaoqqi.github.io/2016/09/19/tornado-intro/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="赵琦" />
+          <p class="site-author-name" itemprop="name">赵琦</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">19</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#介绍"><span class="nav-number">1.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#异步和非阻塞式IO"><span class="nav-number">2.</span> <span class="nav-text">异步和非阻塞式IO</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#阻塞"><span class="nav-number">2.1.</span> <span class="nav-text">阻塞</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#异步"><span class="nav-number">2.2.</span> <span class="nav-text">异步</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#协程-Coroutines"><span class="nav-number">3.</span> <span class="nav-text">协程 - Coroutines</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#协程怎样工作"><span class="nav-number">3.1.</span> <span class="nav-text">协程怎样工作</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#如何调用一个协程"><span class="nav-number">3.2.</span> <span class="nav-text">如何调用一个协程</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">赵琦</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"zhaoqqi"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
