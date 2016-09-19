@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Python, with" />
+  <meta name="keywords" content="Python, Closure" />
 
 
 
@@ -84,16 +84,16 @@
 
 
 
-<meta name="description" content="Understanding Python&apos;s &quot;with&quot; statement.">
+<meta name="description" content="Understanding Python&apos;s Closure.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Python - with">
-<meta property="og:url" content="https://zhaoqqi.github.io/2016/09/18/python-with/index.html">
+<meta property="og:title" content="Python - 闭包">
+<meta property="og:url" content="https://zhaoqqi.github.io/2016/09/19/python-closure/index.html">
 <meta property="og:site_name" content="奇趣">
-<meta property="og:description" content="Understanding Python&apos;s &quot;with&quot; statement.">
-<meta property="og:updated_time" content="2016-09-19T03:35:30.206Z">
+<meta property="og:description" content="Understanding Python&apos;s Closure.">
+<meta property="og:updated_time" content="2016-09-19T04:25:14.418Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Python - with">
-<meta name="twitter:description" content="Understanding Python&apos;s &quot;with&quot; statement.">
+<meta name="twitter:title" content="Python - 闭包">
+<meta name="twitter:description" content="Understanding Python&apos;s Closure.">
 
 
 
@@ -114,9 +114,9 @@
 
 
 
-  <link rel="canonical" href="https://zhaoqqi.github.io/2016/09/18/python-with/"/>
+  <link rel="canonical" href="https://zhaoqqi.github.io/2016/09/19/python-closure/"/>
 
-  <title> Python - with | 奇趣 </title>
+  <title> Python - 闭包 | 奇趣 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -266,7 +266,7 @@
             
             
               
-                Python - with
+                Python - 闭包
               
             
           </h1>
@@ -278,8 +278,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-09-18T00:00:00+08:00" content="2016-09-18">
-              2016-09-18
+            <time itemprop="dateCreated" datetime="2016-09-19T00:00:00+08:00" content="2016-09-19">
+              2016-09-19
             </time>
           </span>
 
@@ -308,8 +308,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/09/18/python-with/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/18/python-with/" itemprop="commentsCount"></span>
+                <a href="/2016/09/19/python-closure/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/19/python-closure/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -332,24 +332,28 @@
       
 
       
-        <p>就像 Python 的其他语法一样，一旦你理解了要解决的问题，<code>with</code> 语句是非常简单的。看下面这个代码片段：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">set things up</div><div class="line"><span class="keyword">try</span>:</div><div class="line">    do something</div><div class="line"><span class="keyword">finally</span>:</div><div class="line">    tear things down</div></pre></td></tr></table></figure>
-<p>如果 “set things up” 是打开一个文件，或者是获得一个外部资源。那么 “tear things down” 就是关闭文件，或者释放/删除资源。<code>try-finally</code> 结构确保 “tear things down” 总会被执行，甚至 “do something” 中途报错而没有执行完毕。</p>
-<p>方便起见，你可以考虑将 “set things up” 和 “tear things down” 放到一个库函数中，从而可以重用。像这样：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">controlled_execution</span><span class="params">(callback)</span>:</span></div><div class="line">    set things up</div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        callback(thing)</div><div class="line">    <span class="keyword">finally</span>:</div><div class="line">        tear things down</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">my_function</span><span class="params">(thing)</span>:</span></div><div class="line">    do something</div><div class="line"></div><div class="line">controlled_execution(my_function)</div></pre></td></tr></table></figure>
-<p>这有点罗嗦，尤其是在需要修改本地变量时。另一种实现方法是使用一次性生成器，使用 <code>for-in</code> 语句循环调用：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">controlled_execution</span><span class="params">()</span>:</span></div><div class="line">    set things up</div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        <span class="keyword">yield</span> thing</div><div class="line">    <span class="keyword">finally</span>:</div><div class="line">        tear things down</div><div class="line"></div><div class="line"><span class="keyword">for</span> thing <span class="keyword">in</span> controlled_execution():</div><div class="line">    do something <span class="keyword">with</span> thing</div></pre></td></tr></table></figure>
-<p>但是在 Python2.4或更早的版本中，<code>yield</code> 语句是不允许写在 <code>try-finally</code> 结构中的。就算再2.5版本以后修复了该问题，在明知道只执行一次的情况下还使用循环结构还是很奇怪的。</p>
-<p>所以，再考察了多种实现方式后，GvR 和 Python 开发小组实现了下面这种方式：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">controlled_execution</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__enter__</span><span class="params">(self)</span>:</span></div><div class="line">        set things up</div><div class="line">        <span class="keyword">return</span> thing</div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__exit__</span><span class="params">(self, type, value, traceback)</span>:</span></div><div class="line">        tear things down</div><div class="line"></div><div class="line"><span class="keyword">with</span> controlled_execution() <span class="keyword">as</span> thing:</div><div class="line">     some code</div></pre></td></tr></table></figure>
-<p>现在，当 <code>with</code> 语句开始执行时，Python计算表达式的值，调用 <code>__enter__</code> 方法返回表达式的值(被称为”context guard”)，使用 <code>as</code> 将 <code>__enter__</code> 方法的返回值赋值给一个变量。Python 接下来执行处理代码，无论何种情况发生，都会在最后调用 ‘<strong>exit</strong>‘方法。</p>
-<p>作为额外奖励，’<strong>exit</strong>‘ 方法可以查看抛出的异常，可以忽略或者选择处理异常。可以通过返回一个布尔值来忽略一个异常，就像这样：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">__exit__</span><span class="params">(self, type, value, traceback)</span>:</span></div><div class="line">    <span class="keyword">return</span> isinstance(value, TypeError)</div></pre></td></tr></table></figure>
-<p>在 Python2.7 中，文件对象就拥有 <code>__enter__</code> 和 <code>__exit__</code> 方法。前者返回文件对象本身，后者关闭文件对象：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; f = open(<span class="string">"/home/zhaoqi1/create_vpc_vm.sh"</span>)</div><div class="line">&gt;&gt;&gt; f</div><div class="line">&lt;open file <span class="string">'/home/zhaoqi1/create_vpc_vm.sh'</span>, mode <span class="string">'r'</span> at 0x7f1c64861d20&gt;</div><div class="line">&gt;&gt;&gt; f.__enter__()</div><div class="line">&lt;open file <span class="string">'/home/zhaoqi1/create_vpc_vm.sh'</span>, mode <span class="string">'r'</span> at 0x7f1c64861d20&gt;</div><div class="line">&gt;&gt;&gt; f.read(1)</div><div class="line"><span class="string">'#'</span></div><div class="line">&gt;&gt;&gt; f.__exit__(None,None,None)</div><div class="line">&gt;&gt;&gt; f.read(1)</div><div class="line">Traceback (most recent call last):</div><div class="line">  File <span class="string">"&lt;stdin&gt;"</span>, line 1, <span class="keyword">in</span> &lt;module&gt;</div><div class="line">ValueError: I/O operation on closed file</div></pre></td></tr></table></figure>
-<p>所以，对于要打开一个文件，处理文件内容，然后确认关闭文件的操作来说，可以简单写成这样：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">with</span> open(<span class="string">"/home/zhaoqi1/create_vpc_vm.sh"</span>) <span class="keyword">as</span> f:</div><div class="line">    data = f.read()</div><div class="line">    <span class="keyword">print</span> data</div></pre></td></tr></table></figure>
-
+        <h4 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h4><p>高阶函数除了可以最为参数外，还可以作为函数的返回值。我们来看下一个求和函数的例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_sum</span><span class="params">(*args)</span>:</span></div><div class="line">    ax = <span class="number">0</span></div><div class="line">    <span class="keyword">for</span> arg <span class="keyword">in</span> args:</div><div class="line">        ax = ax + arg</div><div class="line">    <span class="keyword">return</span> ax</div></pre></td></tr></table></figure>
+<p>如果需求变化，不需要立即返回求和结果，而是后续根据需要再计算，要怎么实现？这就需要不返回求和结果，而是返回函数了：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">lazy_get_sum</span><span class="params">(*args)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_sum</span><span class="params">()</span>:</span></div><div class="line">        ax = <span class="number">0</span></div><div class="line">        <span class="keyword">for</span> arg <span class="keyword">in</span> args:</div><div class="line">            ax = ax + arg</div><div class="line">        <span class="keyword">return</span> ax</div><div class="line">    <span class="keyword">return</span> get_sum</div></pre></td></tr></table></figure>
+<p>当我们调用 <code>lazy_get_sum</code> 时，返回的并不是求和结果，而是求和函数：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; f = lazy_get_sum(1,2,3)</div><div class="line">&gt;&gt;&gt; f</div><div class="line">&lt;<span class="keyword">function</span> get_sum at 0x7f1c647abb90&gt;</div></pre></td></tr></table></figure>
+<p>只有在调用 <code>f</code> 函数时，才真正计算求和：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; f()</div><div class="line">6</div><div class="line">&gt;&gt;&gt;</div></pre></td></tr></table></figure>
+<p>在这个例子中，函数 ‘lazy_get_sum’ 内部又定义了一个函数 <code>get_sum</code>，并且内部函数 <code>get_sum</code> 使用了外部函数 <code>lazy_get_sum</code> 的局部变量。当 <code>lazy_get_sum</code> 返回 <code>get_sum</code> 时，相关参数和局部变量都保持在返回的函数中，这种程序结果成为”闭包(Closure)”。其实”闭包”就是作为返回值返回的函数，并且在需要的时候再调用该函数，不必马上执行。</p>
+<p>每次我们调用 <code>lazy_get_sum</code> 函数时，返回的都是一个新函数，即使传入的是相同的参数：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; f1 = lazy_get_sum(1,2,3)</div><div class="line">&gt;&gt;&gt; f2 = lazy_get_sum(1,2,3)</div><div class="line">&gt;&gt;&gt; f1 == f2</div><div class="line">False</div><div class="line">&gt;&gt;&gt;</div></pre></td></tr></table></figure>
+<p>f1 和 f2 的调用结果互相不产生影响。</p>
+<p>注意一点，返回的内部函数引用了外部函数的局部变量。所以，即使外部函数执行完毕返回了，其内部变量还会被内部函数所引用。但是，如果内部函数引用了外部函数的循环变量，可能会产生意外的结果。我们来看下这个例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">count</span><span class="params">()</span>:</span></div><div class="line">    rs = []</div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">1</span>, <span class="number">5</span>):</div><div class="line">        <span class="function"><span class="keyword">def</span> <span class="title">f</span><span class="params">()</span>:</span></div><div class="line">            <span class="keyword">return</span> i*i</div><div class="line">        rs.append(f)</div><div class="line">    <span class="keyword">return</span> rs</div><div class="line"></div><div class="line">f1, f2, f3, f4 = count()</div></pre></td></tr></table></figure>
+<p>上面例子中，每一次循环都创建一个新的函数。然后将返回的4个函数分别赋值给f1, f2, f3, f4。但是，这四个函数的执行结果却不是预想中的1，4，9，16，实际结果是：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; f1, f2, f3, f4 = count()</div><div class="line">&gt;&gt;&gt; f1()</div><div class="line">16</div><div class="line">&gt;&gt;&gt; f2()</div><div class="line">16</div><div class="line">&gt;&gt;&gt; f3()</div><div class="line">16</div><div class="line">&gt;&gt;&gt; f4()</div><div class="line">16</div></pre></td></tr></table></figure>
+<p>原因就是这四个函数不是返回时立即执行的，等到具体执行时，局部变量<code>i</code>的值经过循环已经变为4，所以4个函数的执行结果都是16。这个例子告诉我们，使用闭包，在返回函数中不要引用循环变量或者后续会发生变化的变量。</p>
+<p>如果一定要引用循环变量，我们该如何实现呢：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">count</span><span class="params">()</span>:</span></div><div class="line">    rs = []</div><div class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">1</span>, <span class="number">5</span>):</div><div class="line">        <span class="function"><span class="keyword">def</span> <span class="title">f</span><span class="params">(j)</span>:</span></div><div class="line">            <span class="function"><span class="keyword">def</span> <span class="title">g</span><span class="params">()</span>:</span></div><div class="line">                <span class="keyword">return</span> j*j</div><div class="line">            <span class="keyword">return</span> g</div><div class="line">        rs.append(f(i))</div><div class="line">    <span class="keyword">return</span> rs</div><div class="line"></div><div class="line">f1, f2, f3, f4 = count()</div></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&gt;&gt;&gt; f1()</div><div class="line">1</div><div class="line">&gt;&gt;&gt; f2()</div><div class="line">4</div><div class="line">&gt;&gt;&gt; f3()</div><div class="line">9</div><div class="line">&gt;&gt;&gt; f4()</div><div class="line">16</div></pre></td></tr></table></figure>
+<p>以上是关于”闭包”的基础概念介绍，和基础使用举例。关于”闭包”还有其他内容，留待以后补充。</p>
+<h4 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h4>
       
     </div>
 
@@ -374,17 +378,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/09/18/lose-my-balance/" rel="next" title="周期性心慌">
-                <i class="fa fa-chevron-left"></i> 周期性心慌
+              <a href="/2016/09/18/python-with/" rel="next" title="Python - with">
+                <i class="fa fa-chevron-left"></i> Python - with
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/09/19/python-closure/" rel="prev" title="Python - 闭包">
-                Python - 闭包 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -410,8 +410,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/09/18/python-with/"
-           data-title="Python - with" data-url="https://zhaoqqi.github.io/2016/09/18/python-with/">
+      <div class="ds-thread" data-thread-key="2016/09/19/python-closure/"
+           data-title="Python - 闭包" data-url="https://zhaoqqi.github.io/2016/09/19/python-closure/">
       </div>
     
   </div>
@@ -495,7 +495,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#闭包"><span class="nav-number">1.</span> <span class="nav-text">闭包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#补充"><span class="nav-number">2.</span> <span class="nav-text">补充</span></a></li></ol></div>
             
           </div>
         </section>
