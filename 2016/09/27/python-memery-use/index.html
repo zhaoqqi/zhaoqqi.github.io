@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="git rm, git add -A" />
+  <meta name="keywords" content="Python" />
 
 
 
@@ -84,16 +84,16 @@
 
 
 
-<meta name="description" content="How to rm files in repository with github.">
+<meta name="description" content="Python memery object.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Git删除文件">
-<meta property="og:url" content="https://zhaoqqi.github.io/2016/07/29/git-rm-files/index.html">
+<meta property="og:title" content="Python - 对象的内存使用">
+<meta property="og:url" content="https://zhaoqqi.github.io/2016/09/27/python-memery-use/index.html">
 <meta property="og:site_name" content="奇趣">
-<meta property="og:description" content="How to rm files in repository with github.">
-<meta property="og:updated_time" content="2016-08-03T15:07:08.369Z">
+<meta property="og:description" content="Python memery object.">
+<meta property="og:updated_time" content="2016-09-27T02:35:52.328Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Git删除文件">
-<meta name="twitter:description" content="How to rm files in repository with github.">
+<meta name="twitter:title" content="Python - 对象的内存使用">
+<meta name="twitter:description" content="Python memery object.">
 
 
 
@@ -114,9 +114,9 @@
 
 
 
-  <link rel="canonical" href="https://zhaoqqi.github.io/2016/07/29/git-rm-files/"/>
+  <link rel="canonical" href="https://zhaoqqi.github.io/2016/09/27/python-memery-use/"/>
 
-  <title> Git删除文件 | 奇趣 </title>
+  <title> Python - 对象的内存使用 | 奇趣 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -256,7 +256,7 @@
             
             
               
-                Git删除文件
+                Python - 对象的内存使用
               
             
           </h1>
@@ -268,8 +268,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-07-29T00:00:00+08:00" content="2016-07-29">
-              2016-07-29
+            <time itemprop="dateCreated" datetime="2016-09-27T00:00:00+08:00" content="2016-09-27">
+              2016-09-27
             </time>
           </span>
 
@@ -282,8 +282,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Github/" itemprop="url" rel="index">
-                    <span itemprop="name">Github</span>
+                  <a href="/categories/Python/" itemprop="url" rel="index">
+                    <span itemprop="name">Python</span>
                   </a>
                 </span>
 
@@ -298,8 +298,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/07/29/git-rm-files/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/29/git-rm-files/" itemprop="commentsCount"></span>
+                <a href="/2016/09/27/python-memery-use/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/27/python-memery-use/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -322,18 +322,17 @@
       
 
       
-        <p>使用Git删除版本库中的指定文件，也要显示的使用git命令删除，下面举个例子说明。<br>首先新建一个文件：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">touch to_be_deleted.txt</div><div class="line">git add to_be_deleted.txt</div><div class="line">git commit -m <span class="string">"commit to_be_deleted.txt"</span></div><div class="line">$ git commit -m <span class="string">"commit to_be_deleted.txt"</span></div><div class="line">[master b32ee44] commit to_be_deleted.txt</div><div class="line"> 1 file changed, 0 insertions(+), 0 deletions(-)</div><div class="line"> create mode 100644 to_be_deleted.txt</div><div class="line"></div><div class="line">git push -u origin master</div></pre></td></tr></table></figure>
-<p>正常删除操作如下：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">git rm to_be_deleted.txt</div><div class="line">rm <span class="string">'to_be_deleted.txt'</span></div><div class="line">git status <span class="_">-s</span></div><div class="line">D  to_be_deleted.txt</div><div class="line">$ git commit -m <span class="string">"delete to_be_deleted.txt"</span></div><div class="line">[master 7568bac] delete to_be_deleted.txt</div><div class="line"> 1 file changed, 0 insertions(+), 0 deletions(-)</div><div class="line"> delete mode 100644 to_be_deleted.txt</div><div class="line"></div><div class="line">git push -u origin master</div></pre></td></tr></table></figure>
-<p>如果没有使用git rm，而是直接rm，情况会怎么样呢?</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">rm to_be_deleted.txt</div><div class="line">$ git status <span class="_">-s</span></div><div class="line"> D to_be_deleted.txt</div></pre></td></tr></table></figure>
-<p>git status -s 虽然可以看出工作区和版本库中代码不一致，to_be_deleted.txt被删除了。<br>但是D是红色的，这次的删除操作并没有被提交到缓冲区，即没有stage。需要手动git add：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git add to_be_deleted.txt</div><div class="line">git status <span class="_">-s</span></div><div class="line"> D to_be_deleted.txt</div></pre></td></tr></table></figure>
-<p>手动git add 以后，git status -s 查看D为绿色。</p>
-<p>如果直接使用系统命令rm的文件比较多，又分布在不同的文件中，逐个git add会特别费时费力。此时只需使用以下操作：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">rm a/a.txt</div><div class="line">rm b/b.txt</div><div class="line">git rm c/c.txt</div><div class="line">git status <span class="_">-s</span></div><div class="line"> D a/a.txt</div><div class="line"> D b/b.txt</div><div class="line">D  c/c.txt</div><div class="line">git add -A</div><div class="line">git status <span class="_">-s</span></div><div class="line">D  a/a.txt</div><div class="line">D  b/b.txt</div><div class="line">D  c/c.txt</div></pre></td></tr></table></figure>
-<p>使用git add -A以后，使用rm命令直接删除的a.txt和b.txt也stage完毕。</p>
+        <h4 id="赋值语句"><a href="#赋值语句" class="headerlink" title="赋值语句"></a>赋值语句</h4><p>我们从一个简单的赋值语句开始观察 Python 的对象在内存中的使用情况：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">a = <span class="number">1</span></div></pre></td></tr></table></figure>
+<p>整数 1 为一个对象，而 a 是一个对象 a 的引用。Python 是动态类型的编程语言，对象与引用是分离的。下面我们使用 Python 内置函数 <code>id()</code> 作为辅助，来查看对象的内存地址：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">1</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(id(a))</div><div class="line"><span class="number">37987128</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(hex(id(a)))</div><div class="line"><span class="string">'0x243a338'</span></div></pre></td></tr></table></figure>
+<p><code>id(a)</code> 返回10进制内存地址，<code>hex(id(a))</code> 返回16进制内存地址。</p>
+<h4 id="内存对象和引用"><a href="#内存对象和引用" class="headerlink" title="内存对象和引用"></a>内存对象和引用</h4><p>在 Python 中，整数和短小的字符，Python 都会缓存这些对象，以便重复使用。当我们赋值(创建)多个等于1的对象的引用时，实际上这些引用都指向同一个对象。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">1</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>b = <span class="number">1</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(hex(id(a)))</div><div class="line"><span class="number">0x243a338</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(hex(id(b)))</div><div class="line"><span class="number">0x243a338</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(hex(id(<span class="number">1</span>)))</div><div class="line"><span class="number">0x243a338</span></div></pre></td></tr></table></figure>
+<p>可见，a 和 b 均指向同一个对象 1 的内存地址。</p>
+<p>下面我们再看看，其他 Python 类型的对象：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">1</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>b = <span class="number">1</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(a <span class="keyword">is</span> b)</div><div class="line"><span class="keyword">True</span></div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="string">'hello'</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>b = <span class="string">'hello'</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(a <span class="keyword">is</span> b)</div><div class="line"><span class="keyword">True</span></div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="string">'hello world'</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>b = <span class="string">'hello world'</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(a <span class="keyword">is</span> b)</div><div class="line"><span class="keyword">False</span></div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>a = []</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>b = []</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(a <span class="keyword">is</span> b)</div><div class="line"><span class="keyword">False</span></div><div class="line"></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>a = <span class="number">100.002</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>b = <span class="number">100.002</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>print(a <span class="keyword">is</span> b)</div><div class="line"><span class="keyword">False</span></div></pre></td></tr></table></figure>
+<p>可以看到，Python 只缓存了整型和短字符串，因此每个对象在内存中只存一份。比如，所有整数1的引用都指向同一个内存对象。即使使用赋值语句，也只是创建了对象新的引用，而不是创建新的内存对象。长字符串和其他类型可以有多个相同的对象，可以使用赋值语句创建新的内存对象。</p>
 
       
     </div>
@@ -359,17 +358,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/07/27/first-blog/" rel="next" title="开篇">
-                <i class="fa fa-chevron-left"></i> 开篇
+              <a href="/2016/09/26/python-gc/" rel="next" title="Python - 垃圾回收机制">
+                <i class="fa fa-chevron-left"></i> Python - 垃圾回收机制
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/07/29/design-pattern-borg/" rel="prev" title="Borg — 多个实例间共享状态">
-                Borg — 多个实例间共享状态 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -395,8 +390,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/07/29/git-rm-files/"
-           data-title="Git删除文件" data-url="https://zhaoqqi.github.io/2016/07/29/git-rm-files/">
+      <div class="ds-thread" data-thread-key="2016/09/27/python-memery-use/"
+           data-title="Python - 对象的内存使用" data-url="https://zhaoqqi.github.io/2016/09/27/python-memery-use/">
       </div>
     
   </div>
@@ -480,7 +475,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#赋值语句"><span class="nav-number">1.</span> <span class="nav-text">赋值语句</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内存对象和引用"><span class="nav-number">2.</span> <span class="nav-text">内存对象和引用</span></a></li></ol></div>
             
           </div>
         </section>

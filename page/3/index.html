@@ -255,6 +255,134 @@
             
               
                 
+                <a class="post-title-link" href="/2016/07/29/design-pattern-borg/" itemprop="url">
+                  Borg — 多个实例间共享状态
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-29T00:00:00+08:00" content="2016-07-29">
+              2016-07-29
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/DesignPattern/" itemprop="url" rel="index">
+                    <span itemprop="name">DesignPattern</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/07/29/design-pattern-borg/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/29/design-pattern-borg/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Borg模式 —— 多个实例间共享状态<br>代码参考引用自：<a href="https://github.com/faif/python-patterns/blob/master/borg.py" target="_blank" rel="external">https://github.com/faif/python-patterns/blob/master/borg.py</a></p>
+<h4 id="上代码"><a href="#上代码" class="headerlink" title="上代码"></a>上代码</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#!/usr/bin/env python</span></div><div class="line"><span class="comment"># -*- coding: utf-8 -*-</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Borg</span>:</span></div><div class="line">    <span class="string">"""定义类成员变量，在类的各个实例间共享"""</span></div><div class="line">    __shared_state = &#123;&#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""将类成员变量self.__dict__的引用指向__shared_state，</span></div><div class="line">           使self.__dict__变为类实例间共享状态。</div><div class="line">           实例的属性self.state赋值后会放入self.__dict__，</div><div class="line">           所以self.state也会变为实例间共享。"""</div><div class="line">        self.__dict__ = self.__shared_state</div><div class="line">        self.state = <span class="string">'Init'</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">return</span> self.state</div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">YourBorg</span><span class="params">(Borg)</span>:</span></div><div class="line">    <span class="keyword">pass</span></div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    rm1 = Borg()</div><div class="line">    rm2 = Borg()</div><div class="line"></div><div class="line">    rm1.state = <span class="string">'Idle'</span></div><div class="line">    rm2.state = <span class="string">'Running'</span></div><div class="line"></div><div class="line">    print(<span class="string">'rm1: &#123;0&#125;'</span>.format(rm1))</div><div class="line">    print(<span class="string">'rm2: &#123;0&#125;'</span>.format(rm2))</div><div class="line"></div><div class="line">    rm2.state = <span class="string">'Zombie'</span></div><div class="line"></div><div class="line">    print(<span class="string">'rm1: &#123;0&#125;'</span>.format(rm1))</div><div class="line">    print(<span class="string">'rm2: &#123;0&#125;'</span>.format(rm2))</div><div class="line"></div><div class="line">    print(<span class="string">'rm1 id: &#123;0&#125;'</span>.format(id(rm1)))</div><div class="line">    print(<span class="string">'rm2 id: &#123;0&#125;'</span>.format(id(rm2)))</div><div class="line"></div><div class="line">    rm3 = YourBorg()</div><div class="line"></div><div class="line">    print(<span class="string">'rm1: &#123;0&#125;'</span>.format(rm1))</div><div class="line">    print(<span class="string">'rm2: &#123;0&#125;'</span>.format(rm2))</div><div class="line">    print(<span class="string">'rm3: &#123;0&#125;'</span>.format(rm3))</div></pre></td></tr></table></figure>
+<h4 id="输出结果"><a href="#输出结果" class="headerlink" title="输出结果"></a>输出结果</h4><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&#123;<span class="string">'state'</span>: <span class="string">'Init'</span>&#125;</div><div class="line">&#123;<span class="string">'state'</span>: <span class="string">'Init'</span>&#125;</div><div class="line">rm1: Running</div><div class="line">rm2: Running</div><div class="line">rm1: Zombie</div><div class="line">rm2: Zombie</div><div class="line">rm1 id: 140049238365896</div><div class="line">rm2 id: 140049238365968</div><div class="line">&#123;<span class="string">'state'</span>: <span class="string">'Init'</span>&#125;</div><div class="line">rm1: Init</div><div class="line">rm2: Init</div><div class="line">rm3: Init</div></pre></td></tr></table></figure>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><ol>
+<li>借助使用类的属性(成员变量)可以实现类实例之间的变量内容共享。</li>
+<li>本文参考的代码中只是借助self.__dict__=self._shared_state这种方式描述实例间共享变量的方法。<br>但并不建议在实际中使用。因为所有的实例属性(比如增加self.name=’xx’)均会变为实例间共享的状态。</li>
+<li>__init__ 方法中的self.__dict__ = self.__shared<em>state，在类实例化过程中，因为实例中不存在\</em>_shared<em>state，<br>所以会将类的属性self.\</em>_shared_state的引用赋值给实例的self.<em>dict</em>。</li>
+</ol>
+<h4 id="待续"><a href="#待续" class="headerlink" title="待续"></a>待续</h4><p>Borg还可以写成使用装饰器的方式实现的，留待后续补充……</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/07/29/git-rm-files/" itemprop="url">
                   Git删除文件
                 </a>
@@ -504,7 +632,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">22</span>
+              <span class="site-state-item-count">23</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
