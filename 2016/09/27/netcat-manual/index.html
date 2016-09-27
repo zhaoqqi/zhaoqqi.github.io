@@ -1,0 +1,680 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="netcat, nc" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="netcat 命令">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux Netcat 命令——网络工具中的瑞士军刀（转载）">
+<meta property="og:url" content="https://zhaoqqi.github.io/2016/09/27/netcat-manual/index.html">
+<meta property="og:site_name" content="奇趣">
+<meta property="og:description" content="netcat 命令">
+<meta property="og:updated_time" content="2016-09-27T08:44:39.800Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux Netcat 命令——网络工具中的瑞士军刀（转载）">
+<meta name="twitter:description" content="netcat 命令">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="https://zhaoqqi.github.io/2016/09/27/netcat-manual/"/>
+
+  <title> Linux Netcat 命令——网络工具中的瑞士军刀（转载） | 奇趣 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?e5c4b3a25e9131a450c0498d670cabd3";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">奇趣</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">赵琦个人博客</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Linux Netcat 命令——网络工具中的瑞士军刀（转载）
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-09-27T00:00:00+08:00" content="2016-09-27">
+              2016-09-27
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Network/" itemprop="url" rel="index">
+                    <span itemprop="name">Network</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/09/27/netcat-manual/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/27/netcat-manual/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>本文转载自 <a href="https://www.oschina.net/translate/linux-netcat-command" target="_blank" rel="external">Linux Netcat 命令——网络工具中的瑞士军刀</a></p>
+<blockquote>
+<p>netcat是网络&gt; 工具中的瑞士军刀，它能通过TCP和UDP在网络中读写数据。通过与其他工具结合和重定向，你可以在脚本中以多种方式使用它。使用netcat命令所能完成的事情令人惊讶。<br>netcat所做的就是在两台电脑之间建立链接并返回两个数据流，在这之后所能做的事就看你的想像力了。你能建立一个服务器，传输文件，与朋友聊天，传输流媒体或者用它作为其它协议的独立客户端。<br>下面是一些使用netcat的例子.<br>[A(172.31.100.7) B(172.31.100.23)]</p>
+<p>Linux netcat 命令实例：</p>
+<h4 id="端口扫描"><a href="#端口扫描" class="headerlink" title="端口扫描"></a>端口扫描</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment"># nc -z -v -n 172.31.100.7 21-25</span></div><div class="line">&gt; </div><div class="line">&gt; nc: connect to 10.112.0.1 port 21 (tcp) failed: Connection refused</div><div class="line">&gt; Connection to 10.112.0.1 22 port [tcp/*] succeeded!</div><div class="line">&gt; nc: connect to 10.112.0.1 port 23 (tcp) failed: Connection refused</div><div class="line">&gt; nc: connect to 10.112.0.1 port 24 (tcp) failed: Connection refused</div><div class="line">&gt; nc: connect to 10.112.0.1 port 25 (tcp) failed: Connection refused</div><div class="line">&gt;</div></pre></td></tr></table></figure>
+<p>可以运行在TCP或者UDP模式，默认是TCP，-u参数调整为udp。<br>z 参数告诉netcat使用0 IO,连接成功后立即关闭连接，不进行数据交换<br>v 参数指使用冗余选项，即详细输出<br>n 参数告诉netcat 不要使用DNS反向查询IP地址的域名<br>这个命令会打印21到25 所有开放的端口。Banner是一个文本，Banner是一个你连接的服务发送给你的文本信息。当你试图鉴别漏洞或者服务的类型和版本的时候，Banner信息是非常有用的。但是，并不是所有的服务都会发送banner。<br>一旦你发现开放的端口，你可以容易的使用netcat 连接服务抓取他们的banner。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment"># nc -v 172.31.100.7 22</span></div><div class="line">&gt; </div><div class="line">&gt; Connection to 10.111.0.44 22 port [tcp/ssh] succeeded!</div><div class="line">&gt; SSH-2.0-OpenSSH_5.3</div><div class="line">&gt; </div><div class="line">&gt;</div></pre></td></tr></table></figure>
+<p>netcat 命令会连接开放端口21并且打印运行在这个端口上服务的banner信息。</p>
+<h4 id="Chat-Server"><a href="#Chat-Server" class="headerlink" title="Chat Server"></a>Chat Server</h4><p>假如你想和你的朋友聊聊，有很多的软件和信息服务可以供你使用。但是，如果你没有这么奢侈的配置，比如你在计算机实验室，所有的对外的连接都是被限制的，你怎样和整天坐在隔壁房间的朋友沟通那？不要郁闷了，netcat提供了这样一种方法，你只需要创建一个Chat服务器，一个预先确定好的端口，这样子他就可以联系到你了。<br>Server<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment"># nc -l 1567</span></div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>netcat 命令在1567端口启动了一个tcp 服务器，所有的标准输出和输入会输出到该端口。输出和输入都在此shell中展示。</p>
+<p>Client<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment"># nc 172.31.100.7 1567</span></div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>不管你在机器B上键入什么都会出现在机器A上。</p>
+<h4 id="文件传输"><a href="#文件传输" class="headerlink" title="文件传输"></a>文件传输</h4><p>大部分时间中，我们都在试图通过网络或者其他工具传输文件。有很多种方法，比如FTP,SCP,SMB等等，但是当你只是需要临时或者一次传输文件，真的值得浪费时间来安装配置一个软件到你的机器上嘛。假设，你想要传一个文件file.txt 从A 到B。A或者B都可以作为服务器或者客户端，以下，让A作为服务器，B为客户端。<br>Server<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment"># nc -l 1567 &lt; file.txt</span></div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>Client<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment"># nc -n 172.31.100.7 1567 &gt; file.txt</span></div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>这里我们创建了一个服务器在A上并且重定向netcat的输入为文件file.txt，那么当任何成功连接到该端口，netcat会发送file的文件内容。<br>在客户端我们重定向输出到file.txt，当B连接到A，A发送文件内容，B保存文件内容到file.txt.<br>没有必要创建文件源作为Server，我们也可以相反的方法使用。像下面的我们发送文件从B到A，但是服务器创建在A上，这次我们仅需要重定向netcat的输出并且重定向B的输入文件。</p>
+<p>B作为Server<br>Server<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment"># nc -l 1567 &gt; file.txt</span></div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>Client<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment"># nc 172.31.100.23 1567 &lt; file.txt</span></div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<h4 id="目录传输"><a href="#目录传输" class="headerlink" title="目录传输"></a>目录传输</h4><p>送一个文件很简单，但是如果我们想要发送多个文件，或者整个目录，一样很简单，只需要使用压缩工具tar，压缩后发送压缩包。<br>如果你想要通过网络传输一个目录从A到B。<br>Server<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; tar -cvf – dir_name | nc <span class="_">-l</span> 1567</div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>Client<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; nc -n 172.31.100.7 1567 | tar -xvf -</div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>这里在A服务器上，我们创建一个tar归档包并且通过-在控制台重定向它，然后使用管道，重定向给netcat，netcat可以通过网络发送它。<br>在客户端我们下载该压缩包通过netcat 管道然后打开文件。<br>如果想要节省带宽传输压缩包，我们可以使用bzip2或者其他工具压缩。<br>Server<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment"># tar -cvf – dir_name| bzip2 -z | nc -l 1567</span></div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>通过bzip2压缩<br>Client<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment"># nc -n 172.31.100.7 1567 | bzip2 -d |tar -xvf -</span></div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>使用bzip2解压</p>
+<h4 id="加密你通过网络发送的数据"><a href="#加密你通过网络发送的数据" class="headerlink" title="加密你通过网络发送的数据"></a>加密你通过网络发送的数据</h4><p>如果你担心你在网络上发送数据的安全，你可以在发送你的数据之前用如mcrypt的工具加密。<br>服务端<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment"># nc localhost 1567 | mcrypt –flush –bare -F -q -d -m ecb &gt; file.txt</span></div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>使用mcrypt工具加密数据。<br>客户端<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment"># mcrypt –flush –bare -F -q -m ecb &lt; file.txt | nc -l 1567</span></div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>使用mcrypt工具解密数据。<br>以上两个命令会提示需要密码，确保两端使用相同的密码。<br>这里我们是使用mcrypt用来加密，使用其它任意加密工具都可以。</p>
+<h4 id="流视频"><a href="#流视频" class="headerlink" title="流视频"></a>流视频</h4><p>虽然不是生成流视频的最好方法，但如果服务器上没有特定的工具，使用netcat，我们仍然有希望做成这件事。<br>服务器<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment"># cat video.avi | nc -l 1567</span></div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>这里我们只是从一个视频文件中读入并重定向输出到netcat客户端</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment"># 172.31.100.7 1567 | mplayer -vo x11 -cache 3000 -</span></div><div class="line">&gt;</div></pre></td></tr></table></figure>
+<p>这里我们从socket中读入数据并重定向到mplayer。</p>
+<h4 id="克隆一个设备"><a href="#克隆一个设备" class="headerlink" title="克隆一个设备"></a>克隆一个设备</h4><p>如果你已经安装配置一台Linux机器并且需要重复同样的操作对其他的机器，而你不想在重复配置一遍。不在需要重复配置安装的过程，只启动另一台机器的一些引导可以随身碟和克隆你的机器。<br>克隆Linux PC很简单，假如你的系统在磁盘/dev/sda上<br>Server<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment"># dd if=/dev/sda | nc -l 1567</span></div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>Client<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment"># nc -n 172.31.100.7 1567 | dd of=/dev/sda</span></div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>dd是一个从磁盘读取原始数据的工具，我通过netcat服务器重定向它的输出流到其他机器并且写入到磁盘中，它会随着分区表拷贝所有的信息。但是如果我们已经做过分区并且只需要克隆root分区，我们可以根据我们系统root分区的位置，更改sda 为sda1，sda2.等等。</p>
+<h4 id="打开一个shell"><a href="#打开一个shell" class="headerlink" title="打开一个shell"></a>打开一个shell</h4><p>我们已经用过远程shell-使用telnet和ssh，但是如果这两个命令没有安装并且我们没有权限安装他们，我们也可以使用netcat创建远程shell。<br>假设你的netcat支持 -c -e 参数(默认 netcat)<br>Server<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment"># nc -l 1567 -e /bin/bash -i</span></div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>Client<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment"># nc 172.31.100.7 1567</span></div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>这里我们已经创建了一个netcat服务器并且表示当它连接成功时执行/bin/bash</p>
+<p>假如netcat 不支持-c 或者 -e 参数（openbsd netcat）,我们仍然能够创建远程shell<br>Server<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment"># mkfifo /tmp/tmp_fifo</span></div><div class="line">&gt; <span class="comment"># cat /tmp/tmp_fifo | /bin/sh -i 2&gt;&amp;1 | nc -l 1567 &gt; /tmp/tmp_fifo</span></div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>这里我们创建了一个fifo文件，然后使用管道命令把这个fifo文件内容定向到shell 2&gt;&amp;1中。是用来重定向标准错误输出和标准输出，然后管道到netcat 运行的端口1567上。至此，我们已经把netcat的输出重定向到fifo文件中。<br>说明：<br>从网络收到的输入写到fifo文件中<br>cat 命令读取fifo文件并且其内容发送给sh命令<br>sh命令进程受到输入并把它写回到netcat。<br>netcat 通过网络发送输出到client<br>至于为什么会成功是因为管道使命令平行执行，fifo文件用来替代正常文件，因为fifo使读取等待而如果是一个普通文件，cat命令会尽快结束并开始读取空文件。</p>
+<p>在客户端仅仅简单连接到服务器<br>Client<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment"># nc -n 172.31.100.7 1567</span></div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>你会得到一个shell提示符在客户端</p>
+<h4 id="反向shell"><a href="#反向shell" class="headerlink" title="反向shell"></a>反向shell</h4><p>反向shell是指在客户端打开的shell。反向shell这样命名是因为不同于其他配置，这里服务器使用的是由客户提供的服务。<br>服务端<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment"># nc -l 1567</span></div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>在客户端，简单地告诉netcat在连接完成后，执行shell。<br>Client<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment"># nc 172.31.100.7 1567 -e /bin/bash</span></div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>现在，什么是反向shell的特别之处呢<br>反向shell经常被用来绕过防火墙的限制，如阻止入站连接。例如，我有一个专用IP地址为172.31.100.7，我使用代理服务器连接到外部网络。如果我想从网络外部访问 这台机器如1.2.3.4的shell，那么我会用反向外壳用于这一目的。<br>有点不太懂这里 囧</p>
+<h4 id="指定源端口"><a href="#指定源端口" class="headerlink" title="指定源端口"></a>指定源端口</h4><p>假设你的防火墙过滤除25端口外其它所有端口，你需要使用-p选项指定源端口。<br>服务器端<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment"># nc -l 1567</span></div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>客户端<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment"># nc 172.31.100.7 1567 -p 25</span></div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>使用1024以内的端口需要root权限。<br>该命令将在客户端开启25端口用于通讯，否则将使用随机端口。</p>
+<h4 id="指定源地址"><a href="#指定源地址" class="headerlink" title="指定源地址"></a>指定源地址</h4><p>假设你的机器有多个地址，希望明确指定使用哪个地址用于外部数据通讯。我们可以在netcat中使用-s选项指定ip地址。<br>服务器端<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; nc -u <span class="_">-l</span> 1567 &lt; file.txt</div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>客户端<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">&gt; <span class="comment"># nc -u 172.31.100.7 1567 -s 172.31.100.5 &gt; file.txt</span></div><div class="line">&gt;</div></pre></td></tr></table></figure></p>
+<p>该命令将绑定地址172.31.100.5。</p>
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p>这仅仅是使用netcat的一些示例。<br>其它用途有：</p>
+<ul>
+<li>使用-t选项模拟Telnet客户端，</li>
+<li>HTTP客户端用于下载文件，</li>
+<li>连接到邮件服务器，使用SMTP协议检查邮件，</li>
+<li>使用ffmpeg截取屏幕并通过流式传输分享，等等。其它更多用途。</li>
+</ul>
+<p>简单来说，只要你了解协议就可以使用netcat作为网络通讯媒介，实现各种客户端。<br>参考文档 <a href="https://linux.die.net/man/1/nc" target="_blank" rel="external">Netcat手册</a></p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/09/26/python-gc/" rel="next" title="Python - 垃圾回收机制">
+                <i class="fa fa-chevron-left"></i> Python - 垃圾回收机制
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/09/27/python-memery-use/" rel="prev" title="Python - 对象的内存使用">
+                Python - 对象的内存使用 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/09/27/netcat-manual/"
+           data-title="Linux Netcat 命令——网络工具中的瑞士军刀（转载）" data-url="https://zhaoqqi.github.io/2016/09/27/netcat-manual/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="赵琦" />
+          <p class="site-author-name" itemprop="name">赵琦</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#端口扫描"><span class="nav-number">1.</span> <span class="nav-text">端口扫描</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Chat-Server"><span class="nav-number">2.</span> <span class="nav-text">Chat Server</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#文件传输"><span class="nav-number">3.</span> <span class="nav-text">文件传输</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#目录传输"><span class="nav-number">4.</span> <span class="nav-text">目录传输</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#加密你通过网络发送的数据"><span class="nav-number">5.</span> <span class="nav-text">加密你通过网络发送的数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#流视频"><span class="nav-number">6.</span> <span class="nav-text">流视频</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#克隆一个设备"><span class="nav-number">7.</span> <span class="nav-text">克隆一个设备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#打开一个shell"><span class="nav-number">8.</span> <span class="nav-text">打开一个shell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#反向shell"><span class="nav-number">9.</span> <span class="nav-text">反向shell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#指定源端口"><span class="nav-number">10.</span> <span class="nav-text">指定源端口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#指定源地址"><span class="nav-number">11.</span> <span class="nav-text">指定源地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小结"><span class="nav-number">12.</span> <span class="nav-text">小结</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">赵琦</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"zhaoqqi"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

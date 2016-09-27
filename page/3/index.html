@@ -255,8 +255,8 @@
             
               
                 
-                <a class="post-title-link" href="/2016/07/29/git-rm-files/" itemprop="url">
-                  Git删除文件
+                <a class="post-title-link" href="/2016/08/02/glance-image-driver/" itemprop="url">
+                  glance-api 服务启动流程(官方Kilo版本)
                 </a>
               
             
@@ -269,8 +269,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-07-29T00:00:00+08:00" content="2016-07-29">
-              2016-07-29
+            <time itemprop="dateCreated" datetime="2016-08-02T00:00:00+08:00" content="2016-08-02">
+              2016-08-02
             </time>
           </span>
 
@@ -283,8 +283,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Github/" itemprop="url" rel="index">
-                    <span itemprop="name">Github</span>
+                  <a href="/categories/OpenStack/" itemprop="url" rel="index">
+                    <span itemprop="name">OpenStack</span>
                   </a>
                 </span>
 
@@ -299,8 +299,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/07/29/git-rm-files/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/29/git-rm-files/" itemprop="commentsCount"></span>
+                <a href="/2016/08/02/glance-image-driver/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/02/glance-image-driver/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -324,12 +324,23 @@
 
       
         
-          How to rm files in repository with github.
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/07/29/git-rm-files/">
-              阅读全文 &raquo;
-            </a>
-          </div>
+          
+            <p>glance-api 启动入口在 glance/cmd/api.py</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        config.parse_args()</div><div class="line">        wsgi.set_eventlet_hub()</div><div class="line">        logging.setup(CONF, <span class="string">'glance'</span>)</div><div class="line"></div><div class="line">        <span class="keyword">if</span> cfg.CONF.profiler.enabled:</div><div class="line">            _notifier = osprofiler.notifier.create(<span class="string">"Messaging"</span>,</div><div class="line">                                                   notifier.messaging, &#123;&#125;,</div><div class="line">                                                   notifier.get_transport(),</div><div class="line">                                                   <span class="string">"glance"</span>, <span class="string">"api"</span>,</div><div class="line">                                                   cfg.CONF.bind_host)</div><div class="line">            osprofiler.notifier.set(_notifier)</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            osprofiler.web.disable()</div><div class="line"></div><div class="line">        server = wsgi.Server(initialize_glance_store=<span class="keyword">True</span>)</div><div class="line">        server.start(config.load_paste_app(<span class="string">'glance-api'</span>), default_port=<span class="number">9292</span>)</div><div class="line">        server.wait()</div><div class="line">    <span class="keyword">except</span> KNOWN_EXCEPTIONS <span class="keyword">as</span> e:</div><div class="line">        fail(e)</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    main()</div></pre></td></tr></table></figure>
+<p>设置 disable_process_locking 和 lock_path 的默认值：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">parse_args</span><span class="params">(args=None, usage=None, default_config_files=None)</span>:</span></div><div class="line">    <span class="keyword">if</span> <span class="string">"OSLO_LOCK_PATH"</span> <span class="keyword">not</span> <span class="keyword">in</span> os.environ:</div><div class="line">        lockutils.set_defaults(tempfile.gettempdir())</div><div class="line"></div><div class="line">    <span class="comment"># 设置 project='glance', version='2015.1.0'</span></div><div class="line">    CONF(args=args,</div><div class="line">         project=<span class="string">'glance'</span>,</div><div class="line">         version=version.cached_version_string(),</div><div class="line">         usage=usage,</div><div class="line">         default_config_files=default_config_files)</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">set_defaults</span><span class="params">(lock_path)</span>:</span></div><div class="line">    <span class="string">"""Set value for lock_path.</span></div><div class="line"></div><div class="line">    This can be used by tests to set lock_path to a temporary directory.</div><div class="line">    """</div><div class="line"></div><div class="line">    <span class="comment"># lock_path='/tmp'</span></div><div class="line">    <span class="comment"># _opts = [&lt;oslo_config.cfg.BoolOpt object at 0x2d14b50&gt;, &lt;oslo_config.cfg.StrOpt object at 0x2d14c10&gt;]</span></div><div class="line">    <span class="comment"># _opts[0].name='disable_process_locking', _opts[1].name='lock_path'</span></div><div class="line">    cfg.set_defaults(_opts, lock_path=lock_path)</div></pre></td></tr></table></figure>
+<p>wsgi.set_eventlet_hub() 设置协程调度中心使用’epoll’，如果不支持’epoll’则使用’selects’：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">set_eventlet_hub</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        eventlet.hubs.use_hub(<span class="string">'poll'</span>)</div><div class="line">    <span class="keyword">except</span> Exception:</div><div class="line">        <span class="keyword">try</span>:</div><div class="line">            eventlet.hubs.use_hub(<span class="string">'selects'</span>)</div><div class="line">        <span class="keyword">except</span> Exception:</div><div class="line">            msg = _(<span class="string">"eventlet 'poll' nor 'selects' hubs are available "</span></div><div class="line">                    <span class="string">"on this platform"</span>)</div><div class="line">            <span class="keyword">raise</span> exception.WorkerCreationFailure(</div><div class="line">                reason=msg)</div></pre></td></tr></table></figure>
+<p>接下来这段使用osprofiler模块，可以配合Ceilometer实现性能分析，暂时忽略……</p>
+<p>server = wsgi.Server(initialize_glance_store=True)<br>初始化wsgi server：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, threads=<span class="number">1000</span>, initialize_glance_store=False)</span>:</span></div><div class="line">    os.umask(<span class="number">0o27</span>)  <span class="comment"># ensure files are created with the correct privileges</span></div><div class="line">    self._logger = logging.getLogger(<span class="string">"eventlet.wsgi.server"</span>)</div><div class="line">    self._wsgi_logger = loggers.WritableLogger(self._logger)</div><div class="line">    self.threads = threads</div><div class="line">    self.children = set()</div><div class="line">    self.stale_children = set()</div><div class="line">    self.running = <span class="keyword">True</span></div><div class="line">    <span class="comment"># NOTE(abhishek): Allows us to only re-initialize glance_store when</span></div><div class="line">    <span class="comment"># the API's configuration reloads.</span></div><div class="line">    self.initialize_glance_store = initialize_glance_store</div><div class="line">    self.pgid = os.getpid()</div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        <span class="comment"># NOTE(flaper87): Make sure this process</span></div><div class="line">        <span class="comment"># runs in its own process group.</span></div><div class="line">        os.setpgid(self.pgid, self.pgid)</div><div class="line">    <span class="keyword">except</span> OSError:</div><div class="line">        <span class="comment"># NOTE(flaper87): When running glance-control,</span></div><div class="line">        <span class="comment"># (glance's functional tests, for example)</span></div><div class="line">        <span class="comment"># setpgid fails with EPERM as glance-control</span></div><div class="line">        <span class="comment"># creates a fresh session, of which the newly</span></div><div class="line">        <span class="comment"># launched service becomes the leader (session</span></div><div class="line">        <span class="comment"># leaders may not change process groups)</span></div><div class="line">        <span class="comment">#</span></div><div class="line">        <span class="comment"># Running glance-(api|registry) is safe and</span></div><div class="line">        <span class="comment"># shouldn't raise any error here.</span></div><div class="line">        self.pgid = <span class="number">0</span></div></pre></td></tr></table></figure>
+<p>启动 wsgi server前 load_paste_app:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">load_paste_app</span><span class="params">(app_name, flavor=None, conf_file=None)</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line">    Builds and returns a WSGI app from a paste config file.</div><div class="line"></div><div class="line">    We assume the last config file specified in the supplied ConfigOpts</div><div class="line">    object is the paste config file, if conf_file is None.</div><div class="line"></div><div class="line">    :param app_name: name of the application to load</div><div class="line">    :param flavor: name of the variant of the application to load</div><div class="line">    :param conf_file: path to the paste config file</div><div class="line"></div><div class="line">    :raises RuntimeError when config file cannot be located or application</div><div class="line">            cannot be loaded from config file</div><div class="line">    """</div><div class="line">    <span class="comment"># append the deployment flavor to the application name,</span></div><div class="line">    <span class="comment"># in order to identify the appropriate paste pipeline</span></div><div class="line">    app_name += _get_deployment_flavor(flavor) //app_name = <span class="string">'glance-api'</span></div><div class="line"></div><div class="line">    <span class="keyword">if</span> <span class="keyword">not</span> conf_file:</div><div class="line">        conf_file = _get_deployment_config_file()</div><div class="line"></div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        logger = logging.getLogger(__name__)</div><div class="line">        logger.debug(<span class="string">"Loading %(app_name)s from %(conf_file)s"</span>,</div><div class="line">                     &#123;<span class="string">'conf_file'</span>: conf_file, <span class="string">'app_name'</span>: app_name&#125;)</div><div class="line"></div><div class="line">        app = deploy.loadapp(<span class="string">"config:%s"</span> % conf_file, name=app_name)</div><div class="line"></div><div class="line">        <span class="comment"># Log the options used when starting if we're in debug mode...</span></div><div class="line">        <span class="keyword">if</span> CONF.debug:</div><div class="line">            CONF.log_opt_values(logger, logging.DEBUG)</div><div class="line"></div><div class="line">        <span class="comment"># app 为&lt;glance.api.middleware.version_negotiation.VersionNegotiationFilter&gt;对象</span></div><div class="line">        <span class="keyword">return</span> app</div><div class="line">    <span class="keyword">except</span> (LookupError, ImportError) <span class="keyword">as</span> e:</div><div class="line">        msg = (_(<span class="string">"Unable to load %(app_name)s from "</span></div><div class="line">                 <span class="string">"configuration file %(conf_file)s."</span></div><div class="line">                 <span class="string">"\nGot: %(e)r"</span>) % &#123;<span class="string">'app_name'</span>: app_name,</div><div class="line">                                    <span class="string">'conf_file'</span>: conf_file,</div><div class="line">                                    <span class="string">'e'</span>: e&#125;)</div><div class="line">        logger.error(msg)</div><div class="line">        <span class="keyword">raise</span> RuntimeError(msg)</div></pre></td></tr></table></figure>
+<p>启动 wsgi server：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">start</span><span class="params">(self, application, default_port)</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line">    Run a WSGI server with the given application.</div><div class="line"></div><div class="line">    :param application: The application to be run in the WSGI server</div><div class="line">    :param default_port: Port to bind to if none is specified in conf</div><div class="line">    """</div><div class="line">    self.application = application</div><div class="line">    self.default_port = default_port</div><div class="line">    self.configure()</div><div class="line">    self.start_wsgi()</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">configure</span><span class="params">(self, old_conf=None, has_changed=None)</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line">    Apply configuration settings</div><div class="line"></div><div class="line">    :param old_conf: Cached old configuration settings (if any)</div><div class="line">    :param has changed: callable to determine if a parameter has changed</div><div class="line">    """</div><div class="line">    eventlet.wsgi.MAX_HEADER_LINE = CONF.max_header_line //<span class="number">16384</span></div><div class="line">    self.configure_socket(old_conf, has_changed)</div><div class="line">    <span class="keyword">if</span> self.initialize_glance_store:</div><div class="line">        initialize_glance_store()</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">configure_socket</span><span class="params">(self, old_conf=None, has_changed=None)</span>:</span></div><div class="line">        <span class="string">"""</span></div><div class="line">        Ensure a socket exists and is appropriately configured.</div><div class="line"></div><div class="line">        This function is called on start up, and can also be</div><div class="line">        called in the event of a configuration reload.</div><div class="line"></div><div class="line">        When called for the first time a new socket is created.</div><div class="line">        If reloading and either bind_host or bind port have been</div><div class="line">        changed the existing socket must be closed and a new</div><div class="line">        socket opened (laws of physics).</div><div class="line"></div><div class="line">        In all other cases (bind_host/bind_port have not changed)</div><div class="line">        the existing socket is reused.</div><div class="line"></div><div class="line">        :param old_conf: Cached old configuration settings (if any)</div><div class="line">        :param has changed: callable to determine if a parameter has changed</div><div class="line">        """</div><div class="line">        <span class="comment"># Do we need a fresh socket?</span></div><div class="line">        new_sock = (old_conf <span class="keyword">is</span> <span class="keyword">None</span> <span class="keyword">or</span> (</div><div class="line">                    has_changed(<span class="string">'bind_host'</span>) <span class="keyword">or</span></div><div class="line">                    has_changed(<span class="string">'bind_port'</span>)))</div><div class="line">        <span class="comment"># Will we be using https?</span></div><div class="line">        use_ssl = <span class="keyword">not</span> (<span class="keyword">not</span> CONF.cert_file <span class="keyword">or</span> <span class="keyword">not</span> CONF.key_file)</div><div class="line">        <span class="comment"># Were we using https before?</span></div><div class="line">        old_use_ssl = (old_conf <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span> <span class="keyword">and</span> <span class="keyword">not</span> (</div><div class="line">                       <span class="keyword">not</span> old_conf.get(<span class="string">'key_file'</span>) <span class="keyword">or</span></div><div class="line">                       <span class="keyword">not</span> old_conf.get(<span class="string">'cert_file'</span>)))</div><div class="line">        <span class="comment"># Do we now need to perform an SSL wrap on the socket?</span></div><div class="line">        wrap_sock = use_ssl <span class="keyword">is</span> <span class="keyword">True</span> <span class="keyword">and</span> (old_use_ssl <span class="keyword">is</span> <span class="keyword">False</span> <span class="keyword">or</span> new_sock)</div><div class="line">        <span class="comment"># Do we now need to perform an SSL unwrap on the socket?</span></div><div class="line">        unwrap_sock = use_ssl <span class="keyword">is</span> <span class="keyword">False</span> <span class="keyword">and</span> old_use_ssl <span class="keyword">is</span> <span class="keyword">True</span></div><div class="line"></div><div class="line">        <span class="keyword">if</span> new_sock:</div><div class="line">            self._sock = <span class="keyword">None</span></div><div class="line">            <span class="keyword">if</span> old_conf <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</div><div class="line">                self.sock.close()</div><div class="line">            _sock = get_socket(self.default_port)</div><div class="line">            _sock.setsockopt(socket.SOL_SOCKET,</div><div class="line">                             socket.SO_REUSEADDR, <span class="number">1</span>)</div><div class="line">            <span class="comment"># sockets can hang around forever without keepalive</span></div><div class="line">            _sock.setsockopt(socket.SOL_SOCKET,</div><div class="line">                             socket.SO_KEEPALIVE, <span class="number">1</span>)</div><div class="line">            self._sock = _sock</div><div class="line"></div><div class="line">        <span class="keyword">if</span> wrap_sock:</div><div class="line">            self.sock = ssl_wrap_socket(self._sock)</div><div class="line"></div><div class="line">        <span class="keyword">if</span> unwrap_sock:</div><div class="line">            self.sock = self._sock</div><div class="line"></div><div class="line">        <span class="keyword">if</span> new_sock <span class="keyword">and</span> <span class="keyword">not</span> use_ssl:</div><div class="line">            self.sock = self._sock</div><div class="line"></div><div class="line">        <span class="comment"># Pick up newly deployed certs</span></div><div class="line">        <span class="keyword">if</span> old_conf <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span> <span class="keyword">and</span> use_ssl <span class="keyword">is</span> <span class="keyword">True</span> <span class="keyword">and</span> old_use_ssl <span class="keyword">is</span> <span class="keyword">True</span>:</div><div class="line">            <span class="keyword">if</span> has_changed(<span class="string">'cert_file'</span>) <span class="keyword">or</span> has_changed(<span class="string">'key_file'</span>):</div><div class="line">                utils.validate_key_cert(CONF.key_file, CONF.cert_file)</div><div class="line">            <span class="keyword">if</span> has_changed(<span class="string">'cert_file'</span>):</div><div class="line">                self.sock.certfile = CONF.cert_file</div><div class="line">            <span class="keyword">if</span> has_changed(<span class="string">'key_file'</span>):</div><div class="line">                self.sock.keyfile = CONF.key_file</div><div class="line"></div><div class="line">        <span class="keyword">if</span> new_sock <span class="keyword">or</span> (old_conf <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span> <span class="keyword">and</span> has_changed(<span class="string">'tcp_keepidle'</span>)):</div><div class="line">            <span class="comment"># This option isn't available in the OS X version of eventlet</span></div><div class="line">            <span class="keyword">if</span> hasattr(socket, <span class="string">'TCP_KEEPIDLE'</span>):</div><div class="line">                self.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPIDLE,</div><div class="line">                                     CONF.tcp_keepidle)</div><div class="line"></div><div class="line">        <span class="keyword">if</span> old_conf <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span> <span class="keyword">and</span> has_changed(<span class="string">'backlog'</span>):</div><div class="line">            self.sock.listen(CONF.backlog)</div><div class="line"></div><div class="line"><span class="string">"""根据 /etc/glance/glance-api.conf 中的 [glance_store] 加载后端存储 driver。</span></div><div class="line">   </div><div class="line">"""</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">initialize_glance_store</span><span class="params">()</span>:</span></div><div class="line">    <span class="string">"""Initialize glance store."""</span></div><div class="line">    glance_store.register_opts(CONF)</div><div class="line">    glance_store.create_stores(CONF)</div><div class="line">    glance_store.verify_default_store()</div><div class="line"></div><div class="line"><span class="string">"""根据 /etc/glance/glance-api.conf 中的[workers]</span></div><div class="line">   启动指定数量的服务协程</div><div class="line">"""</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">start_wsgi</span><span class="params">(self)</span>:</span></div><div class="line">    <span class="keyword">if</span> CONF.workers == <span class="number">0</span>:</div><div class="line">        <span class="comment"># Useful for profiling, test, debug etc.</span></div><div class="line">        self.pool = self.create_pool()</div><div class="line">        self.pool.spawn_n(self._single_run, self.application, self.sock)</div><div class="line">        <span class="keyword">return</span></div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        LOG.info(_LI(<span class="string">"Starting %d workers"</span>) % CONF.workers)</div><div class="line">        signal.signal(signal.SIGTERM, self.kill_children)</div><div class="line">        signal.signal(signal.SIGINT, self.kill_children)</div><div class="line">        signal.signal(signal.SIGHUP, self.hup)</div><div class="line">        <span class="keyword">while</span> len(self.children) &lt; CONF.workers:</div><div class="line">            self.run_child()</div><div class="line"></div><div class="line"><span class="string">"""父进程wait子进程状态。</span></div><div class="line">   如果父进程 self.running==True，检测到子进程退出则重新启动子进程;</div><div class="line">   如果父进程 self.running==False，检测到子退出则 shutdown_safe;</div><div class="line">"""</div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">wait</span><span class="params">(self)</span>:</span></div><div class="line">    <span class="string">"""Wait until all servers have completed running."""</span></div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        <span class="keyword">if</span> self.children:</div><div class="line">            self.wait_on_children()</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            self.pool.waitall()</div><div class="line">    <span class="keyword">except</span> KeyboardInterrupt:</div><div class="line">        <span class="keyword">pass</span></div></pre></td></tr></table></figure>
+<p>天色晚了，明天继续补充和细化 :)</p>
+
+          
         
       
     </div>
@@ -505,6 +516,128 @@
             
               
                 
+                <a class="post-title-link" href="/2016/07/29/git-rm-files/" itemprop="url">
+                  Git删除文件
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-07-29T00:00:00+08:00" content="2016-07-29">
+              2016-07-29
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Github/" itemprop="url" rel="index">
+                    <span itemprop="name">Github</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/07/29/git-rm-files/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/07/29/git-rm-files/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          How to rm files in repository with github.
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/07/29/git-rm-files/">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/07/27/first-blog/" itemprop="url">
                   开篇
                 </a>
@@ -632,7 +765,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">23</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
