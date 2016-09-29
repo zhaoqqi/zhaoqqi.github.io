@@ -90,7 +90,7 @@
 <meta property="og:url" content="https://zhaoqqi.github.io/2016/09/29/mysql-3-joins/index.html">
 <meta property="og:site_name" content="赵琦的博客">
 <meta property="og:description" content="Sql 的三种连接，等值连接、左连接、右连接。">
-<meta property="og:updated_time" content="2016-09-29T06:46:26.714Z">
+<meta property="og:updated_time" content="2016-09-29T06:52:09.850Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Sql 的三种连接">
 <meta name="twitter:description" content="Sql 的三种连接，等值连接、左连接、右连接。">
@@ -329,6 +329,11 @@
 <p>左连接就是以”右表”的数据为主，如果在”左表”中的某一条记录，”左表”中不存在相应记录，则”左表”使用NULL填充。比如上面的 Sql 语句中的第三条记录，”右表”存在，”左表”不存在，则从”左表”中取的两个值由NULL填充。</p>
 <h4 id="等值连接-join"><a href="#等值连接-join" class="headerlink" title="等值连接 - join"></a>等值连接 - join</h4><p>同样的 Sql 语句：<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">select b.id, a.name, b.address, b.age from a join b on a.id = b.id and b.age &gt; 18;</div><div class="line">或者</div><div class="line">select b.id, a.name, b.address, b.age from a, b on a.id = b.id and b.age &gt; 18;</div><div class="line"></div><div class="line"># 查询结果</div><div class="line">1 Arya      Beijing  19</div><div class="line">2 Snow      Beijing  20</div></pre></td></tr></table></figure></p>
 <p>等值连接只会查询返回在两个表中均存在记录，其他的都会被过滤掉。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><ul>
+<li>左连接就是以”左表”的查询记录条数为准，若对应”右表”的记录不存在，则以NULL值填充；</li>
+<li>右连接就是以”右表”的查询记录条数为准，若对应”左表”的记录不存在，则以NULL值填充；</li>
+<li>等值连接查询结果的条数，以”左表”和”右表”全都存在的记录为准，其他记录均过滤掉；</li>
+</ul>
 
       
     </div>
@@ -354,8 +359,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/09/27/python-memery-use/" rel="next" title="Python - 对象的内存使用">
-                <i class="fa fa-chevron-left"></i> Python - 对象的内存使用
+              <a href="/2016/09/27/netcat-manual/" rel="next" title="Linux Netcat 命令——网络工具中的瑞士军刀（转载）">
+                <i class="fa fa-chevron-left"></i> Linux Netcat 命令——网络工具中的瑞士军刀（转载）
               </a>
             
           </div>
@@ -471,7 +476,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#左连接-left-join"><span class="nav-number">1.</span> <span class="nav-text">左连接 - left join</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#右连接-right-join"><span class="nav-number">2.</span> <span class="nav-text">右连接 - right join</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#等值连接-join"><span class="nav-number">3.</span> <span class="nav-text">等值连接 - join</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#左连接-left-join"><span class="nav-number">1.</span> <span class="nav-text">左连接 - left join</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#右连接-right-join"><span class="nav-number">2.</span> <span class="nav-text">右连接 - right join</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#等值连接-join"><span class="nav-number">3.</span> <span class="nav-text">等值连接 - join</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
           </div>
         </section>
