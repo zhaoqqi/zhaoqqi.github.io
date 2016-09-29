@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="OS Principles" />
+  <meta name="keywords" content="Sql, join, left join, right join" />
 
 
 
@@ -84,16 +84,16 @@
 
 
 
-<meta name="description" content="操作系统原理开篇.">
+<meta name="description" content="Sql 的三种连接，等值连接、左连接、右连接。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="操作系统原理 - 开篇">
-<meta property="og:url" content="https://zhaoqqi.github.io/2016/09/26/os-principles-intro/index.html">
+<meta property="og:title" content="Sql 的三种连接">
+<meta property="og:url" content="https://zhaoqqi.github.io/2016/09/29/mysql-3-joins/index.html">
 <meta property="og:site_name" content="赵琦的博客">
-<meta property="og:description" content="操作系统原理开篇.">
-<meta property="og:updated_time" content="2016-09-26T12:53:19.697Z">
+<meta property="og:description" content="Sql 的三种连接，等值连接、左连接、右连接。">
+<meta property="og:updated_time" content="2016-09-29T06:46:26.714Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="操作系统原理 - 开篇">
-<meta name="twitter:description" content="操作系统原理开篇.">
+<meta name="twitter:title" content="Sql 的三种连接">
+<meta name="twitter:description" content="Sql 的三种连接，等值连接、左连接、右连接。">
 
 
 
@@ -114,9 +114,9 @@
 
 
 
-  <link rel="canonical" href="https://zhaoqqi.github.io/2016/09/26/os-principles-intro/"/>
+  <link rel="canonical" href="https://zhaoqqi.github.io/2016/09/29/mysql-3-joins/"/>
 
-  <title> 操作系统原理 - 开篇 | 赵琦的博客 </title>
+  <title> Sql 的三种连接 | 赵琦的博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -256,7 +256,7 @@
             
             
               
-                操作系统原理 - 开篇
+                Sql 的三种连接
               
             
           </h1>
@@ -268,8 +268,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-09-26T00:00:00+08:00" content="2016-09-26">
-              2016-09-26
+            <time itemprop="dateCreated" datetime="2016-09-29T00:00:00+08:00" content="2016-09-29">
+              2016-09-29
             </time>
           </span>
 
@@ -282,8 +282,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/操作系统/" itemprop="url" rel="index">
-                    <span itemprop="name">操作系统</span>
+                  <a href="/categories/Sql/" itemprop="url" rel="index">
+                    <span itemprop="name">Sql</span>
                   </a>
                 </span>
 
@@ -298,8 +298,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/09/26/os-principles-intro/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/26/os-principles-intro/" itemprop="commentsCount"></span>
+                <a href="/2016/09/29/mysql-3-joins/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/29/mysql-3-joins/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -322,12 +322,13 @@
       
 
       
-        <p>先开个新分类 “操作系统原理” :) 。大方向来看，主要想学习以下内容(边学习变更新吧)：</p>
-<ol>
-<li>文件管理</li>
-<li>内存管理</li>
-</ol>
-<p>目前为止，解除的优秀的开源软件源码中，都会有linux操作系统原理的影子。所谓万变不离其宗，这个宗也就是操作系统的实现原理了。通过这一系列内容的学习和整理，希望自己对系统级软件的设计思想有一定程度的认识，站到巨人的肩膀上，让其思想变为自己的思想。</p>
+        <p>每次涉及到写复杂 sql 语句时，总是忘记等值连接、左连接、右连接这三种连接方式的区别。索性就写在这里，留着日后忘记了有个统一的地方查询。本文以 Mysql 数据库为例，进行简单描述和记录。</p>
+<h4 id="左连接-left-join"><a href="#左连接-left-join" class="headerlink" title="左连接 - left join"></a>左连接 - left join</h4><p>先看个简单的 Sql 语句:<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">select a.id, a.name, b.address, b.age from a left join b on a.id = b.id and b.age &gt; 18;</div><div class="line"></div><div class="line"># 查询结果</div><div class="line">1 Arya      Beijing 19</div><div class="line">2 Snow      Beijing 20</div><div class="line">3 ShangSha  NULL    NULL</div></pre></td></tr></table></figure></p>
+<p>左连接就是以”左表”的数据为主，如果在”左表”中的某一条记录，”右表”中不存在相应记录，则”右表”使用NULL填充。比如上面的 Sql 语句中的第三条记录，”左表”存在，”右表”不存在，则从”右表”中取的两个值由NULL填充。</p>
+<h4 id="右连接-right-join"><a href="#右连接-right-join" class="headerlink" title="右连接 - right join"></a>右连接 - right join</h4><p>同样看个例子：<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">select b.id, a.name, b.address, b.age from a left join b on a.id = b.id and b.age &gt; 18;</div><div class="line"></div><div class="line"># 查询结果</div><div class="line">1 NULL      Beijing  19 </div><div class="line">2 NULL      Beijing  20</div><div class="line">3 Halfman   Shanghai 32</div></pre></td></tr></table></figure></p>
+<p>左连接就是以”右表”的数据为主，如果在”左表”中的某一条记录，”左表”中不存在相应记录，则”左表”使用NULL填充。比如上面的 Sql 语句中的第三条记录，”右表”存在，”左表”不存在，则从”左表”中取的两个值由NULL填充。</p>
+<h4 id="等值连接-join"><a href="#等值连接-join" class="headerlink" title="等值连接 - join"></a>等值连接 - join</h4><p>同样的 Sql 语句：<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">select b.id, a.name, b.address, b.age from a join b on a.id = b.id and b.age &gt; 18;</div><div class="line">或者</div><div class="line">select b.id, a.name, b.address, b.age from a, b on a.id = b.id and b.age &gt; 18;</div><div class="line"></div><div class="line"># 查询结果</div><div class="line">1 Arya      Beijing  19</div><div class="line">2 Snow      Beijing  20</div></pre></td></tr></table></figure></p>
+<p>等值连接只会查询返回在两个表中均存在记录，其他的都会被过滤掉。</p>
 
       
     </div>
@@ -353,17 +354,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/09/26/python-gc/" rel="next" title="Python - 垃圾回收机制">
-                <i class="fa fa-chevron-left"></i> Python - 垃圾回收机制
+              <a href="/2016/09/27/python-memery-use/" rel="next" title="Python - 对象的内存使用">
+                <i class="fa fa-chevron-left"></i> Python - 对象的内存使用
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/09/27/netcat-manual/" rel="prev" title="Linux Netcat 命令——网络工具中的瑞士军刀（转载）">
-                Linux Netcat 命令——网络工具中的瑞士军刀（转载） <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -389,8 +386,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/09/26/os-principles-intro/"
-           data-title="操作系统原理 - 开篇" data-url="https://zhaoqqi.github.io/2016/09/26/os-principles-intro/">
+      <div class="ds-thread" data-thread-key="2016/09/29/mysql-3-joins/"
+           data-title="Sql 的三种连接" data-url="https://zhaoqqi.github.io/2016/09/29/mysql-3-joins/">
       </div>
     
   </div>
@@ -474,7 +471,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#左连接-left-join"><span class="nav-number">1.</span> <span class="nav-text">左连接 - left join</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#右连接-right-join"><span class="nav-number">2.</span> <span class="nav-text">右连接 - right join</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#等值连接-join"><span class="nav-number">3.</span> <span class="nav-text">等值连接 - join</span></a></li></ol></div>
             
           </div>
         </section>
