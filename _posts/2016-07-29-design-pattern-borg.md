@@ -2,7 +2,7 @@
 layout: post
 title: Borg — 多个实例间共享状态
 categories: [DesignPattern]
-description: 
+description: 多个实例间共享状态
 keywords: shared state, Borg
 ---
 

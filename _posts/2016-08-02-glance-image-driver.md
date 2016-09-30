@@ -2,7 +2,7 @@
 layout: post
 title: glance-api 服务启动流程(官方Kilo版本)
 categories: [OpenStack]
-description: 
+description: glance-api 服务启动流程整理
 keywords: Glance
 ---
 
