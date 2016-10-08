@@ -1548,7 +1548,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #741cff;
+  background: #f6050f;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -2229,7 +2229,7 @@ hr {
 .custom-logo .site-title a {
   border: none;
 }
-.custom-logo-image {
+.custom-logo .custom-logo-image {
   margin: 0 auto;
   padding: 5px;
   max-width: 150px;

@@ -1,0 +1,697 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="baidu-site-verification" content="SnSsXXc5Pc" />
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Network, ICMP" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="Learn icmp with Wireshark.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Wireshark学习网络协议之ICMP">
+<meta property="og:url" content="https://zhaoqqi.github.io/2016/10/05/network-wireshark-arp/index.html">
+<meta property="og:site_name" content="风子会化绳棉腿">
+<meta property="og:description" content="Learn icmp with Wireshark.">
+<meta property="og:updated_time" content="2016-10-08T01:53:04.508Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用Wireshark学习网络协议之ICMP">
+<meta name="twitter:description" content="Learn icmp with Wireshark.">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="https://zhaoqqi.github.io/2016/10/05/network-wireshark-arp/"/>
+
+  <title> 使用Wireshark学习网络协议之ICMP | 风子会化绳棉腿 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?e5c4b3a25e9131a450c0498d670cabd3";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">风子会化绳棉腿</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">赵琦个人博客</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                使用Wireshark学习网络协议之ICMP
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-05T00:00:00+08:00" content="2016-10-05">
+              2016-10-05
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Network/" itemprop="url" rel="index">
+                    <span itemprop="name">Network</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/05/network-wireshark-arp/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/05/network-wireshark-arp/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>使用 ICMP 协议的两个目的：熟悉 Wireshark 的报文结构；该协议相对简单，完事开头难，先开个好头。</p>
+<h4 id="什么是-ICMP"><a href="#什么是-ICMP" class="headerlink" title="什么是 ICMP"></a>什么是 ICMP</h4><p>网络控制消息协议（英文：Internet Control Message Protocol，ICMP）是网路协议族的核心协议之一。它用于TCP/IP网络中发送控制消息，提供可能发生在通信环境中的各种问题反馈，通过这些信息，令管理者可以对所发生的问题作出诊断，然后采取适当的措施解决。</p>
+<p>ICMP 依靠IP来完成它的任务，它是IP的主要部分。它与传输协议，如TCP和UDP显著不同：它一般不用于在两点间传输数据。它通常不由网络程序直接使用，除了ping和traceroute这两个特别的例子。 IPv4中的ICMP被称作ICMPv4，IPv6中的ICMP则被称作ICMPv6。</p>
+<h4 id="技术细节"><a href="#技术细节" class="headerlink" title="技术细节"></a>技术细节</h4><p>ICMP是在RFC 792中定义的互联网协议族之一。通常用于返回的错误信息或是分析路由。ICMP错误消息总是包括了源数据并返回给发送者。 ICMP错误消息的例子之一是TTL值过期。每个路由器在转发数据报的时候都会把IP包头中的TTL值减一。如果TTL值为0，“TTL在传输中过期”的消息将会回报给源地址。 每个ICMP消息都是直接封装在一个IP数据包中的，因此，和UDP一样，ICMP是不可靠的。</p>
+<p>虽然ICMP是包含在IP数据包中的，但是对ICMP消息通常会特殊处理，会和一般IP数据包的处理不同，而不是作为IP的一个子协议来处理。在很多时候，需要去查看ICMP消息的内容，然后发送适当的错误消息到那个原来产生IP数据包的程序，即那个导致ICMP讯息被传送的IP数据包。</p>
+<p>很多常用的工具是基于ICMP消息的。traceroute是通过发送包含有特殊的TTL的包，然后接收ICMP超时消息和目标不可达消息来实现的。ping则是用ICMP的”Echo request”（类别代码：8）和”Echo reply”（类别代码：0）消息来实现的。</p>
+<h4 id="ICMP-部分的报文结构"><a href="#ICMP-部分的报文结构" class="headerlink" title="ICMP 部分的报文结构"></a>ICMP 部分的报文结构</h4><h5 id="报头"><a href="#报头" class="headerlink" title="报头"></a>报头</h5><p>ICMP报头从IP报头的第160位开始（除非使用了IP报头的可选部分）。</p>
+<table>
+<thead>
+<tr>
+<th>Bits</th>
+<th style="text-align:center">160-167</th>
+<th style="text-align:right">168-175</th>
+<th style="text-align:right">176-183 + 184-191</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>160</td>
+<td style="text-align:center">Type</td>
+<td style="text-align:right">Code</td>
+<td style="text-align:right">校验码（checksum）</td>
+</tr>
+<tr>
+<td>192</td>
+<td style="text-align:center">ID</td>
+<td style="text-align:right">ID</td>
+<td style="text-align:right">序号（sequence)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Type - ICMP的类型,标识生成的错误报文；</li>
+<li>Code - 进一步划分ICMP的类型,该字段用来查找产生错误的原因.；例如，ICMP的目标不可达类型可以把这个位设为1至15等来表示不同的意思。</li>
+<li>Checksum - 校验码部分,这个字段包含有从ICMP报头和数据部分计算得来的，用于检查错误的数据，其中此校验码字段的值视为0。</li>
+<li>ID - 这个字段包含了ID值，在Echo Reply类型的消息中要返回这个字段。</li>
+<li>Sequence - 这个字段包含一个序号，同样要在Echo Reply类型的消息中要返回这个字段。</li>
+</ul>
+<h5 id="填充数据"><a href="#填充数据" class="headerlink" title="填充数据"></a>填充数据</h5><p>填充的数据紧接在ICMP报头的后面（以8位为一组）：</p>
+<ul>
+<li>Linux的”ping”工具填充的ICMP除了8个8字节的报头以外，默认情况下还另外填充数据使得总大小为64字节。</li>
+<li>Windows的”ping.exe”填充的ICMP除了8个8字节的报头以外，默认情况下还另外填充数据使得总大小为40字节。</li>
+</ul>
+<h4 id="使用-Wireshark-分析"><a href="#使用-Wireshark-分析" class="headerlink" title="使用 Wireshark 分析"></a>使用 Wireshark 分析</h4><h5 id="运行环境"><a href="#运行环境" class="headerlink" title="运行环境"></a>运行环境</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">测试机IP：192.168.1.103</div><div class="line">目标机IP：192.168.1.1</div><div class="line">测试命令：ping 192.168.1.1</div></pre></td></tr></table></figure>
+<h5 id="抓取-ICMP-数据包"><a href="#抓取-ICMP-数据包" class="headerlink" title="抓取 ICMP 数据包"></a>抓取 ICMP 数据包</h5><p>截图：Wireshark抓到ping之后的主窗口截图</p>
+<p>如上图所示，Wireshark 的主窗口分为三大块：Packlist List（数据包列表）、Packet Details（数据包细节）、Packet Bytes（数据包字节）。</p>
+<p>数据包列表中的数据记录就是通过过滤器抓取到的所有数据包。单击其中一条数据包记录，可以在数据部细节中看到该数据包的详细信息，在数据部字节中看到16进制表示的数据包内容。</p>
+<p>我们看下序列号为1的icmp的请求数据包的详细信息分为四行：</p>
+<ul>
+<li><blockquote>
+<p>Frame 2: 74 bytes on wire (592 bits), 74 bytes captured (592 bits) on interface 0</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>Ethernet II, Src: ec:88:8f:74:b7:14 (ec:88:8f:74:b7:14), Dst: 60:d8:19:c7:a4:9b (60:d8:19:c7:a4:9b)</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>Internet Protocol Version 4, Src: 192.168.1.1 (192.168.1.1), Dst: 192.168.1.103 (192.168.1.103)</p>
+</blockquote>
+</li>
+<li><blockquote>
+<p>Internet Control Message Protocol</p>
+</blockquote>
+</li>
+</ul>
+<p>我们看到，<code>Packet Details</code>的内容会按照OSI模型中的层的概念划分，显示为以下内容：</p>
+<ul>
+<li>Frame：物理层的数据帧概况。</li>
+<li>Ethernet II：数据链路层以太网帧头部信息。</li>
+<li>Internet Protocol Version 4：互联网层IP包头部信息。</li>
+<li>Internet Control Message Protocol：传输层的数据段头部信息，此处是 ICMP 协议。</li>
+</ul>
+<h5 id="分析-ICMP-数据包"><a href="#分析-ICMP-数据包" class="headerlink" title="分析 ICMP 数据包"></a>分析 ICMP 数据包</h5><h6 id="物理层的数据帧"><a href="#物理层的数据帧" class="headerlink" title="物理层的数据帧"></a>物理层的数据帧</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">数据帧<span class="number">1</span>：电缆上共<span class="number">74</span>字节(<span class="number">592</span> bits)，网卡<span class="number">0</span>上捕获<span class="number">74</span>字节(<span class="number">592</span> bits)。</div><div class="line">    网卡ID：<span class="number">0</span></div><div class="line">    封装类型：Ethernet (<span class="number">1</span>)</div><div class="line">    到达时间：<span class="number">2016</span>/<span class="number">10</span>/<span class="number">04</span> <span class="number">06</span>:<span class="number">57</span>:<span class="number">10.029231000</span></div><div class="line">    [本报文的时间偏移(time shift)：<span class="number">0.000000000</span>]</div><div class="line">    到达时刻：<span class="number">1475535430.029231000</span> seconds</div><div class="line">    [Time delta from previous captured frame: <span class="number">0.000000000</span> seconds]</div><div class="line">    [Time delta from previous displayed frame: <span class="number">0.000000000</span> seconds]</div><div class="line">    [Time since reference or first frame: <span class="number">0.000000000</span> seconds]</div><div class="line">    帧编号：<span class="number">1</span></div><div class="line">    帧长度：<span class="number">74</span>字节(<span class="number">592</span> bits)</div><div class="line">    捕获长度：<span class="number">74</span>字节(<span class="number">592</span> bits)</div><div class="line">    [帧是否被标记: False]</div><div class="line">    [帧是否被忽略: False]</div><div class="line">    [帧中的协议：eth:ethertype:ip:icmp:data]</div><div class="line">    [使用颜色标记的rule name：ICMP]</div><div class="line">    [使用颜色标记的rule <span class="built_in">string</span>：icmp || icmpv6]</div></pre></td></tr></table></figure>
+<h6 id="数据链路层-以太网帧头部"><a href="#数据链路层-以太网帧头部" class="headerlink" title="数据链路层-以太网帧头部"></a>数据链路层-以太网帧头部</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Ethernet II, 源：<span class="number">60</span>:d8:<span class="number">19</span>:c7:a4:<span class="number">9b</span>(<span class="number">60</span>:d8:<span class="number">19</span>:c7:a4:<span class="number">9b</span>)，目的：ec:<span class="number">88</span>:<span class="number">8f</span>:<span class="number">74</span>:b7:<span class="number">14</span>(ec:<span class="number">88</span>:<span class="number">8f</span>:<span class="number">74</span>:b7:<span class="number">14</span>)</div><div class="line">    目的地：ec:<span class="number">88</span>:<span class="number">8f</span>:<span class="number">74</span>:b7:<span class="number">14</span>(ec:<span class="number">88</span>:<span class="number">8f</span>:<span class="number">74</span>:b7:<span class="number">14</span>)</div><div class="line">        地址：ec:<span class="number">88</span>:<span class="number">8f</span>:<span class="number">74</span>:b7:<span class="number">14</span>(ec:<span class="number">88</span>:<span class="number">8f</span>:<span class="number">74</span>:b7:<span class="number">14</span>)</div><div class="line">    来源：<span class="number">60</span>:d8:<span class="number">19</span>:c7:a4:<span class="number">9b</span>(<span class="number">60</span>:d8:<span class="number">19</span>:c7:a4:<span class="number">9b</span>)</div><div class="line">        地址：<span class="number">60</span>:d8:<span class="number">19</span>:c7:a4:<span class="number">9b</span>(<span class="number">60</span>:d8:<span class="number">19</span>:c7:a4:<span class="number">9b</span>)</div></pre></td></tr></table></figure>
+<h6 id="网络层IP包头"><a href="#网络层IP包头" class="headerlink" title="网络层IP包头"></a>网络层IP包头</h6><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line">网络协议版本<span class="number">4</span>，源：<span class="number">192.168</span><span class="number">.1</span><span class="number">.103</span>(<span class="number">192.168</span><span class="number">.1</span><span class="number">.103</span>)，目的：<span class="number">192.168</span><span class="number">.1</span><span class="number">.1</span>(<span class="number">192.168</span><span class="number">.1</span><span class="number">.1</span>)</div><div class="line">    版本：<span class="number">4</span></div><div class="line">    包头长度：<span class="number">20</span>字节</div><div class="line">    差分服务字段：<span class="number">0x00</span></div><div class="line">    总长度：<span class="number">60</span></div><div class="line">    标识：<span class="number">0x1e4b</span>(<span class="number">7755</span>)</div><div class="line">    标志位：<span class="number">0x00</span></div><div class="line">      <span class="number">0.</span>.. = 保留位：未设置</div><div class="line">      <span class="number">.0</span>.. = Don't Fragment：未设置</div><div class="line">      .<span class="number">.0</span>. = More Fragment：未设置</div><div class="line">    Fragment offset: <span class="number">0</span></div><div class="line">    Time to live: <span class="number">64</span></div><div class="line">    协议：ICMP(<span class="number">1</span>)</div><div class="line">    包头校验和：<span class="number">0xd8bd</span> [validation disabled]</div><div class="line">      [Good: False]</div><div class="line">      [Bad: False]</div><div class="line">    来源：<span class="number">192.168</span><span class="number">.1</span><span class="number">.103</span>(<span class="number">192.168</span><span class="number">.1</span><span class="number">.103</span>)</div><div class="line">    目的：<span class="number">192.168</span><span class="number">.1</span><span class="number">.1</span>(<span class="number">192.168</span><span class="number">.1</span><span class="number">.1</span>)</div><div class="line">    [来源GeoIP: 未知]</div><div class="line">    [目的GeoIP: 未知]</div></pre></td></tr></table></figure>
+<h6 id="IP-包中-ICMP-的内容"><a href="#IP-包中-ICMP-的内容" class="headerlink" title="IP 包中 ICMP 的内容"></a>IP 包中 ICMP 的内容</h6><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">/* 请求包 */</div><div class="line">网络控制消息协议</div><div class="line">    Type: 8 (Echo (ping) request)</div><div class="line">    code: 0</div><div class="line">    checksum: 0x4c5b [correct]</div><div class="line">    Identifier (BE): 256 (0x0100)</div><div class="line">    Identifier (LE): 1 (0x0001)</div><div class="line">    Sequence number (BE): 1 (0x0001)</div><div class="line">    Sequence number (LE): 256 (0x0100)</div><div class="line">    [Response frame 2] </div><div class="line">    Data: (32 bytes)</div><div class="line">      Data: 6162636465666768696a6b6c6d6e6f707172737475767761...</div><div class="line">      Length: 32</div><div class="line"></div><div class="line">/* 返回包 */</div><div class="line">网络控制消息协议</div><div class="line">    Type: 8 (Echo (ping) reply)</div><div class="line">    code: 0</div><div class="line">    checksum: 0x4c5b [correct]</div><div class="line">    Identifier (BE): 256 (0x0100)</div><div class="line">    Identifier (LE): 1 (0x0001)</div><div class="line">    Sequence number (BE): 1 (0x0001)</div><div class="line">    Sequence number (LE): 256 (0x0100)</div><div class="line">    [Request frame 1]</div><div class="line">    [Response time: 1.471 ms]</div><div class="line">    Data: (32 bytes)</div><div class="line">      Data: 6162636465666768696a6b6c6d6e6f707172737475767761...</div><div class="line">      Length: 32</div></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/04/network-wireshark-manual/" rel="next" title="Wireshark使用手册">
+                <i class="fa fa-chevron-left"></i> Wireshark使用手册
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/10/05/network-wireshark-arp/"
+           data-title="使用Wireshark学习网络协议之ICMP" data-url="https://zhaoqqi.github.io/2016/10/05/network-wireshark-arp/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="赵琦" />
+          <p class="site-author-name" itemprop="name">赵琦</p>
+          <p class="site-description motion-element" itemprop="description">赵琦的博客</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#什么是-ICMP"><span class="nav-number">1.</span> <span class="nav-text">什么是 ICMP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#技术细节"><span class="nav-number">2.</span> <span class="nav-text">技术细节</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ICMP-部分的报文结构"><span class="nav-number">3.</span> <span class="nav-text">ICMP 部分的报文结构</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#报头"><span class="nav-number">3.1.</span> <span class="nav-text">报头</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#填充数据"><span class="nav-number">3.2.</span> <span class="nav-text">填充数据</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用-Wireshark-分析"><span class="nav-number">4.</span> <span class="nav-text">使用 Wireshark 分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#运行环境"><span class="nav-number">4.1.</span> <span class="nav-text">运行环境</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#抓取-ICMP-数据包"><span class="nav-number">4.2.</span> <span class="nav-text">抓取 ICMP 数据包</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#分析-ICMP-数据包"><span class="nav-number">4.3.</span> <span class="nav-text">分析 ICMP 数据包</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#物理层的数据帧"><span class="nav-number">4.3.1.</span> <span class="nav-text">物理层的数据帧</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#数据链路层-以太网帧头部"><span class="nav-number">4.3.2.</span> <span class="nav-text">数据链路层-以太网帧头部</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#网络层IP包头"><span class="nav-number">4.3.3.</span> <span class="nav-text">网络层IP包头</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#IP-包中-ICMP-的内容"><span class="nav-number">4.3.4.</span> <span class="nav-text">IP 包中 ICMP 的内容</span></a></li></ol></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">赵琦</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"zhaoqqi"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

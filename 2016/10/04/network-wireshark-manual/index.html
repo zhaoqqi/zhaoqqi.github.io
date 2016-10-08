@@ -1,0 +1,669 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="baidu-site-verification" content="SnSsXXc5Pc" />
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Network" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="Wireshark基本使用方法记录.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Wireshark使用手册">
+<meta property="og:url" content="https://zhaoqqi.github.io/2016/10/04/network-wireshark-manual/index.html">
+<meta property="og:site_name" content="风子会化绳棉腿">
+<meta property="og:description" content="Wireshark基本使用方法记录.">
+<meta property="og:updated_time" content="2016-10-08T01:52:04.049Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Wireshark使用手册">
+<meta name="twitter:description" content="Wireshark基本使用方法记录.">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="https://zhaoqqi.github.io/2016/10/04/network-wireshark-manual/"/>
+
+  <title> Wireshark使用手册 | 风子会化绳棉腿 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?e5c4b3a25e9131a450c0498d670cabd3";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">风子会化绳棉腿</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">赵琦个人博客</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Wireshark使用手册
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-04T00:00:00+08:00" content="2016-10-04">
+              2016-10-04
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Network/" itemprop="url" rel="index">
+                    <span itemprop="name">Network</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/04/network-wireshark-manual/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/04/network-wireshark-manual/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="是什么"><a href="#是什么" class="headerlink" title="是什么"></a>是什么</h4><p>Wireshark 是可以根据协议类型、源或目的主机、目标端口不同，对网络数据包进行抓取和分析的强有力的工具软件。</p>
+<h4 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h4><p>本篇作为整理网络知识体系的准备篇，需要将 Wireshark 作为分析各种网络协议的得力工具，贯穿整个网络系列学习文章书写的始终。</p>
+<h4 id="过滤器"><a href="#过滤器" class="headerlink" title="过滤器"></a>过滤器</h4><p>使用 Wireshark 的默认设置时，会抓取到大量冗余的数据包，以至于很难找到自己需要的部分。这时候就需要使用过滤器。</p>
+<p>Wireshark 的过滤器分为两种类型：捕获过滤器 和 显示过滤器。</p>
+<h5 id="捕获过滤器"><a href="#捕获过滤器" class="headerlink" title="捕获过滤器"></a>捕获过滤器</h5><p>捕获过滤器是数据经过第一次过滤，通过网络协议类型、源主机、目的主机、端口号等参数，来过滤你需要的数据包，语法有点类似 tcpdump。捕捉过滤器必须在开始捕捉前设置完毕，这一点跟显示过滤器是不同的。 </p>
+<p>设置使用那个 filter 进行过滤：</p>
+<ol>
+<li>选择 Capture -&gt; Options ；</li>
+<li>在 Capture Filters 栏填写过滤规则或者点击该栏；</li>
+<li>点击后选择之前保持好的过滤器；</li>
+<li>点击 start 开始过滤数据包；</li>
+</ol>
+<p>新增一个捕获过滤器：</p>
+<ol>
+<li>选择 Capture -&gt; Options ；</li>
+<li>点击 Capture Filters -&gt; New；</li>
+<li>填写 Filter name 和 Filter string；</li>
+<li>保持</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">语法：Protocol  Direction  Host(s)  Value  Logical Operations  Other expression</div><div class="line">例子：tcp       dst        10.1.1.1  80           and          tcp dst 10.2.2.2 3128</div></pre></td></tr></table></figure>
+<h6 id="Protocol（协议）"><a href="#Protocol（协议）" class="headerlink" title="Protocol（协议）"></a>Protocol（协议）</h6><ul>
+<li>可能的值: ether, fddi, ip, arp, rarp, decnet, lat, sca, moprc, mopdl, tcp and udp。</li>
+<li>如果没有特别指明是什么协议，则默认使用所有支持的协议。</li>
+</ul>
+<h6 id="Direction（方向）"><a href="#Direction（方向）" class="headerlink" title="Direction（方向）"></a>Direction（方向）</h6><ul>
+<li>可能的值: src, dst, src and dst, src or dst。</li>
+<li>如果没有特别指明方向，则默认使用 <code>src or dst</code> 作为关键字。</li>
+</ul>
+<h6 id="Host-s"><a href="#Host-s" class="headerlink" title="Host(s)"></a>Host(s)</h6><ul>
+<li>可能的值： net, port, host, portrange。</li>
+<li>如果没有指定，则默认使用”host”关键字。</li>
+</ul>
+<h6 id="Logical-Operations（逻辑运算）"><a href="#Logical-Operations（逻辑运算）" class="headerlink" title="Logical Operations（逻辑运算）"></a>Logical Operations（逻辑运算）</h6><ul>
+<li>可能的值：not, and, or。</li>
+<li>否(“not”)具有最高的优先级。或(“or”)和与(“and”)具有相同的优先级，运算时从左至右进行。</li>
+</ul>
+<h6 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 显示目的TCP端口为8898的封包</span></div><div class="line">tcp dst port 8898</div><div class="line"></div><div class="line"><span class="comment"># 显示来自IP 192.168.1.2的封包</span></div><div class="line">ip src host 192.168.1.2</div><div class="line"></div><div class="line"><span class="comment"># 显示来源或者目的为192.168.1.2的封包</span></div><div class="line">host 192.168.1.2</div><div class="line"></div><div class="line"><span class="comment"># 显示来源是udp或者tcp，并且端口号在21-25范围内的封包</span></div><div class="line">src portrange 21-25</div><div class="line"></div><div class="line"><span class="comment"># 显示出了icmp以外的封包</span></div><div class="line">not icmp</div><div class="line"></div><div class="line"><span class="comment"># 显示来源是10.7.2.12，并且目的不是10.200.0.0/16的封包</span></div><div class="line">src host 10.7.2.12 and not dst net 10.200.0.0/16</div><div class="line"></div><div class="line"><span class="comment"># 显示来源是10.4.1.12或者10.6.0.0/16，目的tcp端口在200-10000范围内，并且目的不是10.0.0.0/8的封包</span></div><div class="line">(src host 10.4.1.12 or src net 10.6.0.0/16) and tcp dst portrange 200-10000 and dst net 10.0.0.0/8</div></pre></td></tr></table></figure>
+<h5 id="显示过滤器"><a href="#显示过滤器" class="headerlink" title="显示过滤器"></a>显示过滤器</h5><p>通常经过铺货过滤器后的数据还是很复杂，显示过滤器的过滤功能更加强大，它允许你在日志中迅速准确的找到所需要的记录。它的功能比捕捉过滤器更为强大，而且在您想修改过滤器条件时，并不需要重新捕捉一次。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">语法：Protocol.string1.string2 | Comparison operator | Value | Logical Operations | Other expression</div><div class="line">例子：ftp      passive    ip              ==          10.2.3.4       xor                  icmp.type</div></pre></td></tr></table></figure>
+<h6 id="Protocol（协议）-1"><a href="#Protocol（协议）-1" class="headerlink" title="Protocol（协议）"></a>Protocol（协议）</h6><p>你可以使用大量位于OSI模型第2至7层的协议。点击”Expression…”按钮后，你可以看到它们。比如：IP，TCP，DNS，SSH。</p>
+<h6 id="String1-String2-可选项"><a href="#String1-String2-可选项" class="headerlink" title="String1, String2 (可选项)"></a>String1, String2 (可选项)</h6><p>协议的子类，点开协议名称左侧的 + 号可以看到它们。</p>
+<h6 id="Comparison-operators（比较运算符）"><a href="#Comparison-operators（比较运算符）" class="headerlink" title="Comparison operators（比较运算符）"></a>Comparison operators（比较运算符）</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">== </div><div class="line">!=</div><div class="line">&gt;</div><div class="line">&lt;</div><div class="line">&gt;=</div><div class="line">&lt;=</div><div class="line">contains</div><div class="line">matches</div></pre></td></tr></table></figure>
+<h6 id="Logical-expressions（逻辑运算符）"><a href="#Logical-expressions（逻辑运算符）" class="headerlink" title="Logical expressions（逻辑运算符）"></a>Logical expressions（逻辑运算符）</h6><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">and &amp;&amp;</div><div class="line">or  ||</div><div class="line">xor ^^ 只有当且仅当其中一个条件满足时为真</div><div class="line">not !</div></pre></td></tr></table></figure>
+<h6 id="例子-1"><a href="#例子-1" class="headerlink" title="例子"></a>例子</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"># 显示snmp或dns或icmp的封包</div><div class="line">snmp || dns || icmp </div><div class="line"></div><div class="line"># 显示原或者目的ip地址为192.168.1.1的封包</div><div class="line">ip.addr == 192.168.1.1</div><div class="line"></div><div class="line"># 显示来源IP地址除了10.1.2.3，或者目的IP地址除了10.4.5.6的封包</div><div class="line">ip.src != 10.1.2.3 or ip.dst != 10.4.5.6</div><div class="line"></div><div class="line"># 显示来源IP地址除了10.1.2.3，并且目的IP地址除了10.4.5.6的封包</div><div class="line">ip.src != 10.1.2.3 and ip.dst != 10.4.5.6</div><div class="line"></div><div class="line"># 显示来源或者目的TCP端口为25的封包</div><div class="line">tcp.port == 25</div><div class="line"></div><div class="line"># 显示目的TCP端口为25的封包</div><div class="line">tcp.dst_port == 25</div><div class="line"></div><div class="line"># 显示带有TCP标识的封包</div><div class="line">tcp.flags </div><div class="line"></div><div class="line"># 显示带有TCP SYNC的封包</div><div class="line">tcp.flags.syn == 0x02</div></pre></td></tr></table></figure>
+<p>如果过滤器的语法正确，表达式的背景显示为绿色；如果过滤器语法错误，背景显示为红色。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/09/29/mysql-3-joins/" rel="next" title="Sql 的三种连接">
+                <i class="fa fa-chevron-left"></i> Sql 的三种连接
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/05/network-wireshark-arp/" rel="prev" title="使用Wireshark学习网络协议之ICMP">
+                使用Wireshark学习网络协议之ICMP <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/10/04/network-wireshark-manual/"
+           data-title="Wireshark使用手册" data-url="https://zhaoqqi.github.io/2016/10/04/network-wireshark-manual/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="赵琦" />
+          <p class="site-author-name" itemprop="name">赵琦</p>
+          <p class="site-description motion-element" itemprop="description">赵琦的博客</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">12</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#是什么"><span class="nav-number">1.</span> <span class="nav-text">是什么</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#作用"><span class="nav-number">2.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#过滤器"><span class="nav-number">3.</span> <span class="nav-text">过滤器</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#捕获过滤器"><span class="nav-number">3.1.</span> <span class="nav-text">捕获过滤器</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Protocol（协议）"><span class="nav-number">3.1.1.</span> <span class="nav-text">Protocol（协议）</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Direction（方向）"><span class="nav-number">3.1.2.</span> <span class="nav-text">Direction（方向）</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Host-s"><span class="nav-number">3.1.3.</span> <span class="nav-text">Host(s)</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Logical-Operations（逻辑运算）"><span class="nav-number">3.1.4.</span> <span class="nav-text">Logical Operations（逻辑运算）</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#例子"><span class="nav-number">3.1.5.</span> <span class="nav-text">例子</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#显示过滤器"><span class="nav-number">3.2.</span> <span class="nav-text">显示过滤器</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Protocol（协议）-1"><span class="nav-number">3.2.1.</span> <span class="nav-text">Protocol（协议）</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#String1-String2-可选项"><span class="nav-number">3.2.2.</span> <span class="nav-text">String1, String2 (可选项)</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Comparison-operators（比较运算符）"><span class="nav-number">3.2.3.</span> <span class="nav-text">Comparison operators（比较运算符）</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Logical-expressions（逻辑运算符）"><span class="nav-number">3.2.4.</span> <span class="nav-text">Logical expressions（逻辑运算符）</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#例子-1"><span class="nav-number">3.2.5.</span> <span class="nav-text">例子</span></a></li></ol></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">赵琦</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"zhaoqqi"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
