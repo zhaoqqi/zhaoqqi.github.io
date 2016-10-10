@@ -69,7 +69,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="OS Principles" />
+  <meta name="keywords" content="Python, DesignPattern, pool" />
 
 
 
@@ -85,16 +85,16 @@
 
 
 
-<meta name="description" content="操作系统原理开篇.">
+<meta name="description" content="Use a factory and clones of a prototype for new instances (if instantiation is expensive).">
 <meta property="og:type" content="article">
-<meta property="og:title" content="操作系统原理 - 开篇">
-<meta property="og:url" content="https://zhaoqqi.github.io/2016/09/26/os-principles-intro/index.html">
+<meta property="og:title" content="proto 模式">
+<meta property="og:url" content="https://zhaoqqi.github.io/2016/10/10/design-pattern-prototype/index.html">
 <meta property="og:site_name" content="风子会化绳棉腿">
-<meta property="og:description" content="操作系统原理开篇.">
-<meta property="og:updated_time" content="2016-09-26T12:53:19.697Z">
+<meta property="og:description" content="Use a factory and clones of a prototype for new instances (if instantiation is expensive).">
+<meta property="og:updated_time" content="2016-10-10T10:16:15.112Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="操作系统原理 - 开篇">
-<meta name="twitter:description" content="操作系统原理开篇.">
+<meta name="twitter:title" content="proto 模式">
+<meta name="twitter:description" content="Use a factory and clones of a prototype for new instances (if instantiation is expensive).">
 
 
 
@@ -115,9 +115,9 @@
 
 
 
-  <link rel="canonical" href="https://zhaoqqi.github.io/2016/09/26/os-principles-intro/"/>
+  <link rel="canonical" href="https://zhaoqqi.github.io/2016/10/10/design-pattern-prototype/"/>
 
-  <title> 操作系统原理 - 开篇 | 风子会化绳棉腿 </title>
+  <title> proto 模式 | 风子会化绳棉腿 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -257,7 +257,7 @@
             
             
               
-                操作系统原理 - 开篇
+                proto 模式
               
             
           </h1>
@@ -269,8 +269,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-09-26T00:00:00+08:00" content="2016-09-26">
-              2016-09-26
+            <time itemprop="dateCreated" datetime="2016-10-10T00:00:00+08:00" content="2016-10-10">
+              2016-10-10
             </time>
           </span>
 
@@ -283,8 +283,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/操作系统/" itemprop="url" rel="index">
-                    <span itemprop="name">操作系统</span>
+                  <a href="/categories/DesignPattern/" itemprop="url" rel="index">
+                    <span itemprop="name">DesignPattern</span>
                   </a>
                 </span>
 
@@ -299,8 +299,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/09/26/os-principles-intro/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/26/os-principles-intro/" itemprop="commentsCount"></span>
+                <a href="/2016/10/10/design-pattern-prototype/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/10/design-pattern-prototype/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -323,12 +323,11 @@
       
 
       
-        <p>先开个新分类 “操作系统原理” :) 。大方向来看，主要想学习以下内容(边学习变更新吧)：</p>
-<ol>
-<li>文件管理</li>
-<li>内存管理</li>
-</ol>
-<p>目前为止，解除的优秀的开源软件源码中，都会有linux操作系统原理的影子。所谓万变不离其宗，这个宗也就是操作系统的实现原理了。通过这一系列内容的学习和整理，希望自己对系统级软件的设计思想有一定程度的认识，站到巨人的肩膀上，让其思想变为自己的思想。</p>
+        <p>proto 模式<br>代码参考引用自：<a href="https://github.com/faif/python-patterns/blob/master/prototype.py" target="_blank" rel="external">https://github.com/faif/python-patterns/blob/master/prototype.py</a></p>
+<h4 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#!/usr/bin/env python</span></div><div class="line"><span class="comment"># -*- coding: utf-8 -*-</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> copy</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Prototype</span>:</span></div><div class="line"></div><div class="line">    value = <span class="string">'default'</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">clone</span><span class="params">(self, **attrs)</span>:</span></div><div class="line">        <span class="string">"""Clone a prototype and update inner attributes dictionary"""</span></div><div class="line">        obj = copy.deepcopy(self)</div><div class="line">        obj.__dict__.update(attrs)</div><div class="line">        <span class="keyword">return</span> obj</div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">PrototypeDispatcher</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">        self._objects = &#123;&#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_objects</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""Get all objects"""</span></div><div class="line">        <span class="keyword">return</span> self._objects</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">register_object</span><span class="params">(self, name, obj)</span>:</span></div><div class="line">        <span class="string">"""Register an object"""</span></div><div class="line">        self._objects[name] = obj</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">unregister_object</span><span class="params">(self, name)</span>:</span></div><div class="line">        <span class="string">"""Unregister an object"""</span></div><div class="line">        <span class="keyword">del</span> self._objects[name]</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">    dispatcher = PrototypeDispatcher()</div><div class="line">    prototype = Prototype()</div><div class="line"></div><div class="line">    d = prototype.clone()</div><div class="line">    a = prototype.clone(value=<span class="string">'a-value'</span>, category=<span class="string">'a'</span>)</div><div class="line">    b = prototype.clone(value=<span class="string">'b-value'</span>, category=<span class="string">'b'</span>)</div><div class="line">    dispatcher.register_object(<span class="string">'objecta'</span>, a)</div><div class="line">    dispatcher.register_object(<span class="string">'objectb'</span>, b)</div><div class="line">    print([&#123;n: p.value&#125; <span class="keyword">for</span> n, p <span class="keyword">in</span> dispatcher.get_objects.items()])</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    main()</div><div class="line"></div><div class="line"><span class="comment">### OUTPUT ###</span></div><div class="line"><span class="comment"># [&#123;'objectb': 'b-value'&#125;, &#123;'default': 'default'&#125;, &#123;'objecta': 'a-value'&#125;]</span></div></pre></td></tr></table></figure>
+<h4 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h4><p>该模式的目的为，在初始化某些对象的成本比较高时，改为通过克隆原型对象的方式创建新的对象。</p>
+<p>具体实现方法为，在原型类中实现 <code>clone()</code> 方法，使用 <code>copy.deepcopy()</code> 方法克隆对象，并且复制原型对象的 <code>__dict__</code> 到新建对象的 <code>__dict__</code> 。使用 copy.deepcopy() 方法，对象中的子对象也会克隆。</p>
+<p>PrototypeDispatcher 为可以用来克隆的原型对象的管理器，可以注册原型对象，删除注册原型对象。</p>
 
       
     </div>
@@ -354,17 +353,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/09/21/algorithm-sort/" rel="next" title="经典排序算法的 Python 实现">
-                <i class="fa fa-chevron-left"></i> 经典排序算法的 Python 实现
+              <a href="/2016/10/10/design-pattern-lazy_evaluation/" rel="next" title="延迟加载模式（lazy evaluation）">
+                <i class="fa fa-chevron-left"></i> 延迟加载模式（lazy evaluation）
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/09/26/python-gc/" rel="prev" title="Python - 垃圾回收机制">
-                Python - 垃圾回收机制 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -390,8 +385,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/09/26/os-principles-intro/"
-           data-title="操作系统原理 - 开篇" data-url="https://zhaoqqi.github.io/2016/09/26/os-principles-intro/">
+      <div class="ds-thread" data-thread-key="2016/10/10/design-pattern-prototype/"
+           data-title="proto 模式" data-url="https://zhaoqqi.github.io/2016/10/10/design-pattern-prototype/">
       </div>
     
   </div>
@@ -475,7 +470,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#代码"><span class="nav-number">1.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分析"><span class="nav-number">2.</span> <span class="nav-text">分析</span></a></li></ol></div>
             
           </div>
         </section>
