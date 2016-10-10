@@ -69,7 +69,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="OS Principles" />
+  <meta name="keywords" content="Python, DesignPattern, pool" />
 
 
 
@@ -85,16 +85,16 @@
 
 
 
-<meta name="description" content="操作系统原理开篇.">
+<meta name="description" content="preinstantiate and maintain a group of instances of the same type.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="操作系统原理 - 开篇">
-<meta property="og:url" content="https://zhaoqqi.github.io/2016/09/26/os-principles-intro/index.html">
+<meta property="og:title" content="pool 模式">
+<meta property="og:url" content="https://zhaoqqi.github.io/2016/10/10/design-pattern-pool/index.html">
 <meta property="og:site_name" content="风子会化绳棉腿">
-<meta property="og:description" content="操作系统原理开篇.">
-<meta property="og:updated_time" content="2016-09-26T12:53:19.697Z">
+<meta property="og:description" content="preinstantiate and maintain a group of instances of the same type.">
+<meta property="og:updated_time" content="2016-10-10T07:50:08.771Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="操作系统原理 - 开篇">
-<meta name="twitter:description" content="操作系统原理开篇.">
+<meta name="twitter:title" content="pool 模式">
+<meta name="twitter:description" content="preinstantiate and maintain a group of instances of the same type.">
 
 
 
@@ -115,9 +115,9 @@
 
 
 
-  <link rel="canonical" href="https://zhaoqqi.github.io/2016/09/26/os-principles-intro/"/>
+  <link rel="canonical" href="https://zhaoqqi.github.io/2016/10/10/design-pattern-pool/"/>
 
-  <title> 操作系统原理 - 开篇 | 风子会化绳棉腿 </title>
+  <title> pool 模式 | 风子会化绳棉腿 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -257,7 +257,7 @@
             
             
               
-                操作系统原理 - 开篇
+                pool 模式
               
             
           </h1>
@@ -269,8 +269,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-09-26T00:00:00+08:00" content="2016-09-26">
-              2016-09-26
+            <time itemprop="dateCreated" datetime="2016-10-10T00:00:00+08:00" content="2016-10-10">
+              2016-10-10
             </time>
           </span>
 
@@ -283,8 +283,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/操作系统/" itemprop="url" rel="index">
-                    <span itemprop="name">操作系统</span>
+                  <a href="/categories/DesignPattern/" itemprop="url" rel="index">
+                    <span itemprop="name">DesignPattern</span>
                   </a>
                 </span>
 
@@ -299,8 +299,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/09/26/os-principles-intro/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/09/26/os-principles-intro/" itemprop="commentsCount"></span>
+                <a href="/2016/10/10/design-pattern-pool/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/10/design-pattern-pool/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -323,12 +323,12 @@
       
 
       
-        <p>先开个新分类 “操作系统原理” :) 。大方向来看，主要想学习以下内容(边学习变更新吧)：</p>
-<ol>
-<li>文件管理</li>
-<li>内存管理</li>
-</ol>
-<p>目前为止，解除的优秀的开源软件源码中，都会有linux操作系统原理的影子。所谓万变不离其宗，这个宗也就是操作系统的实现原理了。通过这一系列内容的学习和整理，希望自己对系统级软件的设计思想有一定程度的认识，站到巨人的肩膀上，让其思想变为自己的思想。</p>
+        <p>pool 模式<br>代码参考引用自：<a href="https://github.com/faif/python-patterns/blob/master/pool.py" target="_blank" rel="external">https://github.com/faif/python-patterns/blob/master/pool.py</a></p>
+<h4 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#!/usr/bin/env python</span></div><div class="line"><span class="comment"># -*- coding: utf-8 -*-</span></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">QueueObject</span><span class="params">()</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, queue, auto_get=False)</span>:</span></div><div class="line">        self._queue = queue</div><div class="line">        self.object = self.queue.get() <span class="keyword">if</span> auto_get <span class="keyword">else</span> <span class="keyword">None</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__enter__</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">if</span> self.object <span class="keyword">is</span> <span class="keyword">None</span>:</div><div class="line">            self.object = self.queue.get()</div><div class="line">        <span class="keyword">return</span> self.object</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__exit__</span><span class="params">(self, Type, value, traceback)</span>:</span></div><div class="line">        <span class="keyword">if</span> self.object <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</div><div class="line">            self._queue.put(self.object)</div><div class="line">            self.object = <span class="keyword">None</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__del__</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="keyword">if</span> self.object <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</div><div class="line">            self._queue.put(self.object)</div><div class="line">            self.object = <span class="keyword">None</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        <span class="keyword">import</span> queue</div><div class="line">    <span class="keyword">except</span> ImportError:</div><div class="line">        <span class="keyword">import</span> Queue <span class="keyword">as</span> queue</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">test_object</span><span class="params">(queue)</span>:</span></div><div class="line">        queue_object = QueueObject(queue, <span class="keyword">True</span>)</div><div class="line">        print(<span class="string">'Inside func: &#123;&#125;'</span>.format(queue_object.object))</div><div class="line"></div><div class="line">    sample_queue = queue.Queue()</div><div class="line"></div><div class="line">    sample_queue.put(<span class="string">'yam'</span>)</div><div class="line">    <span class="keyword">with</span> QueueObject(sample_queue) <span class="keyword">as</span> obj:</div><div class="line">        print(<span class="string">'Inside func: &#123;&#125;'</span>.format(obj))</div><div class="line">    print(<span class="string">'Outside func: &#123;&#125;'</span>.format(sample_queue.get()))</div><div class="line"></div><div class="line">    sample_queue.put(<span class="string">'sam'</span>)</div><div class="line">    test_object(sample_queue)</div><div class="line">    print(<span class="string">'Outside func &#123;&#125;'</span>.format(sample_queue.get()))</div><div class="line"></div><div class="line">    <span class="keyword">if</span> <span class="keyword">not</span> sample_queue.empty():</div><div class="line">        print(sample_queue.get())</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    main()</div><div class="line"></div><div class="line"><span class="comment">### OUTPUT ###</span></div><div class="line"><span class="comment"># Inside with: yam</span></div><div class="line"><span class="comment"># Outside with: yam</span></div><div class="line"><span class="comment"># Inside func: sam</span></div><div class="line"><span class="comment"># Outside func: sam</span></div></pre></td></tr></table></figure>
+<h4 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h4><p>例子中的代码使用一个队列作为 Python 实例对象的“池”，用来提前创建，以及维护一些列待使用的对象。每次有使用这些对象需要的时候从池中获取目标对象，使用完成以后“池”会将对象回收以备下次使用。</p>
+<p><code>__enter__</code>方法和<code>__exit__</code>方法，可以在使用 QueueObject 类的时候使用 with 语句。<code>__del__</code>方法是在类的实例被删除时调用，该方法将 self.object 放入 self._queue 中，即放入了所传入参数的 queue 中。在“池”对象被删除的时刻，也完成了“池”对对象的回收动作。</p>
+<p>该模式的目的是，提前在对象“池”中创建并维护一些列相同类型的 Python 对象。这些对象在后续的使用中不必实时创建，而是直接从“池”中获取，使用完之后再由“池”回收。</p>
+<p>可以想到的应用场景：并发编程中的线程池，进程池；其他暂时想不到了。</p>
 
       
     </div>
@@ -354,17 +354,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/09/21/algorithm-sort/" rel="next" title="经典排序算法的 Python 实现">
-                <i class="fa fa-chevron-left"></i> 经典排序算法的 Python 实现
+              <a href="/2016/10/09/design-pattern-abstract-factory/" rel="next" title="抽象工厂模式">
+                <i class="fa fa-chevron-left"></i> 抽象工厂模式
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/09/26/python-gc/" rel="prev" title="Python - 垃圾回收机制">
-                Python - 垃圾回收机制 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -390,8 +386,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/09/26/os-principles-intro/"
-           data-title="操作系统原理 - 开篇" data-url="https://zhaoqqi.github.io/2016/09/26/os-principles-intro/">
+      <div class="ds-thread" data-thread-key="2016/10/10/design-pattern-pool/"
+           data-title="pool 模式" data-url="https://zhaoqqi.github.io/2016/10/10/design-pattern-pool/">
       </div>
     
   </div>
@@ -475,7 +471,7 @@
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#代码"><span class="nav-number">1.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分析"><span class="nav-number">2.</span> <span class="nav-text">分析</span></a></li></ol></div>
             
           </div>
         </section>
