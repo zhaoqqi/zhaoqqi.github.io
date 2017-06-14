@@ -69,7 +69,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="vxlan" />
+  <meta name="keywords" content="cache, design, update strategy" />
 
 
 
@@ -85,16 +85,16 @@
 
 
 
-<meta name="description" content="Introduction of vxlan.">
+<meta name="description" content="Cache system design and update strategy.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="vxlan 简介">
-<meta property="og:url" content="https://zhaoqqi.github.io/2017/06/12/vxlan-brief/index.html">
+<meta property="og:title" content="缓存系统设计与更新机制">
+<meta property="og:url" content="https://zhaoqqi.github.io/2017/06/14/cache-system-design/index.html">
 <meta property="og:site_name" content="赵琦个人博客">
-<meta property="og:description" content="Introduction of vxlan.">
-<meta property="og:updated_time" content="2017-06-14T01:39:14.447Z">
+<meta property="og:description" content="Cache system design and update strategy.">
+<meta property="og:updated_time" content="2017-06-14T15:32:43.029Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="vxlan 简介">
-<meta name="twitter:description" content="Introduction of vxlan.">
+<meta name="twitter:title" content="缓存系统设计与更新机制">
+<meta name="twitter:description" content="Cache system design and update strategy.">
 
 
 
@@ -115,9 +115,9 @@
 
 
 
-  <link rel="canonical" href="https://zhaoqqi.github.io/2017/06/12/vxlan-brief/"/>
+  <link rel="canonical" href="https://zhaoqqi.github.io/2017/06/14/cache-system-design/"/>
 
-  <title> vxlan 简介 | 赵琦个人博客 </title>
+  <title> 缓存系统设计与更新机制 | 赵琦个人博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -257,7 +257,7 @@
             
             
               
-                vxlan 简介
+                缓存系统设计与更新机制
               
             
           </h1>
@@ -269,8 +269,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-06-12T00:00:00+08:00" content="2017-06-12">
-              2017-06-12
+            <time itemprop="dateCreated" datetime="2017-06-14T00:00:00+08:00" content="2017-06-14">
+              2017-06-14
             </time>
           </span>
 
@@ -283,8 +283,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Network/" itemprop="url" rel="index">
-                    <span itemprop="name">Network</span>
+                  <a href="/categories/设计与架构/" itemprop="url" rel="index">
+                    <span itemprop="name">设计与架构</span>
                   </a>
                 </span>
 
@@ -299,8 +299,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2017/06/12/vxlan-brief/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/06/12/vxlan-brief/" itemprop="commentsCount"></span>
+                <a href="/2017/06/14/cache-system-design/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/06/14/cache-system-design/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -323,20 +323,29 @@
       
 
       
-        <h4 id="vxlan-简介"><a href="#vxlan-简介" class="headerlink" title="vxlan 简介"></a>vxlan 简介</h4><h5 id="名词解释"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释</h5><ol>
-<li><p>VNI(vxlan network identifier)</p>
-</li>
-<li><p>VTEP(Vxlan Tunnel End Point)<br>用于对VXLAN报文进行封装/解封装，包括ARP请求报文和正常的VXLAN数据报文，在一段封装报文<br>后通过隧道向另一端VTEP发送封装报文，另一端VTEP接收到封装的报文解封装后根据封装的MAC地址<br>进行装法。VTEP可由支持VXLAN的硬件设备或软件来实现。</p>
-</li>
+        <h5 id="名词解释"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释</h5><ol>
+<li>LRU：Least Recently Used的缩写，一种缓存替换算法。</li>
 </ol>
-<h5 id="什么是vxlan"><a href="#什么是vxlan" class="headerlink" title="什么是vxlan"></a>什么是vxlan</h5><p>vxlan(virsual extensible lan)，虚拟局域网扩展，是一种虚拟化网络技术。vxlan提供了将二层网络overlay到三层网络上的能力，vxlan header中的VNI(vxlan network identifier)有24个bit位，使lan的数量远远大于vlan的4096个(vlan标识符为8个bit)，达到了1600万以上。</p>
-<h5 id="vxlan的作用"><a href="#vxlan的作用" class="headerlink" title="vxlan的作用"></a>vxlan的作用</h5><ol>
-<li>vlan的数量限制。4096个vlan远远不能满足大规模云计算数据中心的需要。</li>
-<li>解决STP在大型网络设备带宽浪费和收敛性能变慢的缺陷。</li>
-<li>解决TOR交换机MAC表耗尽问题。二层网络出现后，不仅要记录数据中心二层设备的MAC地址，还得记录其他数据中心二层范围内的MAC地址。这其中包括了海量的虚拟机的MAC地址，增加了TOR MAC表的需求。但目前的交换机芯片远远无法满足这一需求。</li>
+<h5 id="缓存系统的应用场景"><a href="#缓存系统的应用场景" class="headerlink" title="缓存系统的应用场景"></a>缓存系统的应用场景</h5><p>缓存是一种可以提高系统读性能的常见技术，对于读多于写的应用场景，经常使用缓存来进行系统性能优化。</p>
+<h5 id="缓存架构"><a href="#缓存架构" class="headerlink" title="缓存架构"></a>缓存架构</h5><ol>
+<li>缓存服务化。对于调用方来看，缓存层和数据存储层提供统一的服务接口。调用方不用处理缓存层和数据存储层的数据一致性问题，全权交给统一的缓存服务来做。统一的缓存服务来保证缓存和数据存储层之间的数据一致性。</li>
+<li>异步缓存更新。业务层所有的写操作都走数据库，所以的读操作都走缓存，由一个异步的工具来做数据库与缓存之间的数据同步。</li>
 </ol>
-<h5 id="vxlan的数据平面"><a href="#vxlan的数据平面" class="headerlink" title="vxlan的数据平面"></a>vxlan的数据平面</h5><p>已经知道，VTEP为虚拟机的数据包加上了层包头，这些新的报头之有在数据到达目的VTEP后才会被去掉。中间路径的网络设备只会根据外层包头内的目的地址进行数据转发，对于转发路径上的网络来说，一个Vxlan数据包跟一个普通IP包相比，出了个头大一点外没有区别。由于VXLAN的数据包在整个转发过程中保持了内部数据的完整，因此VXLAN的数据平面是一个基于隧道的数据平面。</p>
-<h5 id="vxlan的控制平面"><a href="#vxlan的控制平面" class="headerlink" title="vxlan的控制平面"></a>vxlan的控制平面</h5><p>VXLAN不会在虚拟机之间维持一个长连接，所以VXLAN需要一个控制平面来记录对端地址可达情况。控制平面的表为(VNI，内层MAC，外层vtep_ip)。Vxlan学习地址的时候仍然保存着二层协议的特征，节点之间不会周期性的交换各自的路由表，对于不认识的MAC地址，VXLAN依靠组播来获取路径信息(如果有SDN Controller，可以向SDN单播获取)。另一方面，VXLAN还有自学习的功能，当VTEP收到一个UDP数据报后，会检查自己是否收到过这个虚拟机的数据，如果没有，VTEP就会记录源vni/源外层ip/源内层mac对应关系，避免组播学习。</p>
+<h5 id="缓存更新策略"><a href="#缓存更新策略" class="headerlink" title="缓存更新策略"></a>缓存更新策略</h5><p>先提出一个问题，业务层对缓存和数据库操作的时序性是什么，即先操作数据库还是先操作缓存？接下来我们逐个分析。</p>
+<h6 id="先更新缓存，再更新数据库。"><a href="#先更新缓存，再更新数据库。" class="headerlink" title="先更新缓存，再更新数据库。"></a>先更新缓存，再更新数据库。</h6><p>考虑这样一种场景，两个并发操作，一个是更新操作，一个是查询操作。更新操作删除缓存，查询操作没有命中缓存，先把旧数据读出来后放入缓存，然后更新操作更新了数据库。此时缓存中依然是旧数据，导致缓存中的数据是脏的，并且一直无法得到更新。</p>
+<h6 id="先更新数据库，再更新缓存。"><a href="#先更新数据库，再更新缓存。" class="headerlink" title="先更新数据库，再更新缓存。"></a>先更新数据库，再更新缓存。</h6><p>考虑同样的场景，两个并发操作，一个是更新操作，一个是查询操作。更新操作更新数据库，查询操作命中缓存把旧数据读出，最后更新操作删除并更新缓存。查询操作虽然查询到了旧数据，但是下一次即可从缓存中查询到数据库同步的真实数据。</p>
+<h6 id="Cache-Aside-Pattern"><a href="#Cache-Aside-Pattern" class="headerlink" title="Cache Aside Pattern"></a>Cache Aside Pattern</h6><ol>
+<li>失效：应用程序先从缓存中读取数据，没有得到，则从数据库中读取，成功后，放到缓存中。</li>
+<li>命中：应用程序从缓存中读取数据，取到后返回。</li>
+<li>更新：先把数据存到数据库中，成功后，再让缓存失效。</li>
+</ol>
+<p>这是最常用和相对靠谱的方法。那么 Cache Aside 会不会因为并发问题导致的出现脏数据呢？也会。比如，一个读操作先到，没有命中缓存，然后就到数据库中读取。这时来了一个写操作，写完数据库后，然缓存失效。然后，之前的读操作再把旧数据写到缓存中，还是会造成脏数据。</p>
+<p>但是，这个case出现的概率非常低。这个场景需要发生在读缓存时缓存失效，并发并发着有一个写操作。而实际上数据库的写操作比读操作慢得多，而且还要锁表，而读操作需要在写操作之前进入数据库操作，又要在写操作完成后更新缓存，所有的这些条件都具备的概率并不大。所以，Cache Aside Pattern 还是相对靠谱的方式。</p>
+<h5 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h5><p>陈皓也说过，在软件开发或设计中，非常建议在开始之前先去参考一下已有的设计和思路，看看相应的guildline, best practice 或 design pattern。吃透了已有的这些东西，在决定是否要重新发明轮子。千万不要似是而非的，想当然的做软件设计。</p>
+<h5 id="延伸"><a href="#延伸" class="headerlink" title="延伸"></a>延伸</h5><ol>
+<li>计算机体系结构设计中的CPU缓存，linux文件系统中的缓存，数据库中的缓存更新策略。</li>
+<li>Unix/linux中经典的系统设计思路，best practice / desigh pattern等。</li>
+</ol>
 
       
     </div>
@@ -362,17 +371,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/10/19/tornado-ioloop/" rel="next" title="Tornado ioloop">
-                <i class="fa fa-chevron-left"></i> Tornado ioloop
+              <a href="/2017/06/12/vxlan-brief/" rel="next" title="vxlan 简介">
+                <i class="fa fa-chevron-left"></i> vxlan 简介
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/06/14/cache-system-design/" rel="prev" title="缓存系统设计与更新机制">
-                缓存系统设计与更新机制 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -398,8 +403,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2017/06/12/vxlan-brief/"
-           data-title="vxlan 简介" data-url="https://zhaoqqi.github.io/2017/06/12/vxlan-brief/">
+      <div class="ds-thread" data-thread-key="2017/06/14/cache-system-design/"
+           data-title="缓存系统设计与更新机制" data-url="https://zhaoqqi.github.io/2017/06/14/cache-system-design/">
       </div>
     
   </div>
@@ -483,7 +488,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#vxlan-简介"><span class="nav-number">1.</span> <span class="nav-text">vxlan 简介</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#名词解释"><span class="nav-number">1.1.</span> <span class="nav-text">名词解释</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#什么是vxlan"><span class="nav-number">1.2.</span> <span class="nav-text">什么是vxlan</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#vxlan的作用"><span class="nav-number">1.3.</span> <span class="nav-text">vxlan的作用</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#vxlan的数据平面"><span class="nav-number">1.4.</span> <span class="nav-text">vxlan的数据平面</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#vxlan的控制平面"><span class="nav-number">1.5.</span> <span class="nav-text">vxlan的控制平面</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#名词解释"><span class="nav-number">1.</span> <span class="nav-text">名词解释</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#缓存系统的应用场景"><span class="nav-number">2.</span> <span class="nav-text">缓存系统的应用场景</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#缓存架构"><span class="nav-number">3.</span> <span class="nav-text">缓存架构</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#缓存更新策略"><span class="nav-number">4.</span> <span class="nav-text">缓存更新策略</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#先更新缓存，再更新数据库。"><span class="nav-number">4.1.</span> <span class="nav-text">先更新缓存，再更新数据库。</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#先更新数据库，再更新缓存。"><span class="nav-number">4.2.</span> <span class="nav-text">先更新数据库，再更新缓存。</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Cache-Aside-Pattern"><span class="nav-number">4.3.</span> <span class="nav-text">Cache Aside Pattern</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#延伸"><span class="nav-number">6.</span> <span class="nav-text">延伸</span></a></li></ol></div>
             
           </div>
         </section>
