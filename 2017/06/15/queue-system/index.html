@@ -69,7 +69,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="tcpdump" />
+  <meta name="keywords" content="flow control" />
 
 
 
@@ -85,16 +85,16 @@
 
 
 
-<meta name="description" content="工作中逐渐积累的 tcpdump 常用使用方法">
+<meta name="description" content="Flow control system.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="tcpdump常用方法手记">
-<meta property="og:url" content="https://zhaoqqi.github.io/2016/08/03/tcpdump-manual/index.html">
+<meta property="og:title" content="流控系统">
+<meta property="og:url" content="https://zhaoqqi.github.io/2017/06/15/queue-system/index.html">
 <meta property="og:site_name" content="赵琦个人博客">
-<meta property="og:description" content="工作中逐渐积累的 tcpdump 常用使用方法">
-<meta property="og:updated_time" content="2016-08-25T09:04:55.901Z">
+<meta property="og:description" content="Flow control system.">
+<meta property="og:updated_time" content="2017-06-15T02:21:33.524Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="tcpdump常用方法手记">
-<meta name="twitter:description" content="工作中逐渐积累的 tcpdump 常用使用方法">
+<meta name="twitter:title" content="流控系统">
+<meta name="twitter:description" content="Flow control system.">
 
 
 
@@ -115,9 +115,9 @@
 
 
 
-  <link rel="canonical" href="https://zhaoqqi.github.io/2016/08/03/tcpdump-manual/"/>
+  <link rel="canonical" href="https://zhaoqqi.github.io/2017/06/15/queue-system/"/>
 
-  <title> tcpdump常用方法手记 | 赵琦个人博客 </title>
+  <title> 流控系统 | 赵琦个人博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -257,7 +257,7 @@
             
             
               
-                tcpdump常用方法手记
+                流控系统
               
             
           </h1>
@@ -269,8 +269,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-08-03T00:00:00+08:00" content="2016-08-03">
-              2016-08-03
+            <time itemprop="dateCreated" datetime="2017-06-15T00:00:00+08:00" content="2017-06-15">
+              2017-06-15
             </time>
           </span>
 
@@ -283,8 +283,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Network/" itemprop="url" rel="index">
-                    <span itemprop="name">Network</span>
+                  <a href="/categories/设计与架构/" itemprop="url" rel="index">
+                    <span itemprop="name">设计与架构</span>
                   </a>
                 </span>
 
@@ -299,8 +299,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/08/03/tcpdump-manual/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/08/03/tcpdump-manual/" itemprop="commentsCount"></span>
+                <a href="/2017/06/15/queue-system/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/06/15/queue-system/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -323,14 +323,23 @@
       
 
       
-        <p>就工作中经常用的抓包场景，记录一篇tcpdump的常用方法，随着遇到的场景变化逐渐补充。</p>
-<h5 id="使用-i-选项指定监听的网络接口："><a href="#使用-i-选项指定监听的网络接口：" class="headerlink" title="使用 [-i] 选项指定监听的网络接口："></a>使用 [-i] 选项指定监听的网络接口：</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 监听运行设备(物理机/虚拟机)上所有进出 10.1.1.1 的包</span></div><div class="line">tcpdump -i any host 10.1.1.1</div><div class="line"></div><div class="line"><span class="comment"># 监听运行设备(物理机/虚拟机)上网卡 eth0 所有进出 10.1.1.1 的包</span></div><div class="line">tcpdump -i eth0 host 10.1.1.1</div><div class="line"></div><div class="line"><span class="comment"># 监听运行设备(物理机/虚拟机)上网桥 br_vm 所有进出 10.1.1.1 的包</span></div><div class="line">tcpdump -i br_vm host 10.1.1.1</div><div class="line"></div><div class="line"><span class="comment"># 监听运行设备(物理机/虚拟机)上虚拟网卡 vnet0 所有进出 10.1.1.1 的包</span></div><div class="line">tcpdump -i vnet0 host 10.1.1.1</div></pre></td></tr></table></figure>
-<h5 id="使用-src-dst-host-指定流量方向"><a href="#使用-src-dst-host-指定流量方向" class="headerlink" title="使用 [src/dst host] 指定流量方向"></a>使用 [src/dst host] 指定流量方向</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 监听所有 10.1.1.1 发出的包</span></div><div class="line">tcpdump -i any src host 10.1.1.1</div><div class="line"></div><div class="line"><span class="comment"># 监听所有 10.1.1.1 接收的包</span></div><div class="line">tcpdump -i any dst host 10.1.1.1</div></pre></td></tr></table></figure>
-<h5 id="使用选项-vv-输出详细的报文信息"><a href="#使用选项-vv-输出详细的报文信息" class="headerlink" title="使用选项 [-vv] 输出详细的报文信息"></a>使用选项 [-vv] 输出详细的报文信息</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 主要用来查看报文的协议类型(tcp/udp...)</span></div><div class="line">tcpdump -i any dst host 10.1.1.1 -vv</div><div class="line">11:40:09.670182 IP (tos 0x0, ttl 108, id 5783, offset 0, flags [DF], proto TCP (6), length 40)</div><div class="line">   <span class="variable">$IP_1</span>.12123 &gt; <span class="variable">$IP_2</span>.58954: Flags [.], cksum 0x2233 (correct), seq 1, ack 1, win 65345, length 0</div></pre></td></tr></table></figure>
-<h5 id="使用选项-nn-不进行端口名称的转换"><a href="#使用选项-nn-不进行端口名称的转换" class="headerlink" title="使用选项 [-nn] 不进行端口名称的转换"></a>使用选项 [-nn] 不进行端口名称的转换</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 这个没看出来作用……</span></div><div class="line">tcpdump -i any dst host 10.1.1.1 -nn</div><div class="line">11:43:47.829589 IP xxx.xx.xx.xxx_1.8360 &gt; xx.xxx.xx.xx.44973: Flags [F.], seq 1, ack 1, win 122, options [nop,nop,TS val 691063383 ecr 319773296], length 0</div><div class="line">11:43:47.833252 IP xx.xxx.xx.xx.44972 &gt; xxx.xx.xx.xxx.8360: Flags [F.], seq 3525839232, ack 3704528140, win 4096, options [nop,nop,TS val 319773297 ecr 691032403], length 0</div></pre></td></tr></table></figure>
-<h5 id="组合使用-vv-nn"><a href="#组合使用-vv-nn" class="headerlink" title="组合使用 [-vv -nn]"></a>组合使用 [-vv -nn]</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 公司网络运维的同学经常这么使用</span></div><div class="line">tcpdump -i any dst host 10.1.1.1 -vv -nn</div><div class="line">11:46:22.715211 IP (tos 0x0, ttl 214, id 3116, offset 0, flags [none], proto TCP (6), length 52)</div><div class="line">    xxx.xx.xx.xxx.2847 &gt; xx.xxx.xx.xx.46077: Flags [.], cksum 0x9320 (correct), seq 4, ack 28, win 65211, options [nop,nop,TS val 863567 ecr 691217938], length 0</div></pre></td></tr></table></figure>
-<h5 id="监听指定端口-and-port-PORT"><a href="#监听指定端口-and-port-PORT" class="headerlink" title="监听指定端口 [and port $PORT]"></a>监听指定端口 [and port $PORT]</h5><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">tcpdump -i br_vm dst host 10.1.1.1 and port 22 -vv -nn</div><div class="line"></div><div class="line">tcpdump: WARNING: br_vm: no IPv4 address assigned</div><div class="line">tcpdump: listening on br_vm, link-type EN10MB (Ethernet), capture size 65535 bytes</div><div class="line"></div><div class="line">15:11:52.498597 IP (tos 0x0, ttl 46, id 11422, offset 0, flags [DF], proto TCP (6), length 52)</div><div class="line">    114.255.44.132.22237 &gt; 10.1.1.1.22: Flags [S], cksum 0xd7b7 (correct), seq 2879601682, win 64240, options [mss 1460,nop,wscale 0,nop,nop,sackOK], length 0</div><div class="line">15:11:53.010222 IP (tos 0x0, ttl 46, id 11434, offset 0, flags [DF], proto TCP (6), length 52)</div><div class="line">    114.255.44.132.22237 &gt; 10.1.1.1.22: Flags [S], cksum 0xd7b7 (correct), seq 2879601682, win 64240, options [mss 1460,nop,wscale 0,nop,nop,sackOK], length 0</div><div class="line">15:11:53.524167 IP (tos 0x0, ttl 46, id 11436, offset 0, flags [DF], proto TCP (6), length 48)</div><div class="line">    114.255.44.132.22237 &gt; 10.1.1.1.22: Flags [S], cksum 0xebbe (correct), seq 2879601682, win 64240, options [mss 1460,nop,nop,sackOK], length 0</div></pre></td></tr></table></figure>
-<h5 id="持续补充中……"><a href="#持续补充中……" class="headerlink" title="持续补充中……"></a>持续补充中……</h5>
+        <h5 id="需求缘起"><a href="#需求缘起" class="headerlink" title="需求缘起"></a>需求缘起</h5><p>产品需要在用户购买的资源支持按需付费。这样，用户可以在短时间内申请大量资源使用，使用完成后，又集中大量的释放资源。对于我们后台服务来说，会带来短时间内大量并发的申请和释放资源的集中请求。这就需要合适的流控策略来限制、缓解、放弃请求并友好的提示用户重试。</p>
+<h5 id="问题分解"><a href="#问题分解" class="headerlink" title="问题分解"></a>问题分解</h5><ol>
+<li>用户流量控制</li>
+<li>后端服务排队机制</li>
+<li>友好的请求reset</li>
+</ol>
+<h5 id="用户流量控制"><a href="#用户流量控制" class="headerlink" title="用户流量控制"></a>用户流量控制</h5><p>我们团队的系统属于后端 web server，前面有用户控制台和 openapi层，后面是数据库层。</p>
+<p>控制台和 openapi层可以限制用户一段时间内申请的资源总数。</p>
+<p>后端 web server 根据控制台和 openapi层每个用户的请求数限制，设置合理的时间窗口内的请求阈值。</p>
+<p>流量预警和限流方案中，比较常用的有两种。第一种是滑窗模式，通过统计多个单元时间内的访问次数来进行控制，当单位时间内的访问次数达到所设置的阈值时进行限流。第二种，为响应模式，通过控制当前活跃的请求数来进行流量控制。下面简要分析下两种方案。</p>
+<h6 id="滑窗模式"><a href="#滑窗模式" class="headerlink" title="滑窗模式"></a>滑窗模式</h6><p>在每次有请求访问时，系统判断前N个时间单位总访问量是否超过了设置的阈值，若超过则不允许此次访问的执行。</p>
+<p>该模式存在几个问题。首先，阈值设置为多少是合理的？我们可以通过线下的压测和模拟测试为依据进行评估。不过这跟线上系统还是会存在差异，比如，硬件性能，同一个系统在不同时刻的负载不同等等。所以无法做到100%的精确评估。其次，滑窗模式可能会出现单位时间的前半段请求大量涌入，而后半段系统拒绝所有请求的情况。</p>
+<h6 id="响应模式"><a href="#响应模式" class="headerlink" title="响应模式"></a>响应模式</h6><p>每次请求访问时，系统通过判断正在执行的访问数是否达到我们设置的阈值来决定是否限流。该模式只关心当下正在处理中的请求，对于已经处理完毕的请求则不再关心了。</p>
+<h5 id="后端服务排队机制"><a href="#后端服务排队机制" class="headerlink" title="后端服务排队机制"></a>后端服务排队机制</h5><p>当N个时间单位的请求数量达到峰值时，使用前述的两种模式的限流，都会将大量的请求挡住。这样会拒绝大量用户的正常访问请求，造成用户体验不佳。此时，后端服务可以使用排队机制，将访问的请求分批次排队，迁移批次的请求处理完成后，再从队列中拿出下一批次的请求进行处理。</p>
+<p>排队机制主要用来应对尖峰时刻的大量请求，不被大量的拒绝。如果系统有持续的超出系统承载能力的请求，则可能会造成系统雪崩，永远也处理不完队列中的请求。</p>
+<h5 id="友好的请求拒绝"><a href="#友好的请求拒绝" class="headerlink" title="友好的请求拒绝"></a>友好的请求拒绝</h5><p>根据系统当前的承载能力评估出最大的请求阈值，一旦当前访问量超出这个阈值，则拒绝请求并友好的提示用户稍后重试。这是系统的性能极限，为避免系统崩溃，必须果断拒绝请求。</p>
+
       
     </div>
 
@@ -355,17 +364,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/08/02/glance-image-driver/" rel="next" title="glance-api 服务启动流程(官方Kilo版本)">
-                <i class="fa fa-chevron-left"></i> glance-api 服务启动流程(官方Kilo版本)
+              <a href="/2017/06/14/cache-system-design/" rel="next" title="缓存系统设计与更新机制">
+                <i class="fa fa-chevron-left"></i> 缓存系统设计与更新机制
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/08/05/python-generators/" rel="prev" title="Python generators and yield">
-                Python generators and yield <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -391,8 +396,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/08/03/tcpdump-manual/"
-           data-title="tcpdump常用方法手记" data-url="https://zhaoqqi.github.io/2016/08/03/tcpdump-manual/">
+      <div class="ds-thread" data-thread-key="2017/06/15/queue-system/"
+           data-title="流控系统" data-url="https://zhaoqqi.github.io/2017/06/15/queue-system/">
       </div>
     
   </div>
@@ -476,7 +481,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#使用-i-选项指定监听的网络接口："><span class="nav-number">1.</span> <span class="nav-text">使用 [-i] 选项指定监听的网络接口：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#使用-src-dst-host-指定流量方向"><span class="nav-number">2.</span> <span class="nav-text">使用 [src/dst host] 指定流量方向</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#使用选项-vv-输出详细的报文信息"><span class="nav-number">3.</span> <span class="nav-text">使用选项 [-vv] 输出详细的报文信息</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#使用选项-nn-不进行端口名称的转换"><span class="nav-number">4.</span> <span class="nav-text">使用选项 [-nn] 不进行端口名称的转换</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#组合使用-vv-nn"><span class="nav-number">5.</span> <span class="nav-text">组合使用 [-vv -nn]</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#监听指定端口-and-port-PORT"><span class="nav-number">6.</span> <span class="nav-text">监听指定端口 [and port $PORT]</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#持续补充中……"><span class="nav-number">7.</span> <span class="nav-text">持续补充中……</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#需求缘起"><span class="nav-number">1.</span> <span class="nav-text">需求缘起</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#问题分解"><span class="nav-number">2.</span> <span class="nav-text">问题分解</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#用户流量控制"><span class="nav-number">3.</span> <span class="nav-text">用户流量控制</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#滑窗模式"><span class="nav-number">3.1.</span> <span class="nav-text">滑窗模式</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#响应模式"><span class="nav-number">3.2.</span> <span class="nav-text">响应模式</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#后端服务排队机制"><span class="nav-number">4.</span> <span class="nav-text">后端服务排队机制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#友好的请求拒绝"><span class="nav-number">5.</span> <span class="nav-text">友好的请求拒绝</span></a></li></ol></div>
             
           </div>
         </section>
