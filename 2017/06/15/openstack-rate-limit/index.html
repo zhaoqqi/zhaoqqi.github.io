@@ -1,0 +1,625 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="baidu-site-verification" content="SnSsXXc5Pc" />
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="rate limit" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="opensatck rate limit.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Openstack rate limit">
+<meta property="og:url" content="https://zhaoqqi.github.io/2017/06/15/openstack-rate-limit/index.html">
+<meta property="og:site_name" content="赵琦个人博客">
+<meta property="og:description" content="opensatck rate limit.">
+<meta property="og:updated_time" content="2017-06-15T15:19:25.293Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Openstack rate limit">
+<meta name="twitter:description" content="opensatck rate limit.">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="https://zhaoqqi.github.io/2017/06/15/openstack-rate-limit/"/>
+
+  <title> Openstack rate limit | 赵琦个人博客 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?e5c4b3a25e9131a450c0498d670cabd3";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">赵琦个人博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">风子会化绳棉腿</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Openstack rate limit
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-06-15T00:00:00+08:00" content="2017-06-15">
+              2017-06-15
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/OpenStack/" itemprop="url" rel="index">
+                    <span itemprop="name">OpenStack</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/06/15/openstack-rate-limit/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/06/15/openstack-rate-limit/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h5 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">文件路径：/etc/nova/api-deploy.ini</div><div class="line"></div><div class="line">[composite:openstack_volume_api_v1]</div><div class="line">use = call:nova.api.auth:pipeline_factory</div><div class="line">noauth = faultwrap sizelimit noauth ratelimit osapi_volume_app_v1</div><div class="line">keystone = faultwrap sizelimit authtoken keystonecontext ratelimit osapi_volume_app_v1</div><div class="line">keystone_nolimit = faultwrap sizelimit authtoken keystonecontext osapi_volume_app_v1</div><div class="line"></div><div class="line">[filter:ratelimit]</div><div class="line">paste.filter_factory = nova.api.openstack.compute.limits:RateLimitingMiddleware.factory</div><div class="line">limiter = nova.api.openstack.compute.limits.WsgiLimiter</div><div class="line">limits = (POST, <span class="string">"*"</span>, .*, 100, MINUTE);(POST, <span class="string">"*/servers"</span>, ^/servers, 50, DAY);(PUT, <span class="string">"*"</span>, .*, 100, MINUTE);(GET, <span class="string">"*changes-since*"</span>, .*changes-since.*, 3, MINUTE);(DELETE, <span class="string">"*"</span>, .*, 100, MINUTE)</div></pre></td></tr></table></figure>
+<h5 id="处理逻辑"><a href="#处理逻辑" class="headerlink" title="处理逻辑"></a>处理逻辑</h5><p>流控处理逻辑入口为 RateLimitingMiddleware 类的 call() 方法：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@webob.dec.wsgify(RequestClass=wsgi.Request)</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self, req)</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line">    Represents a single call through this middleware. We should record the</div><div class="line">    request if we have a limit relevant to it. If no limit is relevant to</div><div class="line">    the request, ignore it.</div><div class="line"></div><div class="line">    If the request should be rate limited, return a fault telling the user</div><div class="line">    they are over the limit and need to retry later.</div><div class="line">    """</div><div class="line">    verb = req.method</div><div class="line">    url = req.url</div><div class="line">    context = req.environ.get(<span class="string">"nova.context"</span>)</div><div class="line"></div><div class="line">    <span class="keyword">if</span> context:</div><div class="line">        username = context.user_id</div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        username = <span class="keyword">None</span></div><div class="line"></div><div class="line">    delay, error = self._limiter.check_for_delay(verb, url, username)</div><div class="line"></div><div class="line">    <span class="keyword">if</span> delay:</div><div class="line">        msg = _(<span class="string">"This request was rate-limited."</span>)</div><div class="line">        retry = time.time() + delay</div><div class="line">        <span class="keyword">return</span> wsgi.OverLimitFault(msg, error, retry)</div><div class="line"></div><div class="line">    req.environ[<span class="string">"nova.limits"</span>] = self._limiter.get_limits(username)</div><div class="line"></div><div class="line">    <span class="keyword">return</span> self.application</div></pre></td></tr></table></figure></p>
+<p>主要看这句 delay, error = self._limiter.check_for_delay(verb, url, username)，其中的 self._limiter 在 <strong>init</strong> 方法中初始化为配置文件中的 nova.api.openstack.compute.limits.WsgiLimiter 实例，查看该类的 check_for_delay 方法(该类没有实现这个方法，直接看其父类)：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Limiter</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">check_for_delay</span><span class="params">(self, verb, url, username=None)</span>:</span></div><div class="line">        <span class="string">"""</span></div><div class="line">        Check the given verb/user/user triplet for limit.</div><div class="line"></div><div class="line">        @return: Tuple of delay (in seconds) and error message (or None, None)</div><div class="line">        """</div><div class="line">        delays = []</div><div class="line"></div><div class="line">        <span class="keyword">for</span> limit <span class="keyword">in</span> self.levels[username]:</div><div class="line">            delay = limit(verb, url)</div><div class="line">            <span class="keyword">if</span> delay:</div><div class="line">                delays.append((delay, limit.error_message))</div><div class="line"></div><div class="line">        <span class="keyword">if</span> delays:</div><div class="line">            delays.sort()</div><div class="line">            <span class="keyword">return</span> delays[<span class="number">0</span>]</div><div class="line"></div><div class="line">        <span class="keyword">return</span> <span class="keyword">None</span>, <span class="keyword">None</span></div></pre></td></tr></table></figure></p>
+<p>重点看 check_for_delay 方法中的循环处理，self.levels 为配置文件中 limits 转换的 dict。循环读取 limits 配置内容，调用 Limit 类的 <strong>call</strong> 方法做流量控制检查。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line">    self.levels = collections.defaultdict(<span class="keyword">lambda</span>: copy.deepcopy(limits))</div><div class="line"></div><div class="line">    <span class="keyword">for</span> limit <span class="keyword">in</span> self.levels[username]:</div><div class="line">        delay = limit(verb, url)</div><div class="line">        <span class="keyword">if</span> delay:</div><div class="line">            delays.append((delay, limit.error_message))</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Limit</span><span class="params">(object)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__call__</span><span class="params">(self, verb, url)</span>:</span></div><div class="line">        <span class="string">"""</span></div><div class="line">        Represents a call to this limit from a relevant request.</div><div class="line"></div><div class="line">        @param verb: string http verb (POST, GET, etc.)</div><div class="line">        @param url: string URL</div><div class="line">        """</div><div class="line">        <span class="keyword">if</span> self.verb != verb <span class="keyword">or</span> <span class="keyword">not</span> re.match(self.regex, url):</div><div class="line">            <span class="keyword">return</span></div><div class="line"></div><div class="line">        now = self._get_time()</div><div class="line"></div><div class="line">        <span class="keyword">if</span> self.last_request <span class="keyword">is</span> <span class="keyword">None</span>:</div><div class="line">            self.last_request = now</div><div class="line"></div><div class="line">        leak_value = now - self.last_request</div><div class="line"></div><div class="line">        self.water_level -= leak_value</div><div class="line">        self.water_level = max(self.water_level, <span class="number">0</span>)</div><div class="line">        self.water_level += self.request_value</div><div class="line"></div><div class="line">        difference = self.water_level - self.capacity</div><div class="line"></div><div class="line">        self.last_request = now</div><div class="line"></div><div class="line">        <span class="keyword">if</span> difference &gt; <span class="number">0</span>:</div><div class="line">            self.water_level -= self.request_value</div><div class="line">            self.next_request = now + difference</div><div class="line">            <span class="keyword">return</span> difference</div><div class="line"></div><div class="line">        cap = self.capacity</div><div class="line">        water = self.water_level</div><div class="line">        val = self.value</div><div class="line"></div><div class="line">        self.remaining = math.floor(((cap - water) / cap) * val)</div><div class="line">        self.next_request = now</div></pre></td></tr></table></figure></p>
+<p>类 Limit 的 <strong>call</strong> 方法，请求的方法和 uri 如果符合 limits 配置项中的某一项，则按照该项配置要求做相应的检验。比如下面配置中的这一项 (POST, “<em>“, .</em>, 40, SECOND)，<strong>call</strong> 方法则会校验每分钟的 POST 请求是否超过了100次。如果没有超过，则继续执行；如果超过，则返回异常提示信息给用户，请求超过流量限制，请过一段时间再试。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">limits =(POST, <span class="string">"*"</span>, .*, 100, MINUTE);(POST, <span class="string">"*/servers"</span>, ^/servers, 50, DAY);(PUT, <span class="string">"*"</span>, .*, 100, MINUTE);(GET, <span class="string">"*changes-since*"</span>, .*changes-since.*, 3, MINUTE);(DELETE, <span class="string">"*"</span>, .*, 100, MINUTE)</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/06/15/queue-system/" rel="next" title="流控系统">
+                <i class="fa fa-chevron-left"></i> 流控系统
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/06/15/openstack-rate-limit/"
+           data-title="Openstack rate limit" data-url="https://zhaoqqi.github.io/2017/06/15/openstack-rate-limit/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="赵琦" />
+          <p class="site-author-name" itemprop="name">赵琦</p>
+          <p class="site-description motion-element" itemprop="description">计算机技术积累</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">38</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#配置"><span class="nav-number">1.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#处理逻辑"><span class="nav-number">2.</span> <span class="nav-text">处理逻辑</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">赵琦</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"zhaoqqi"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
