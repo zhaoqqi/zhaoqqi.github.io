@@ -69,7 +69,7 @@
 <link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Python, DesignPattern, pool" />
+  <meta name="keywords" content="iptables" />
 
 
 
@@ -85,16 +85,19 @@
 
 
 
-<meta name="description" content="Use a factory and clones of a prototype for new instances (if instantiation is expensive).">
+<meta name="description" content="Iptables.">
 <meta property="og:type" content="article">
-<meta property="og:title" content="proto 模式">
-<meta property="og:url" content="https://zhaoqqi.github.io/2016/10/10/design-pattern-prototype/index.html">
+<meta property="og:title" content="Iptables">
+<meta property="og:url" content="https://zhaoqqi.github.io/2017/08/27/iptables/index.html">
 <meta property="og:site_name" content="赵琦个人博客">
-<meta property="og:description" content="Use a factory and clones of a prototype for new instances (if instantiation is expensive).">
-<meta property="og:updated_time" content="2016-10-10T10:16:15.112Z">
+<meta property="og:description" content="Iptables.">
+<meta property="og:image" content="https://zhaoqqi.github.io/images/iptables_03.gif">
+<meta property="og:image" content="https://zhaoqqi.github.io/images/iptables_04.gif">
+<meta property="og:updated_time" content="2017-08-27T15:10:21.363Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="proto 模式">
-<meta name="twitter:description" content="Use a factory and clones of a prototype for new instances (if instantiation is expensive).">
+<meta name="twitter:title" content="Iptables">
+<meta name="twitter:description" content="Iptables.">
+<meta name="twitter:image" content="https://zhaoqqi.github.io/images/iptables_03.gif">
 
 
 
@@ -115,9 +118,9 @@
 
 
 
-  <link rel="canonical" href="https://zhaoqqi.github.io/2016/10/10/design-pattern-prototype/"/>
+  <link rel="canonical" href="https://zhaoqqi.github.io/2017/08/27/iptables/"/>
 
-  <title> proto 模式 | 赵琦个人博客 </title>
+  <title> Iptables | 赵琦个人博客 </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -257,7 +260,7 @@
             
             
               
-                proto 模式
+                Iptables
               
             
           </h1>
@@ -269,8 +272,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-10-10T00:00:00+08:00" content="2016-10-10">
-              2016-10-10
+            <time itemprop="dateCreated" datetime="2017-08-27T00:00:00+08:00" content="2017-08-27">
+              2017-08-27
             </time>
           </span>
 
@@ -283,8 +286,8 @@
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/DesignPattern/" itemprop="url" rel="index">
-                    <span itemprop="name">DesignPattern</span>
+                  <a href="/categories/Network/" itemprop="url" rel="index">
+                    <span itemprop="name">Network</span>
                   </a>
                 </span>
 
@@ -299,8 +302,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2016/10/10/design-pattern-prototype/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/10/design-pattern-prototype/" itemprop="commentsCount"></span>
+                <a href="/2017/08/27/iptables/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/08/27/iptables/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -323,11 +326,34 @@
       
 
       
-        <p>proto 模式<br>代码参考引用自：<a href="https://github.com/faif/python-patterns/blob/master/prototype.py" target="_blank" rel="external">https://github.com/faif/python-patterns/blob/master/prototype.py</a></p>
-<h4 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#!/usr/bin/env python</span></div><div class="line"><span class="comment"># -*- coding: utf-8 -*-</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> copy</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Prototype</span>:</span></div><div class="line"></div><div class="line">    value = <span class="string">'default'</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">clone</span><span class="params">(self, **attrs)</span>:</span></div><div class="line">        <span class="string">"""Clone a prototype and update inner attributes dictionary"""</span></div><div class="line">        obj = copy.deepcopy(self)</div><div class="line">        obj.__dict__.update(attrs)</div><div class="line">        <span class="keyword">return</span> obj</div><div class="line"></div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">PrototypeDispatcher</span>:</span></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">        self._objects = &#123;&#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_objects</span><span class="params">(self)</span>:</span></div><div class="line">        <span class="string">"""Get all objects"""</span></div><div class="line">        <span class="keyword">return</span> self._objects</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">register_object</span><span class="params">(self, name, obj)</span>:</span></div><div class="line">        <span class="string">"""Register an object"""</span></div><div class="line">        self._objects[name] = obj</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">unregister_object</span><span class="params">(self, name)</span>:</span></div><div class="line">        <span class="string">"""Unregister an object"""</span></div><div class="line">        <span class="keyword">del</span> self._objects[name]</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></div><div class="line">    dispatcher = PrototypeDispatcher()</div><div class="line">    prototype = Prototype()</div><div class="line"></div><div class="line">    d = prototype.clone()</div><div class="line">    a = prototype.clone(value=<span class="string">'a-value'</span>, category=<span class="string">'a'</span>)</div><div class="line">    b = prototype.clone(value=<span class="string">'b-value'</span>, category=<span class="string">'b'</span>)</div><div class="line">    dispatcher.register_object(<span class="string">'objecta'</span>, a)</div><div class="line">    dispatcher.register_object(<span class="string">'objectb'</span>, b)</div><div class="line">    print([&#123;n: p.value&#125; <span class="keyword">for</span> n, p <span class="keyword">in</span> dispatcher.get_objects.items()])</div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    main()</div><div class="line"></div><div class="line"><span class="comment">### OUTPUT ###</span></div><div class="line"><span class="comment"># [&#123;'objectb': 'b-value'&#125;, &#123;'default': 'default'&#125;, &#123;'objecta': 'a-value'&#125;]</span></div></pre></td></tr></table></figure>
-<h4 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h4><p>该模式的目的为，在初始化某些对象的成本比较高时，改为通过克隆原型对象的方式创建新的对象。</p>
-<p>具体实现方法为，在原型类中实现 <code>clone()</code> 方法，使用 <code>copy.deepcopy()</code> 方法克隆对象，并且复制原型对象的 <code>__dict__</code> 到新建对象的 <code>__dict__</code> 。使用 copy.deepcopy() 方法，对象中的子对象也会克隆。</p>
-<p>PrototypeDispatcher 为可以用来克隆的原型对象的管理器，可以注册原型对象，删除注册原型对象。</p>
+        <h5 id="iptables是什么"><a href="#iptables是什么" class="headerlink" title="iptables是什么"></a>iptables是什么</h5><p>iptables 是运行在Linux用户空间的应用软件，通过控制 Linux 内核 netfilter 模块来管理网络数据包的流动和流转。通常 iptables 都需要内核层级的模块来配合运作，Xtables 是主要在内核层级里面 iptables API 运作功能的模块。因此 iptables 需要用到超级用户的权限。</p>
+<h5 id="iptables的表-tables-和链-chain"><a href="#iptables的表-tables-和链-chain" class="headerlink" title="iptables的表(tables)和链(chain)"></a>iptables的表(tables)和链(chain)</h5><p>Linux 的 iptables 至少有3个表，包括管理本机进出的 filter、管理后端主机(防火墙内部的其他服务器)的 nat、管理特殊标志使用的 mangle(使用较少)。每种表与其中链的用途分别是：</p>
+<ul>
+<li>filter(过滤器)：主要是跟进入 Linux 本机的数据包有关，是 iptables 默认的 tables。<ul>
+<li>INPUT：主要跟进入 Linux 本机的数据包有关。</li>
+<li>OUTPUT：主要跟 Linux 本机所要送出的数据包有关。</li>
+<li>FORWARD：与 Linux 本机无关，主要是用来“转移数据包”到后端的服务器中，与下面 nat table 相关性较高。</li>
+</ul>
+</li>
+<li>nat(地址转换)：Network Address Translate的缩写，即地址转换。这个表主要用来在来源与目的 IP 或者 PORT的转换，与 Linux本机无关，主要与 Linux 主机后的局域网络内的服务器相关。<ul>
+<li>PREROUTING：在进行路由判断之前所要进行的规则(DNAT/REDIRECT)。</li>
+<li>POSTROUTING：在进行路由判断之后所有进行的规则(SNAT/MASQUERADE)。</li>
+<li>OUTPUT：与发送出去的数据包有关。</li>
+</ul>
+</li>
+<li>mangle(整形者)：这个表主要与特殊的数据包的路由标志有关，早期仅有 PREROUTING 和 OUTPUT 链。不过从 kernel 2.4.8 之后加入了 INPUT 和 FORWARD链。由于这个表与特殊的路由标志相关，在平时大部分使用环境中使用较少。</li>
+</ul>
+<p>如果自己的 Linux 服务器作为 WWW 服务器，那么就要开放客户端对你的 WWW 服务器的请求要有响应，就得要处理 filter 表的 INPUT 链。如果自己的 Linux 服务器作为局域网内的路由器，那么就得分析 nat 表的各个链以及 filter 表的 FORWARD 链。也就是说，各类表的链之间是有关联关系的，见下图：</p>
+<p><img src="/images/iptables_03.gif" alt="Alt text" title="iptables 内建各表格与链的相关性"></p>
+<p>上图看起来很复杂，不过可以看出来 iptables 可以控制三种数据包的流向：</p>
+<ul>
+<li>数据包进入 Linux 主机使用本机资源(路径A)：在路由判断后确定是向 linux 本机请求的数据包，主要就会通过 filter 表的 INPUT链来控制。</li>
+<li>数据包经由 Linux 主机的传递，没有使用本机资源，而是想后端主机流动(路径B)：在路由判断之前进行数据包表头的修改，数据包主要是通过防火墙去向后端，此时数据包就会通过路径B来跑动。也就是说，数据包的目标并不是 Linux 本机。主要经过的链是 filter 表的 FORWARD 以及 nat 表的 PREROUTING 和 POSTROUTING。</li>
+<li>数据包由 Linux 主机发送出去(路径C)：例如响应客户端的请求，或者 Linux 本机主动送出的数据包，都是通过路径C来跑动。首先通过路由判断，决定了输出的路径后，再通过 filter 的 OUTPUT 链来传送。最后，还会通过 nat 表的 POSTROUTING。</li>
+</ul>
+<p>由于 mangle 表用的较少，下图为去掉了 mangle 之后的简化图：</p>
+<p><img src="/images/iptables_04.gif" alt="Alt text" title="iptables 内建各表格与链的相关性(简图)"></p>
+<p>通过上图可以了解到，与本机相关的其实是 filter 表的 INPUT 和 OUTPUT 这两条链。如果 iptables 只是用来保护 Linux 本机的话，nat 规则就不需要设置，直接设定为开放即可。比如，Openstack 计算节点上的 iptables 规则就是如此。</p>
 
       
     </div>
@@ -353,17 +379,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/10/10/design-pattern-lazy_evaluation/" rel="next" title="延迟加载模式（lazy evaluation）">
-                <i class="fa fa-chevron-left"></i> 延迟加载模式（lazy evaluation）
+              <a href="/2017/06/15/queue-system/" rel="next" title="流控系统">
+                <i class="fa fa-chevron-left"></i> 流控系统
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/10/10/design-pattern-pool/" rel="prev" title="pool 模式">
-                pool 模式 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -389,8 +411,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2016/10/10/design-pattern-prototype/"
-           data-title="proto 模式" data-url="https://zhaoqqi.github.io/2016/10/10/design-pattern-prototype/">
+      <div class="ds-thread" data-thread-key="2017/08/27/iptables/"
+           data-title="Iptables" data-url="https://zhaoqqi.github.io/2017/08/27/iptables/">
       </div>
     
   </div>
@@ -474,7 +496,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#代码"><span class="nav-number">1.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分析"><span class="nav-number">2.</span> <span class="nav-text">分析</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#iptables是什么"><span class="nav-number">1.</span> <span class="nav-text">iptables是什么</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#iptables的表-tables-和链-chain"><span class="nav-number">2.</span> <span class="nav-text">iptables的表(tables)和链(chain)</span></a></li></ol></div>
             
           </div>
         </section>
